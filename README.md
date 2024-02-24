@@ -1,4 +1,5 @@
-# Todosaurus
+Todosaurus [![Status Zero][status-zero]][andivionian-status-classifier]
+==========
 
 ![Build](https://github.com/ForNeVeR/Todosaurus/workflows/Build/badge.svg)
 [![Version](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
@@ -29,8 +30,10 @@ Documentation
 - [Maintainer Guide][docs.maintainer-guide]
 - [Code of Conduct (adapted from the Contributor Covenant)][docs.code-of-conduct]
 
+[andivionian-status-classifier]: https://andivionian.fornever.me/v1/#status-zero-
 [docs.changelog]: CHANGELOG.md
 [docs.code-of-conduct]: CODE_OF_CONDUCT.md
 [docs.contributing]: CONTRIBUTING.md
 [docs.license]: LICENSE.md
 [docs.maintainer-guide]: MAINTAINERSHIP.md
+[status-zero]: https://img.shields.io/badge/status-zero-lightgrey.svg
