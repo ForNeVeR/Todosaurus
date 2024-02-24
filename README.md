@@ -25,10 +25,12 @@ Documentation
 -------------
 - [License (MIT)][docs.license]
 - [Changelog][docs.changelog]
+- [Contributor Guide][docs.contributing]
 - [Maintainer Guide][docs.maintainer-guide]
 - [Code of Conduct (adapted from the Contributor Covenant)][docs.code-of-conduct]
 
 [docs.changelog]: CHANGELOG.md
 [docs.code-of-conduct]: CODE_OF_CONDUCT.md
+[docs.contributing]: CONTRIBUTING.md
 [docs.license]: LICENSE.md
 [docs.maintainer-guide]: MAINTAINERSHIP.md
