@@ -26,8 +26,9 @@ Documentation
 - [License (MIT)][docs.license]
 - [Changelog][docs.changelog]
 - [Maintainer Guide][docs.maintainer-guide]
+- [Code of Conduct (adapted from the Contributor Covenant)][docs.code-of-conduct]
 
 [docs.changelog]: CHANGELOG.md
+[docs.code-of-conduct]: CODE_OF_CONDUCT.md
 [docs.license]: LICENSE.md
 [docs.maintainer-guide]: MAINTAINERSHIP.md
-[docs:plugin-description]: https://plugins.jetbrains.com/docs/intellij/plugin-user-experience.html#plugin-description-and-presentation
