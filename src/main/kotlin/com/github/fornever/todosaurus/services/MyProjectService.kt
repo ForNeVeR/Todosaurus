@@ -1,9 +1,9 @@
-package com.github.fornever.todosausrus.services
+package com.github.fornever.todosaurus.services
 
+import com.github.fornever.todosaurus.MyBundle
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
-import com.github.fornever.todosausrus.MyBundle
 
 @Service(Service.Level.PROJECT)
 class MyProjectService(project: Project) {

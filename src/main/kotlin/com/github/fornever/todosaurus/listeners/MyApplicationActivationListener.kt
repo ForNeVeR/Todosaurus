@@ -1,4 +1,4 @@
-package com.github.fornever.todosausrus.listeners
+package com.github.fornever.todosaurus.listeners
 
 import com.intellij.openapi.application.ApplicationActivationListener
 import com.intellij.openapi.diagnostic.thisLogger

@@ -1,6 +1,6 @@
 <!-- Keep a Changelog guide -> https://keepachangelog.com -->
 
-# Todosausrus Changelog
+# Todosaurus Changelog
 
 ## [Unreleased]
 ### Added

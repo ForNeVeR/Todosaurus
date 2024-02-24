@@ -1,5 +1,7 @@
-package com.github.fornever.todosausrus.toolWindow
+package com.github.fornever.todosaurus.toolWindow
 
+import com.github.fornever.todosaurus.MyBundle
+import com.github.fornever.todosaurus.services.MyProjectService
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
@@ -8,8 +10,6 @@ import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.components.JBLabel
 import com.intellij.ui.components.JBPanel
 import com.intellij.ui.content.ContentFactory
-import com.github.fornever.todosausrus.MyBundle
-import com.github.fornever.todosausrus.services.MyProjectService
 import javax.swing.JButton
 
 

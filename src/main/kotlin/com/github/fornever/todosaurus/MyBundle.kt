@@ -1,4 +1,4 @@
-package com.github.fornever.todosausrus
+package com.github.fornever.todosaurus
 
 import com.intellij.DynamicBundle
 import org.jetbrains.annotations.NonNls
