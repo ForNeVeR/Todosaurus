@@ -49,12 +49,12 @@ Documentation
 - [Code of Conduct (adapted from the Contributor Covenant)][docs.code-of-conduct]
 
 [andivionian-status-classifier]: https://andivionian.fornever.me/v1/#status-zero-
-[badge.plugin]: https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg
+[badge.plugin]: https://img.shields.io/jetbrains/plugin/v/23838.svg
 [docs.changelog]: CHANGELOG.md
 [docs.code-of-conduct]: CODE_OF_CONDUCT.md
 [docs.contributing]: CONTRIBUTING.md
 [docs.license]: LICENSE.md
 [docs.maintainer-guide]: MAINTAINERSHIP.md
 [issues]: https://github.com/ForNeVeR/Todosaurus/issues
-[marketplace.plugin]: https://plugins.jetbrains.com/plugin/PLUGIN_ID
+[marketplace.plugin]: https://plugins.jetbrains.com/plugin/23838
 [status-zero]: https://img.shields.io/badge/status-zero-lightgrey.svg
