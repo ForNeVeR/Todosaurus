@@ -15,12 +15,4 @@
             <add-to-group group-id="VersionControlsGroup" /> <!-- TODO: This is a temporary solution until the TODO tool window supports a proper action group -->
         </action>
     </actions>
-
-    <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="me.fornever.todosaurus.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
-    </extensions>
-
-    <applicationListeners>
-        <listener class="me.fornever.todosaurus.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
-    </applicationListeners>
 </idea-plugin>
