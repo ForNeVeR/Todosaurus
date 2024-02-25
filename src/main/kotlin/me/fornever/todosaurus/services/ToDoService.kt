@@ -1,15 +1,19 @@
 package me.fornever.todosaurus.services
 
 import com.intellij.dvcs.repo.VcsRepositoryManager
+import com.intellij.openapi.application.writeAction
+import com.intellij.openapi.command.executeCommand
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.RangeMarker
 import com.intellij.openapi.project.Project
 import git4idea.repo.GitRepository
 import kotlinx.coroutines.CoroutineScope
+import me.fornever.todosaurus.TodosaurusBundle
 import me.fornever.todosaurus.models.CreateIssueModel
 import me.fornever.todosaurus.models.RepositoryModel
 import me.fornever.todosaurus.views.CreateIssueDialog
+import org.jetbrains.plugins.github.api.data.GithubIssue
 import org.jetbrains.plugins.github.authentication.GHAccountsUtil
 import org.jetbrains.plugins.github.authentication.accounts.GithubAccount
 import java.net.URI
@@ -22,6 +26,8 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
     }
 
     private val newToDoItemPattern = "TODO:".toRegex(RegexOption.IGNORE_CASE)
+    private fun formReadyToDoPattern(issueNumber: Long) = "TODO[#${issueNumber}]:"
+
     private val issueDescriptionTemplate = """
         See the code near this line: ${GitHubService.GITHUB_CODE_URL_REPLACEMENT}
 
@@ -36,6 +42,18 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
     fun showCreateIssueDialog(range: RangeMarker) {
         val data = calculateData(range)
         CreateIssueDialog(project, scope, collectAccounts(), collectRepositories(), data).show()
+    }
+
+    suspend fun updateDocumentText(range: RangeMarker, issue: GithubIssue) {
+        @Suppress("UnstableApiUsage")
+        writeAction {
+            executeCommand(project, TodosaurusBundle.message("command.update.todo.item")) {
+                val document = range.document
+                val prevText = document.getText(range.textRange)
+                val newText = prevText.replace(newToDoItemPattern, formReadyToDoPattern(issue.number))
+                document.replaceString(range.startOffset, range.endOffset, newText)
+            }
+        }
     }
 
     private fun calculateData(range: RangeMarker): CreateIssueModel {

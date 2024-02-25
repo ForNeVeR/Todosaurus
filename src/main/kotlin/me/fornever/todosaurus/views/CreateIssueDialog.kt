@@ -14,6 +14,7 @@ import me.fornever.todosaurus.TodosaurusBundle
 import me.fornever.todosaurus.models.CreateIssueModel
 import me.fornever.todosaurus.models.RepositoryModel
 import me.fornever.todosaurus.services.GitHubService
+import me.fornever.todosaurus.services.ToDoService
 import org.jetbrains.plugins.github.authentication.accounts.GithubAccount
 import java.awt.event.ActionEvent
 import javax.swing.Action
@@ -67,8 +68,13 @@ class CreateIssueDialog(
 
     private inner class CreateIssueAction : DialogWrapperAction(TodosaurusBundle.message("createIssueDialog.createIssue")) {
 
+        @Volatile
+        private var isInProgress: Boolean = false
+
         override fun isEnabled() =
-            repositoryChooser.selectedItem != null
+            !isInProgress
+                && accountChooser.selectedItem != null
+                && repositoryChooser.selectedItem != null
 
         override fun doAction(e: ActionEvent?) {
             val model = CreateIssueModel(
@@ -78,14 +84,18 @@ class CreateIssueDialog(
                 issueDescriptionField.text,
                 initialData.textRangeMarker
             )
-            // TODO: Show errors if repository or account are not selected.
             scope.launch {
-                val newIssue = GitHubService.getInstance(project).createIssue(model)
-                Notifications.issueCreated(newIssue, project)
-                withUiContext {
-                    doOKAction()
+                isInProgress = true
+                try {
+                    val newIssue = GitHubService.getInstance(project).createIssue(model)
+                    Notifications.issueCreated(newIssue, project)
+                    ToDoService.getInstance(project).updateDocumentText(model.textRangeMarker, newIssue)
+                    withUiContext {
+                        doOKAction()
+                    }
+                } finally {
+                    isInProgress = false
                 }
-                // TODO: Replace the TODO number in the original text
             }
             // TODO: Process IO and unknown errors
         }
