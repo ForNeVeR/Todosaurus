@@ -2,13 +2,8 @@ package me.fornever.todosaurus.views
 
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.SimpleListCellRenderer
-import java.net.URI
+import me.fornever.todosaurus.models.RepositoryModel
 import javax.swing.JList
-
-data class RepositoryModel(val url: URI) {
-    val displayName: String
-        get() = url.path.removePrefix("/")
-}
 
 class RepositoryChooser(repos: Array<RepositoryModel>) : ComboBox<RepositoryModel>(repos) {
     init {
@@ -20,7 +15,7 @@ class RepositoryChooser(repos: Array<RepositoryModel>) : ComboBox<RepositoryMode
                 selected: Boolean,
                 hasFocus: Boolean
             ) {
-                text = value?.displayName
+                text = value?.ownerAndName
             }
         }
     }

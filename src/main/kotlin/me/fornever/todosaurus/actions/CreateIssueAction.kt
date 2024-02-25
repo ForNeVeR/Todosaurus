@@ -32,7 +32,7 @@ class CreateIssueAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val range = e.getToDoTextRange() ?: return
-        ToDoService.getInstance(project).createIssue(range)
+        ToDoService.getInstance(project).showCreateIssueDialog(range)
     }
 }
 

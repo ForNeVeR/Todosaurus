@@ -7,9 +7,11 @@ import com.intellij.openapi.editor.RangeMarker
 import com.intellij.openapi.project.Project
 import git4idea.repo.GitRepository
 import kotlinx.coroutines.CoroutineScope
+import me.fornever.todosaurus.models.CreateIssueModel
+import me.fornever.todosaurus.models.RepositoryModel
 import me.fornever.todosaurus.views.CreateIssueDialog
-import me.fornever.todosaurus.views.CreateIssueModel
-import me.fornever.todosaurus.views.RepositoryModel
+import org.jetbrains.plugins.github.authentication.GHAccountsUtil
+import org.jetbrains.plugins.github.authentication.accounts.GithubAccount
 import java.net.URI
 
 @Service(Service.Level.PROJECT)
@@ -31,9 +33,9 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         return newToDoItemPattern.containsMatchIn(text)
     }
 
-    fun createIssue(range: RangeMarker) {
+    fun showCreateIssueDialog(range: RangeMarker) {
         val data = calculateData(range)
-        CreateIssueDialog(scope, collectRepositories(), data).show() // TODO: Pass the text and any required context
+        CreateIssueDialog(project, scope, collectAccounts(), collectRepositories(), data).show()
     }
 
     private fun calculateData(range: RangeMarker): CreateIssueModel {
@@ -43,7 +45,11 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
             (if (text.contains("\n")) text.substringAfter('\n') + "\n" else "") +
                 issueDescriptionTemplate
         // TODO: Replace ${GITHUB_CODE_URL} with GitHub text range URL
-        return CreateIssueModel(title, description)
+        return CreateIssueModel(null, null, title, description)
+    }
+
+    private fun collectAccounts(): Array<GithubAccount> {
+        return GHAccountsUtil.accounts.toTypedArray()
     }
 
     private fun collectRepositories(): Array<RepositoryModel> {
@@ -66,7 +72,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         else -> emptyList()
     }
 
-    private fun remoteFromHttpsUrl(remoteUrl: String) = URI(remoteUrl)
+    private fun remoteFromHttpsUrl(remoteUrl: String) = URI(remoteUrl.removeSuffix(".git"))
     private fun remoteFromSshUrl(remoteUrl: String) = URI(
         "https://" +
             remoteUrl
