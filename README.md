@@ -1,13 +1,10 @@
-Todosaurus [![Status Zero][status-zero]][andivionian-status-classifier]
+Todosaurus [![Status Zero][status-zero]][andivionian-status-classifier] [![Download](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
 ==========
 
-![Build](https://github.com/ForNeVeR/Todosaurus/workflows/Build/badge.svg)
-[![Version](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
-[![Downloads](https://img.shields.io/jetbrains/plugin/d/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
-
 <!-- Plugin description -->
-**Todosaurus** is an IntelliJ plugin that helps you to manage the TODO comments. It allows quickly creating a new GitHub issue from a TODO comment, and update the comment with the issue number. For example, if you have a comment `// TODO: Fix this code` in your sources, then the plugin will allow to create an issue linking the line of code including this comment, and update it to `// TODO[#123]: Fix this code`.
+**Todosaurus** is an IntelliJ plugin that helps you to manage the TODO comments. It allows quickly creating a new GitHub issue from a TODO comment, and update the comment with the issue number.
 
+For example, if you have a comment `// TODO: Fix this code` in your sources, then the plugin will allow to create an issue linking the line of code including this comment, and update it to `// TODO[#123]: Fix this code`.
 <!-- Plugin description end -->
 
 ## Installation
