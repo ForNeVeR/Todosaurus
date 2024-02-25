@@ -11,7 +11,7 @@
 
     <actions>
         <action id="CreateIssue" class="me.fornever.todosaurus.actions.CreateIssueAction">
-            <add-to-group group-id="VersionControlsGroup" /> <!-- TODO: This is a temporary solution until the TODO tool window supports a proper action group -->
+            <add-to-group group-id="VersionControlsGroup" /> <!-- TODO[#18]: This is a temporary solution until the TODO tool window supports a proper action group -->
         </action>
     </actions>
 
