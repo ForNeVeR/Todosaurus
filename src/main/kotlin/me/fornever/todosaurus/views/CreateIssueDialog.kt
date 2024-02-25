@@ -4,13 +4,19 @@ import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBTextArea
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.text
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import me.fornever.todosaurus.MyBundle
 import java.awt.event.ActionEvent
 import javax.swing.Action
 
-class CreateIssueDialog(parentScope: CoroutineScope) : DialogWrapper(null) {
+data class CreateIssueModel(
+    val title: String,
+    val description: String
+)
+
+class CreateIssueDialog(parentScope: CoroutineScope, private val initialData: CreateIssueModel) : DialogWrapper(null) {
 
     private val scope = CoroutineScope(parentScope.coroutineContext)
 
@@ -28,10 +34,10 @@ class CreateIssueDialog(parentScope: CoroutineScope) : DialogWrapper(null) {
 
         }
         row(MyBundle.message("createIssueDialog.issueTitle")) {
-            issueTitleField = textField().component
+            issueTitleField = textField().text(initialData.title).component
         }
         row(MyBundle.message("createIssueDialog.issueDescription")) {
-            issueDescriptionField = textArea().component
+            issueDescriptionField = textArea().text(initialData.description).component
         }
     }
 
@@ -45,6 +51,7 @@ class CreateIssueDialog(parentScope: CoroutineScope) : DialogWrapper(null) {
     private inner class CreateIssueAction : DialogWrapperAction(MyBundle.message("createIssueDialog.createIssue")) {
         override fun doAction(e: ActionEvent?) {
             // TODO: Create the issue
+            // TODO: Replace the TODO number in the original text
         }
     }
 }
