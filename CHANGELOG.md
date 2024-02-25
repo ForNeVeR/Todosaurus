@@ -1,7 +1,5 @@
-<!-- Keep a Changelog guide -> https://keepachangelog.com -->
-
-# Todosaurus Changelog
+Todosaurus Changelog
+====================
 
 ## [Unreleased]
-### Added
-- Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
+This is the initial plugin release. At this point, it provides a context menu for the TODO items to create GitHub issues from them.
