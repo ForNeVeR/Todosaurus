@@ -1,4 +1,4 @@
-Todosaurus [![Status Zero][status-zero]][andivionian-status-classifier] [![Download][badge.plugin]][marketplace.plugin]
+Todosaurus [![Status Enfer][status-enfer]][andivionian-status-classifier] [![Download][badge.plugin]][marketplace.plugin]
 ==========
 
 <!-- Plugin description -->
@@ -48,7 +48,7 @@ Documentation
 - [Maintainer Guide][docs.maintainer-guide]
 - [Code of Conduct (adapted from the Contributor Covenant)][docs.code-of-conduct]
 
-[andivionian-status-classifier]: https://andivionian.fornever.me/v1/#status-zero-
+[andivionian-status-classifier]: https://andivionian.fornever.me/v1/#status-enfer-
 [badge.plugin]: https://img.shields.io/jetbrains/plugin/v/23838.svg
 [docs.changelog]: CHANGELOG.md
 [docs.code-of-conduct]: CODE_OF_CONDUCT.md
@@ -57,4 +57,4 @@ Documentation
 [docs.maintainer-guide]: MAINTAINERSHIP.md
 [issues]: https://github.com/ForNeVeR/Todosaurus/issues
 [marketplace.plugin]: https://plugins.jetbrains.com/plugin/23838
-[status-zero]: https://img.shields.io/badge/status-zero-lightgrey.svg
+[status-enfer]: https://img.shields.io/badge/status-enfer-orange.svg
