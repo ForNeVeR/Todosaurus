@@ -5,6 +5,8 @@ import com.intellij.openapi.rd.util.withUiContext
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBTextArea
 import com.intellij.ui.components.JBTextField
+import com.intellij.ui.dsl.builder.Align
+import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.text
 import kotlinx.coroutines.CoroutineScope
@@ -32,6 +34,7 @@ class CreateIssueDialog(
     init {
         isModal = false
         title = TodosaurusBundle.message("createIssueDialog.title")
+        setSize(600, 400)
         init()
     }
 
@@ -43,20 +46,24 @@ class CreateIssueDialog(
     override fun createCenterPanel() = panel {
         row(TodosaurusBundle.message("createIssueDialog.chooseRepository")) {
             repositoryChooser = RepositoryChooser(repositories).also {
-                cell(it)
+                cell(it).align(AlignX.FILL)
             }
         }
         row(TodosaurusBundle.message("createIssueDialog.chooseAccount")) {
             accountChooser = GitHubAccountChooser(accounts).also {
-                cell(it)
+                cell(it).align(AlignX.FILL)
             }
         }
         row(TodosaurusBundle.message("createIssueDialog.issueTitle")) {
-            issueTitleField = textField().text(initialData.title).component
+            issueTitleField = textField()
+                .align(AlignX.FILL)
+                .text(initialData.title).component
         }
         row(TodosaurusBundle.message("createIssueDialog.issueDescription")) {
-            issueDescriptionField = textArea().text(initialData.description).component
-        }
+            issueDescriptionField = textArea()
+                .align(Align.FILL)
+                .text(initialData.description).component
+        }.resizableRow()
     }
 
     override fun createActions(): Array<Action> = arrayOf(CreateIssueAction())
