@@ -1,6 +1,7 @@
 package me.fornever.todosaurus.services
 
 import com.intellij.dvcs.repo.VcsRepositoryManager
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.serviceAsync
 import com.intellij.openapi.editor.RangeMarker
@@ -8,6 +9,7 @@ import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.LocalFileSystem
+import com.intellij.util.concurrency.annotations.RequiresReadLock
 import git4idea.repo.GitRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -36,7 +38,9 @@ class GitHubService(private val project: Project) {
         val token = getApiToken(account)
         val executor = GithubApiRequestExecutor.Factory.getInstance().create(token)
 
-        val issueBody = replacePatterns(model.description, repository, model.textRangeMarker)
+        val issueBody = readAction {
+            replacePatterns(model.description, repository, model.textRangeMarker)
+        }
         val request = GithubApiRequests.Repos.Issues.create(
             GithubServerPath.DEFAULT_SERVER,
             repository.owner,
@@ -54,6 +58,7 @@ class GitHubService(private val project: Project) {
         return GHCompatibilityUtil.getOrRequestToken(account, project) ?: error("Token is not found.")
     }
 
+    @RequiresReadLock
     private fun replacePatterns(description: String, repository: RepositoryModel, rangeMarker: RangeMarker): String {
         val rootPath = repository.rootPath
         val filePath = FileDocumentManager.getInstance().getFile(rangeMarker.document)?.toNioPath()
