@@ -75,7 +75,8 @@ class CreateIssueDialog(
                 repositoryChooser.selectedItem as RepositoryModel?,
                 accountChooser.selectedItem as GithubAccount?,
                 issueTitleField.text,
-                issueDescriptionField.text
+                issueDescriptionField.text,
+                initialData.textRangeMarker
             )
             // TODO: Show errors if repository or account are not selected.
             scope.launch {
@@ -86,6 +87,7 @@ class CreateIssueDialog(
                 Notifications.issueCreated(newIssue)
                 // TODO: Replace the TODO number in the original text
             }
+            // TODO: Process IO and unknown errors
         }
     }
 }

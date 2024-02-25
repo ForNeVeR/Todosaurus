@@ -23,7 +23,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
 
     private val newToDoItemPattern = "TODO:".toRegex(RegexOption.IGNORE_CASE)
     private val issueDescriptionTemplate = """
-        See the code near this line: $\{GITHUB_CODE_URL}
+        See the code near this line: ${GitHubService.GITHUB_CODE_URL_REPLACEMENT}
 
         Also, look for the number of this issue in the project code base.
     """.trimIndent()
@@ -44,8 +44,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         val description =
             (if (text.contains("\n")) text.substringAfter('\n') + "\n" else "") +
                 issueDescriptionTemplate
-        // TODO: Replace ${GITHUB_CODE_URL} with GitHub text range URL
-        return CreateIssueModel(null, null, title, description)
+        return CreateIssueModel(null, null, title, description, range)
     }
 
     private fun collectAccounts(): Array<GithubAccount> {
@@ -57,13 +56,15 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         return repositoryManager.repositories
             .asSequence()
             .filterIsInstance<GitRepository>()
-            .flatMap { it.remotes }
-            .flatMap { it.urls }
-            .flatMap { getGitHubRepoUri(it) }
+            .flatMap(::getRepositoryModels)
             .distinct()
-            .map(::RepositoryModel)
             .toList()
             .toTypedArray()
+    }
+
+    private fun getRepositoryModels(repo: GitRepository): Sequence<RepositoryModel> {
+        val urls = repo.remotes.asSequence().flatMap { it.urls }.flatMap(::getGitHubRepoUri)
+        return urls.map { RepositoryModel(it, repo.root.toNioPath()) }
     }
 
     private fun getGitHubRepoUri(remoteUrl: String) = when {
