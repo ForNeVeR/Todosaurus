@@ -1,4 +1,4 @@
-Todosaurus [![Status Zero][status-zero]][andivionian-status-classifier] [![Download](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
+Todosaurus [![Status Zero][status-zero]][andivionian-status-classifier] [![Download][badge.plugin]][marketplace.plugin]
 ==========
 
 <!-- Plugin description -->
@@ -29,7 +29,7 @@ Currently, plugin only supports one TODO pattern, namely `TODO:` (case-insensiti
 2. Check you have a GitHub auth token registered in the **File | Settings | Version Control | GitHub**.
 3. Open a Git repository that's available on GitHub (currently, the plugin will auto-detect any GitHub repositories linked by either SSH or HTTPS remotes in the VCS roots of the current project).
 4. Open the **TODO** tool window.
-5. Open context menu for any TODO item that isn't yet linked to GitHub (i.e. an item like `TODO: something`, with no issue number).
+5. Open context menu for any TODO item that isn't yet linked to GitHub (i.e., an item like `TODO: something`, with no issue number).
 6. Invoke the **Create Issue** action.
 7. The dialog will ask you for
    - the account you want to file the issue from,
@@ -37,6 +37,8 @@ Currently, plugin only supports one TODO pattern, namely `TODO:` (case-insensiti
    - the issue title,
    - the issue text (pattern `${GITHUB_CODE_URL}` will be automatically replaced by the link to the line of code containing the TODO comment).
 8. Click the **Create Issue** button. An issue will be created, you'll receive a notification, and the code will be updated to have a link to the issue.
+
+If you have some advanced usage scenarios, do not hesitate to leave your feedback at [the issue tracker][issues].
 
 Documentation
 -------------
@@ -47,9 +49,12 @@ Documentation
 - [Code of Conduct (adapted from the Contributor Covenant)][docs.code-of-conduct]
 
 [andivionian-status-classifier]: https://andivionian.fornever.me/v1/#status-zero-
+[badge.plugin]: https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg
 [docs.changelog]: CHANGELOG.md
 [docs.code-of-conduct]: CODE_OF_CONDUCT.md
 [docs.contributing]: CONTRIBUTING.md
 [docs.license]: LICENSE.md
 [docs.maintainer-guide]: MAINTAINERSHIP.md
+[issues]: https://github.com/ForNeVeR/Todosaurus/issues
+[marketplace.plugin]: https://plugins.jetbrains.com/plugin/PLUGIN_ID
 [status-zero]: https://img.shields.io/badge/status-zero-lightgrey.svg
