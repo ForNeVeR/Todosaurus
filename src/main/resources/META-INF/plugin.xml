@@ -10,9 +10,14 @@
     <resource-bundle>messages.TodosaurusBundle</resource-bundle>
 
     <actions>
-
         <action id="CreateIssue" class="me.fornever.todosaurus.actions.CreateIssueAction">
             <add-to-group group-id="VersionControlsGroup" /> <!-- TODO: This is a temporary solution until the TODO tool window supports a proper action group -->
         </action>
     </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup id="TodosaurusNotifications"
+                           displayType="BALLOON"
+                           key="notification.group.name"/>
+    </extensions>
 </idea-plugin>

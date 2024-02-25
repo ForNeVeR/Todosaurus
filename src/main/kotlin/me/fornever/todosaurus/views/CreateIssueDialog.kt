@@ -81,10 +81,10 @@ class CreateIssueDialog(
             // TODO: Show errors if repository or account are not selected.
             scope.launch {
                 val newIssue = GitHubService.getInstance(project).createIssue(model)
+                Notifications.issueCreated(newIssue, project)
                 withUiContext {
                     doOKAction()
                 }
-                Notifications.issueCreated(newIssue)
                 // TODO: Replace the TODO number in the original text
             }
             // TODO: Process IO and unknown errors
