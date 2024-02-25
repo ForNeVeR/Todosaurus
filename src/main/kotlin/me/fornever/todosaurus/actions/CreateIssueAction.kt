@@ -13,14 +13,12 @@ import me.fornever.todosaurus.services.ToDoService
 
 class CreateIssueAction : AnAction() {
 
-    private val service: ToDoService
-        get() = ToDoService.getInstance()
-
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
         val toDoPanel = e.getData(TodoPanel.TODO_PANEL_DATA_KEY)
-        if (toDoPanel == null) {
+        val project = e.project
+        if (toDoPanel == null || project == null) {
             e.presentation.isEnabledAndVisible = false
             return
         }
@@ -28,12 +26,13 @@ class CreateIssueAction : AnAction() {
         e.presentation.isVisible = true
 
         val range = e.getToDoTextRange()
-        e.presentation.isEnabled = range != null && service.hasNewToDoItem(range)
+        e.presentation.isEnabled = range != null && ToDoService.getInstance(project).hasNewToDoItem(range)
     }
 
     override fun actionPerformed(e: AnActionEvent) {
+        val project = e.project ?: return
         val range = e.getToDoTextRange() ?: return
-        service.createIssue(range)
+        ToDoService.getInstance(project).createIssue(range)
     }
 }
 

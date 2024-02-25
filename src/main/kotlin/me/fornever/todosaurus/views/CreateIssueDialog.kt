@@ -16,7 +16,11 @@ data class CreateIssueModel(
     val description: String
 )
 
-class CreateIssueDialog(parentScope: CoroutineScope, private val initialData: CreateIssueModel) : DialogWrapper(null) {
+class CreateIssueDialog(
+    parentScope: CoroutineScope,
+    private val repositories: Array<RepositoryModel>,
+    private val initialData: CreateIssueModel
+) : DialogWrapper(null) {
 
     private val scope = CoroutineScope(parentScope.coroutineContext)
 
@@ -26,12 +30,15 @@ class CreateIssueDialog(parentScope: CoroutineScope, private val initialData: Cr
         init()
     }
 
+    lateinit var repositoryChooser: RepositoryChooser
     lateinit var issueTitleField: JBTextField
     lateinit var issueDescriptionField: JBTextArea
 
     override fun createCenterPanel() = panel {
         row(MyBundle.message("createIssueDialog.chooseRepository")) {
-
+            repositoryChooser = RepositoryChooser(repositories).also {
+                cell(it)
+            }
         }
         row(MyBundle.message("createIssueDialog.issueTitle")) {
             issueTitleField = textField().text(initialData.title).component
@@ -49,6 +56,10 @@ class CreateIssueDialog(parentScope: CoroutineScope, private val initialData: Cr
     }
 
     private inner class CreateIssueAction : DialogWrapperAction(MyBundle.message("createIssueDialog.createIssue")) {
+
+        override fun isEnabled() =
+            repositoryChooser.selectedItem != null
+
         override fun doAction(e: ActionEvent?) {
             // TODO: Create the issue
             // TODO: Replace the TODO number in the original text
