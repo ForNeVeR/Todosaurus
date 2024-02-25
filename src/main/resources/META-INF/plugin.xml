@@ -7,9 +7,9 @@
     <depends>Git4Idea</depends>
     <depends>org.jetbrains.plugins.github</depends>
 
-    <resource-bundle>messages.MyBundle</resource-bundle>
+    <resource-bundle>messages.TodosaurusBundle</resource-bundle>
 
-    <actions resource-bundle="messages.MyBundle">
+    <actions>
 
         <action id="CreateIssue" class="me.fornever.todosaurus.actions.CreateIssueAction">
             <add-to-group group-id="VersionControlsGroup" /> <!-- TODO: This is a temporary solution until the TODO tool window supports a proper action group -->

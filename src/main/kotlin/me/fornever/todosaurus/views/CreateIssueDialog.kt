@@ -10,7 +10,7 @@ import com.intellij.ui.dsl.builder.text
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import me.fornever.todosaurus.MyBundle
+import me.fornever.todosaurus.TodosaurusBundle
 import me.fornever.todosaurus.models.CreateIssueModel
 import me.fornever.todosaurus.models.RepositoryModel
 import me.fornever.todosaurus.services.GitHubService
@@ -30,7 +30,7 @@ class CreateIssueDialog(
 
     init {
         isModal = false
-        title = MyBundle.message("createIssueDialog.title")
+        title = TodosaurusBundle.message("createIssueDialog.title")
         init()
     }
 
@@ -40,20 +40,20 @@ class CreateIssueDialog(
     lateinit var issueDescriptionField: JBTextArea
 
     override fun createCenterPanel() = panel {
-        row(MyBundle.message("createIssueDialog.chooseRepository")) {
+        row(TodosaurusBundle.message("createIssueDialog.chooseRepository")) {
             repositoryChooser = RepositoryChooser(repositories).also {
                 cell(it)
             }
         }
-        row(MyBundle.message("createIssueDialog.chooseAccount")) {
+        row(TodosaurusBundle.message("createIssueDialog.chooseAccount")) {
             accountChooser = GitHubAccountChooser(accounts).also {
                 cell(it)
             }
         }
-        row(MyBundle.message("createIssueDialog.issueTitle")) {
+        row(TodosaurusBundle.message("createIssueDialog.issueTitle")) {
             issueTitleField = textField().text(initialData.title).component
         }
-        row(MyBundle.message("createIssueDialog.issueDescription")) {
+        row(TodosaurusBundle.message("createIssueDialog.issueDescription")) {
             issueDescriptionField = textArea().text(initialData.description).component
         }
     }
@@ -65,7 +65,7 @@ class CreateIssueDialog(
         super.dispose()
     }
 
-    private inner class CreateIssueAction : DialogWrapperAction(MyBundle.message("createIssueDialog.createIssue")) {
+    private inner class CreateIssueAction : DialogWrapperAction(TodosaurusBundle.message("createIssueDialog.createIssue")) {
 
         override fun isEnabled() =
             repositoryChooser.selectedItem != null
