@@ -10,6 +10,7 @@ import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.text
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import me.fornever.todosaurus.TodosaurusBundle
@@ -29,7 +30,7 @@ class CreateIssueDialog(
     private val initialData: CreateIssueModel
 ) : DialogWrapper(null) {
 
-    private val scope = CoroutineScope(parentScope.coroutineContext)
+    private val scope = CoroutineScope(parentScope.coroutineContext + SupervisorJob())
 
     init {
         isModal = false
