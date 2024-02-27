@@ -1,6 +1,8 @@
 Todosaurus Changelog
 ====================
 
+## [Unreleased]
+
 ## [1.0.1] - 2024-02-27
 ### Changed
 - Get rid of internal API usage in the plugin.
