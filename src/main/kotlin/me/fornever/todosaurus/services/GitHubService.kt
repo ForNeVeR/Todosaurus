@@ -3,7 +3,7 @@ package me.fornever.todosaurus.services
 import com.intellij.dvcs.repo.VcsRepositoryManager
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.serviceAsync
+import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.RangeMarker
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
@@ -28,7 +28,7 @@ class GitHubService(private val project: Project) {
     companion object {
         const val GITHUB_CODE_URL_REPLACEMENT = "\${GITHUB_CODE_URL}"
 
-        suspend fun getInstance(project: Project): GitHubService = project.serviceAsync()
+        suspend fun getInstance(project: Project): GitHubService = project.service()
     }
 
     suspend fun createIssue(model: CreateIssueModel): GithubIssue {
