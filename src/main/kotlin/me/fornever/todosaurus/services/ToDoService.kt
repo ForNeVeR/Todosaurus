@@ -36,8 +36,10 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
 
     fun hasNewToDoItem(range: RangeMarker): Boolean {
         val text = range.document.getText(range.textRange)
-        return newToDoItemPattern.containsMatchIn(text)
+        return hasNewToDoItem(text)
     }
+
+    fun hasNewToDoItem(text: String): Boolean = newToDoItemPattern.containsMatchIn(text)
 
     fun showCreateIssueDialog(range: RangeMarker) {
         val data = calculateData(range)
