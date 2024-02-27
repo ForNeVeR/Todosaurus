@@ -10,7 +10,6 @@ plugins {
     alias(libs.plugins.gradleIntelliJPlugin)
     alias(libs.plugins.changelog)
     alias(libs.plugins.qodana)
-    alias(libs.plugins.kover)
     alias(libs.plugins.gradleJvmWrapper)
 }
 
@@ -58,15 +57,6 @@ qodana {
     reportPath = provider { file("build/reports/inspections").canonicalPath }
     saveReport = true
     showReport = environment("QODANA_SHOW_REPORT").map { it.toBoolean() }.getOrElse(false)
-}
-
-// Configure Gradle Kover Plugin - read more: https://github.com/Kotlin/kotlinx-kover#configuration
-koverReport {
-    defaults {
-        xml {
-            onCheck = true
-        }
-    }
 }
 
 tasks {
