@@ -28,7 +28,7 @@ class GitHubService(private val project: Project) {
     companion object {
         const val GITHUB_CODE_URL_REPLACEMENT = "\${GITHUB_CODE_URL}"
 
-        suspend fun getInstance(project: Project): GitHubService = project.service()
+        fun getInstance(project: Project): GitHubService = project.service()
     }
 
     suspend fun createIssue(model: CreateIssueModel): GithubIssue {
