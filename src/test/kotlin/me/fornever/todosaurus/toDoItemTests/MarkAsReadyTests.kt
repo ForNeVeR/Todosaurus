@@ -39,6 +39,7 @@ class MarkAsReadyTests(private val newItem: String) {
         assertTrue(sut.range.document.text.contains(expected))
     }
 
+    @Test
     fun `ToDo item should not be new`() {
         // Arrange
         val sut = ToDoItem(FakeRangeMarker(newItem))
