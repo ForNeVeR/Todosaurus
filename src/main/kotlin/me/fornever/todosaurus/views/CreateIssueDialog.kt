@@ -58,12 +58,12 @@ class CreateIssueDialog(
         row(TodosaurusBundle.message("createIssueDialog.issueTitle")) {
             issueTitleField = textField()
                 .align(AlignX.FILL)
-                .text(initialData.title).component
+                .text(initialData.toDoItem.title).component
         }
         row(TodosaurusBundle.message("createIssueDialog.issueDescription")) {
             issueDescriptionField = textArea()
                 .align(Align.FILL)
-                .text(initialData.description).component
+                .text(initialData.toDoItem.description).component
         }.resizableRow()
     }
 
@@ -88,16 +88,14 @@ class CreateIssueDialog(
             val model = CreateIssueModel(
                 repositoryChooser.selectedItem as RepositoryModel?,
                 accountChooser.selectedItem as GithubAccount?,
-                issueTitleField.text,
-                issueDescriptionField.text,
-                initialData.textRangeMarker
+                initialData.toDoItem
             )
             scope.launch {
                 isInProgress = true
                 try {
                     val newIssue = GitHubService.getInstance(project).createIssue(model)
                     Notifications.issueCreated(newIssue, project)
-                    ToDoService.getInstance(project).updateDocumentText(model.textRangeMarker, newIssue)
+                    ToDoService.getInstance(project).updateDocumentText(model.toDoItem, newIssue)
                     withUiContext {
                         doOKAction()
                     }

@@ -25,44 +25,23 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         fun getInstance(project: Project): ToDoService = project.service()
     }
 
-    private val newToDoItemPattern = "TODO:".toRegex(RegexOption.IGNORE_CASE)
-    private fun formReadyToDoPattern(issueNumber: Long) = "TODO[#${issueNumber}]:"
-
-    private val issueDescriptionTemplate = """
-        See the code near this line: ${GitHubService.GITHUB_CODE_URL_REPLACEMENT}
-
-        Also, look for the number of this issue in the project code base.
-    """.trimIndent()
-
-    fun hasNewToDoItem(range: RangeMarker): Boolean {
-        val text = range.document.getText(range.textRange)
-        return newToDoItemPattern.containsMatchIn(text)
-    }
-
     fun showCreateIssueDialog(range: RangeMarker) {
-        val data = calculateData(range)
+        val data = createIssue(range)
         CreateIssueDialog(project, scope, collectAccounts(), collectRepositories(), data).show()
     }
 
-    suspend fun updateDocumentText(range: RangeMarker, issue: GithubIssue) {
+    suspend fun updateDocumentText(toDoItem: ToDoItem, issue: GithubIssue) {
         @Suppress("UnstableApiUsage")
         writeAction {
             executeCommand(project, TodosaurusBundle.message("command.update.todo.item")) {
-                val document = range.document
-                val prevText = document.getText(range.textRange)
-                val newText = prevText.replace(newToDoItemPattern, formReadyToDoPattern(issue.number))
-                document.replaceString(range.startOffset, range.endOffset, newText)
+                toDoItem.markAsReady(issue.number)
             }
         }
     }
 
-    private fun calculateData(range: RangeMarker): CreateIssueModel {
-        val text = range.document.getText(range.textRange)
-        val title = text.substringBefore('\n')
-        val description =
-            (if (text.contains("\n")) text.substringAfter('\n') + "\n" else "") +
-                issueDescriptionTemplate
-        return CreateIssueModel(null, null, title, description, range)
+    private fun createIssue(range: RangeMarker): CreateIssueModel {
+        val toDoItem = ToDoItem(range)
+        return CreateIssueModel(null, null, toDoItem)
     }
 
     private fun collectAccounts(): Array<GithubAccount> {

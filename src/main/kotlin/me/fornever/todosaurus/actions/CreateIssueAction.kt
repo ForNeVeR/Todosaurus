@@ -9,6 +9,7 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.editor.RangeMarker
 import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.ui.tree.TreeUtil
+import me.fornever.todosaurus.services.ToDoItem
 import me.fornever.todosaurus.services.ToDoService
 
 class CreateIssueAction : AnAction() {
@@ -26,7 +27,7 @@ class CreateIssueAction : AnAction() {
         e.presentation.isVisible = true
 
         val range = e.getToDoTextRange()
-        e.presentation.isEnabled = range != null && ToDoService.getInstance(project).hasNewToDoItem(range)
+        e.presentation.isEnabled = range != null && ToDoItem(range).isNew()
     }
 
     override fun actionPerformed(e: AnActionEvent) {

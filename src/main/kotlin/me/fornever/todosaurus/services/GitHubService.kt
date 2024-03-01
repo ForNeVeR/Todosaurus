@@ -39,13 +39,13 @@ class GitHubService(private val project: Project) {
         val executor = GithubApiRequestExecutor.Factory.getInstance().create(token)
 
         val issueBody = readAction {
-            replacePatterns(model.description, repository, model.textRangeMarker)
+            replacePatterns(repository, model.toDoItem)
         }
         val request = GithubApiRequests.Repos.Issues.create(
             GithubServerPath.DEFAULT_SERVER,
             repository.owner,
             repository.name,
-            model.title,
+            model.toDoItem.title,
             issueBody
         )
 
@@ -59,21 +59,21 @@ class GitHubService(private val project: Project) {
     }
 
     @RequiresReadLock
-    private fun replacePatterns(description: String, repository: RepositoryModel, rangeMarker: RangeMarker): String {
+    private fun replacePatterns(repository: RepositoryModel, toDoItem: ToDoItem): String {
         val rootPath = repository.rootPath
-        val filePath = FileDocumentManager.getInstance().getFile(rangeMarker.document)?.toNioPath()
+        val filePath = FileDocumentManager.getInstance().getFile(toDoItem.range.document)?.toNioPath()
             ?: error("Cannot find file for the requested document.")
         val path = FileUtil.getRelativePath(rootPath.toFile(), filePath.toFile())?.replace('\\', '/')
             ?: error("Cannot calculate relative path between \"${repository.rootPath}\" and \"${filePath}\".")
 
         val currentCommit = getCurrentCommitHash(repository)
-        val startLineNumber = rangeMarker.document.getLineNumber(rangeMarker.startOffset) + 1
-        val endLineNumber = rangeMarker.document.getLineNumber(rangeMarker.endOffset) + 1
+        val startLineNumber = toDoItem.range.document.getLineNumber(toDoItem.range.startOffset) + 1
+        val endLineNumber = toDoItem.range.document.getLineNumber(toDoItem.range.endOffset) + 1
         val lineDesignator = if (startLineNumber == endLineNumber) "L$startLineNumber" else "L$startLineNumber-L$endLineNumber"
         val linkText =
             "https://github.com/${repository.owner}/${repository.name}/blob/$currentCommit/$path#$lineDesignator"
 
-        return description.replace(GITHUB_CODE_URL_REPLACEMENT, linkText)
+        return toDoItem.description.replace(GITHUB_CODE_URL_REPLACEMENT, linkText)
     }
 
     private fun getCurrentCommitHash(model: RepositoryModel): String {
