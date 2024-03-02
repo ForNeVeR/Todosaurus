@@ -6,7 +6,7 @@ class ToDoItem(val range: RangeMarker) {
     private companion object {
         @JvmStatic
         val newItemPattern: Regex
-            = Regex("\\b(?i)TODO(?-i)\\b:?(?!\\[.*\\])") // https://regex101.com/r/lDDqm7/1
+            = Regex("\\b(?i)TODO(?-i)\\b:?(?!\\[.*?])") // https://regex101.com/r/lDDqm7/2
 
         @JvmStatic
         val issueDescriptionTemplate = """
