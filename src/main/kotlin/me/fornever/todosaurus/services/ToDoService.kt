@@ -34,7 +34,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         @Suppress("UnstableApiUsage")
         writeAction {
             executeCommand(project, TodosaurusBundle.message("command.update.todo.item")) {
-                toDoItem.markAsReady(issue.number)
+                toDoItem.markAsReported(issue.number)
             }
         }
     }

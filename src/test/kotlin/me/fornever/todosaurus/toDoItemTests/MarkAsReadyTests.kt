@@ -1,7 +1,7 @@
 package me.fornever.todosaurus.toDoItemTests
 
-import me.fornever.todosaurus.FakeRangeMarker
 import me.fornever.todosaurus.services.ToDoItem
+import me.fornever.todosaurus.testFramework.FakeRangeMarker
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -33,7 +33,7 @@ class MarkAsReadyTests(private val newItem: String) {
         val sut = ToDoItem(FakeRangeMarker(newItem))
 
         // Act
-        sut.markAsReady(1)
+        sut.markAsReported(1)
 
         // Assert
         assertTrue(sut.range.document.text.contains(expected))
@@ -45,7 +45,7 @@ class MarkAsReadyTests(private val newItem: String) {
         val sut = ToDoItem(FakeRangeMarker(newItem))
 
         // Act
-        sut.markAsReady(1)
+        sut.markAsReported(1)
 
         // Assert
         assertFalse(sut.isNew())

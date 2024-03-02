@@ -1,4 +1,4 @@
-package me.fornever.todosaurus
+package me.fornever.todosaurus.testFramework
 
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.RangeMarker
