@@ -23,18 +23,18 @@ class ToDoItem(val range: RangeMarker) {
             .getText(range.textRange)
 
     val title: String
-        = text
+        get() = text
             .substringBefore('\n')
             .replace(newItemPattern, "")
             .trim()
 
-    val description: String =
-        (if (text.contains("\n")) text.substringAfter('\n') + "\n" else "") +
+    val description: String
+        get() = (if (text.contains("\n")) text.substringAfter('\n') + "\n" else "") +
             issueDescriptionTemplate
 
     @RequiresWriteLock
     fun markAsReported(issueNumber: Long) {
-        if (!isNew())
+        if (!isNew)
             return
 
         val previousText = text
@@ -42,5 +42,6 @@ class ToDoItem(val range: RangeMarker) {
         range.document.replaceString(range.startOffset, range.endOffset, newText)
     }
 
-    fun isNew(): Boolean = newItemPattern.containsMatchIn(text)
+    val isNew: Boolean
+        get() = newItemPattern.containsMatchIn(text)
 }

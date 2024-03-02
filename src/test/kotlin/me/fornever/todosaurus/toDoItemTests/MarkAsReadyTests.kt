@@ -48,6 +48,6 @@ class MarkAsReadyTests(private val newItem: String) {
         sut.markAsReported(1)
 
         // Assert
-        assertFalse(sut.isNew())
+        assertFalse(sut.isNew)
     }
 }

@@ -31,6 +31,6 @@ class IsNewTests(private val newItem: String) {
         val sut = ToDoItem(FakeRangeMarker(newItem))
 
         // Act & Assert
-        assertTrue(sut.isNew())
+        assertTrue(sut.isNew)
     }
 }

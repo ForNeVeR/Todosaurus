@@ -27,7 +27,7 @@ class CreateIssueAction : AnAction() {
         e.presentation.isVisible = true
 
         val range = e.getToDoTextRange()
-        e.presentation.isEnabled = range != null && ToDoItem(range).isNew()
+        e.presentation.isEnabled = range != null && ToDoItem(range).isNew
     }
 
     override fun actionPerformed(e: AnActionEvent) {

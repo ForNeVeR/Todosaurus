@@ -25,6 +25,6 @@ class IsReadyTests(private val readyItem: String) {
         val sut = ToDoItem(FakeRangeMarker(readyItem))
 
         // Act & Assert
-		Assert.assertFalse(sut.isNew())
+		Assert.assertFalse(sut.isNew)
     }
 }
