@@ -1,7 +1,6 @@
 package me.fornever.todosaurus.services
 
 import com.intellij.dvcs.repo.VcsRepositoryManager
-import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.RangeMarker
@@ -11,21 +10,30 @@ import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.util.concurrency.annotations.RequiresReadLock
 import git4idea.repo.GitRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import me.fornever.todosaurus.models.CreateIssueModel
 import me.fornever.todosaurus.models.RepositoryModel
-import me.fornever.todosaurus.services.env.GitHubTokenStorage
-import me.fornever.todosaurus.services.env.IdeaGitHubTokenStorage
-import org.jetbrains.plugins.github.api.GithubApiRequestExecutor
+import me.fornever.todosaurus.services.env.*
 import org.jetbrains.plugins.github.api.GithubApiRequests
 import org.jetbrains.plugins.github.api.GithubServerPath
 import org.jetbrains.plugins.github.api.data.GithubIssue
 
 @Service(Service.Level.PROJECT)
-class GitHubService(private val project: Project, private val gitHubTokenStorage: GitHubTokenStorage) {
+class GitHubService(
+    private val project: Project,
+    private val globalLock: GlobalLock,
+    private val gitHubTokenStorage: GitHubTokenStorage,
+    private val gitHubApi: GitHubApi,
+    private val fileDocumentManager: Lazy<FileDocumentManager>
+) {
 
-    constructor(project: Project) : this(project, IdeaGitHubTokenStorage.getInstance(project))
+    @Suppress("unused") // used by IntelliJ service system
+    constructor(project: Project) : this(
+        project,
+        IntelliJGlobalLock.getInstance(),
+        IntelliJGitHubTokenStorage.getInstance(project),
+        IntelliJGitHubApi.getInstance(),
+        lazy { FileDocumentManager.getInstance() }
+    )
 
     companion object {
         const val GITHUB_CODE_URL_REPLACEMENT = "\${GITHUB_CODE_URL}"
@@ -37,12 +45,10 @@ class GitHubService(private val project: Project, private val gitHubTokenStorage
         val repository = model.selectedRepository ?: error("Repository is not selected.")
         val account = model.selectedAccount ?: error("Account is not selected.")
 
-        val token = gitHubTokenStorage.getOrRequestToken(account) ?: error("Token is not found.")
-        val executor = GithubApiRequestExecutor.Factory.getInstance().create(token)
-
-        val issueBody = readAction {
+        val issueBody = globalLock.withReadLock {
             replacePatterns(model.description, repository, model.textRangeMarker)
         }
+        val token = gitHubTokenStorage.getOrRequestToken(account) ?: error("Token is not found.")
         val request = GithubApiRequests.Repos.Issues.create(
             GithubServerPath.DEFAULT_SERVER,
             repository.owner,
@@ -50,16 +56,13 @@ class GitHubService(private val project: Project, private val gitHubTokenStorage
             model.title,
             issueBody
         )
-
-        return withContext(Dispatchers.IO) {
-            executor.execute(request)
-        }
+        return gitHubApi.createIssue(token, request)
     }
 
     @RequiresReadLock
     private fun replacePatterns(description: String, repository: RepositoryModel, rangeMarker: RangeMarker): String {
         val rootPath = repository.rootPath
-        val filePath = FileDocumentManager.getInstance().getFile(rangeMarker.document)?.toNioPath()
+        val filePath = fileDocumentManager.value.getFile(rangeMarker.document)?.toNioPath()
             ?: error("Cannot find file for the requested document.")
         val path = FileUtil.getRelativePath(rootPath.toFile(), filePath.toFile())?.replace('\\', '/')
             ?: error("Cannot calculate relative path between \"${repository.rootPath}\" and \"${filePath}\".")

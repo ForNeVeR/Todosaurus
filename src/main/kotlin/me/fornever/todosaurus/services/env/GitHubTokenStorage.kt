@@ -11,10 +11,10 @@ interface GitHubTokenStorage {
 }
 
 @Service(Service.Level.PROJECT)
-class IdeaGitHubTokenStorage(private val project: Project) : GitHubTokenStorage {
+class IntelliJGitHubTokenStorage(private val project: Project) : GitHubTokenStorage {
 
     companion object {
-        fun getInstance(project: Project): IdeaGitHubTokenStorage = project.service()
+        fun getInstance(project: Project): IntelliJGitHubTokenStorage = project.service()
     }
 
     override fun getOrRequestToken(account: GithubAccount): String? {
