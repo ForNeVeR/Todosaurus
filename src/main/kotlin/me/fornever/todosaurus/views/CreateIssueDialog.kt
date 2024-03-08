@@ -39,10 +39,10 @@ class CreateIssueDialog(
         init()
     }
 
-    lateinit var repositoryChooser: RepositoryChooser
-    lateinit var accountChooser: GitHubAccountChooser
-    lateinit var issueTitleField: JBTextField
-    lateinit var issueDescriptionField: JBTextArea
+    private lateinit var repositoryChooser: RepositoryChooser
+    private lateinit var accountChooser: GitHubAccountChooser
+    private lateinit var issueTitleField: JBTextField
+    private lateinit var issueDescriptionField: JBTextArea
 
     override fun createCenterPanel() = panel {
         row(TodosaurusBundle.message("createIssueDialog.chooseRepository")) {
