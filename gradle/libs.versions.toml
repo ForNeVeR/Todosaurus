@@ -1,7 +1,7 @@
 [versions]
 kotlin = "1.9.24"
 changelog = "2.2.0"
-qodana = "0.1.13"
+qodana = "2024.1.5"
 
 [plugins]
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
