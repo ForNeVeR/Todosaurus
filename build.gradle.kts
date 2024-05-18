@@ -40,12 +40,17 @@ dependencies {
         instrumentationTools()
 
         testFramework(TestFrameworkType.Platform.JUnit4)
+
+        pluginVerifier()
     }
 }
 
 intellijPlatform {
     pluginConfiguration {
         name = properties("pluginName")
+    }
+    verifyPlugin.ides {
+        recommended()
     }
 }
 
