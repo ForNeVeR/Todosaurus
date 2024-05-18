@@ -34,8 +34,11 @@ kotlin {
 dependencies {
     intellijPlatform {
         intellijIdeaCommunity(properties("platformVersion"))
-//        bundledPlugin("Git4Idea")
-//        bundledPlugin("org.jetbrains.plugins.github")
+        bundledPlugin("Git4Idea")
+        bundledPlugin("org.jetbrains.plugins.github")
+
+        instrumentationTools()
+
         testFramework(TestFrameworkType.Platform.JUnit4)
     }
 }
