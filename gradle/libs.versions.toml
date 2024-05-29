@@ -1,11 +1,12 @@
 [versions]
-kotlin = "2.0.0"
 changelog = "2.2.0"
 qodana = "0.1.13"
 
 [plugins]
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
 gradleIntelliJPlatformPlugin = "org.jetbrains.intellij.platform:2.0.0-beta3"
-kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 qodana = { id = "org.jetbrains.qodana", version.ref = "qodana" }
 gradleJvmWrapper = { id = "me.filippov.gradle.jvm.wrapper", version = "0.14.0" }
+
+# https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#kotlin-standard-library
+kotlin = "org.jetbrains.kotlin.jvm:1.9.24"
