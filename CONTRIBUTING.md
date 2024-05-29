@@ -48,4 +48,10 @@ Development
 
 It is recommended to get a JDK of the required version separately and set it up as the project JDK.
 
+Upgrade IDE Version
+-------------------
+To upgrade the IDE version targeted by the plugin, follow these steps.
+1. Update the `platformVersion` in `gradle.properties`.
+2. Update the `kotlin` version in the `plugins` section of the `gradle/libs.versions.toml` (see the comment for the link there).
+
 [gradle-jvm-wrapper]: https://github.com/mfilippov/gradle-jvm-wrapper
