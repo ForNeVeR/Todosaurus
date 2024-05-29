@@ -61,10 +61,6 @@ changelog {
 }
 
 tasks {
-    wrapper {
-        gradleVersion = properties("gradleVersion").get()
-    }
-
     patchPluginXml {
         version = properties("pluginVersion")
         untilBuild = properties("pluginUntilBuild")
