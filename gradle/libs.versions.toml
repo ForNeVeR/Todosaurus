@@ -1,6 +1,6 @@
 [versions]
 changelog = "2.2.1"
-qodana = "2024.1.5"
+qodana = "2024.1.7"
 
 [plugins]
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
