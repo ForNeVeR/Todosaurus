@@ -1,5 +1,5 @@
 [versions]
-changelog = "2.2.0"
+changelog = "2.2.1"
 qodana = "2024.1.5"
 
 [plugins]
