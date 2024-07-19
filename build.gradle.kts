@@ -43,6 +43,8 @@ dependencies {
 
         pluginVerifier()
     }
+
+    testImplementation(libs.openTest4J)
 }
 
 intellijPlatform {
