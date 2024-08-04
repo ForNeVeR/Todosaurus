@@ -1,15 +1,16 @@
 [versions]
 changelog = "2.2.1"
+ideaSdk = "2024.1"
+ideaSdkPreview = "242.20224-EAP-CANDIDATE-SNAPSHOT"
 qodana = "2024.1.5"
 
 [libraries]
+junit = "junit:junit:4.13.2"
 openTest4J = "org.opentest4j:opentest4j:1.3.0"
 
 [plugins]
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
 gradleIntelliJPlatformPlugin = "org.jetbrains.intellij.platform:2.0.0"
-qodana = { id = "org.jetbrains.qodana", version.ref = "qodana" }
 gradleJvmWrapper = { id = "me.filippov.gradle.jvm.wrapper", version = "0.14.0" }
-
-# https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#kotlin-standard-library
 kotlin = "org.jetbrains.kotlin.jvm:1.9.24"
+qodana = { id = "org.jetbrains.qodana", version.ref = "qodana" }

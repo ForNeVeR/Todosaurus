@@ -33,7 +33,7 @@ kotlin {
 
 dependencies {
     intellijPlatform {
-        intellijIdeaCommunity(properties("platformVersion"), useInstaller = false)
+        intellijIdeaCommunity(libs.versions.ideaSdk)
         bundledPlugin("Git4Idea")
         bundledPlugin("org.jetbrains.plugins.github")
 
@@ -44,6 +44,7 @@ dependencies {
         pluginVerifier()
     }
 
+    testImplementation(libs.junit)
     testImplementation(libs.openTest4J)
 }
 
@@ -102,4 +103,14 @@ tasks {
         // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
         channels = properties("pluginVersion").map { listOf(it.substringAfter('-').substringBefore('.').ifEmpty { "default" }) }
     }
+
+    val testIdeaPreview by intellijPlatformTesting.testIde.registering {
+        version = libs.versions.ideaSdkPreview
+        useInstaller = false
+        task {
+            enabled = libs.versions.ideaSdk.get() != libs.versions.ideaSdkPreview.get()
+        }
+    }
+
+    check { dependsOn(testIdeaPreview.name) }
 }
