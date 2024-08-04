@@ -1,0 +1,35 @@
+name: "Dependency Checker"
+on:
+  schedule:
+    - cron: '0 0 * * *' # Every day
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  main:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - name: "Check out the sources"
+        uses: actions/checkout@v4
+
+      - id: update
+        uses: ForNeVeR/intellij-updater@v1
+        name: "Update the dependency versions"
+        with:
+          config-file: ./intellij-updater.json # the default
+
+      - if: steps.update.outputs.has-changes == 'true' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        name: "Create a PR"
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: ${{ steps.update.outputs.branch-name }}
+          author: "Todosaurus Automation <friedrich@fornever.me>"
+          commit-message: ${{ steps.update.outputs.commit-message }}
+          title: ${{ steps.update.outputs.pr-title }}
+          body-path: ${{ steps.update.outputs.pr-body-path }}
