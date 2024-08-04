@@ -33,13 +33,13 @@ kotlin {
 
 dependencies {
     intellijPlatform {
-        intellijIdeaCommunity(properties("platformVersion"))
+        intellijIdeaCommunity(properties("platformVersion"), useInstaller = false)
         bundledPlugin("Git4Idea")
         bundledPlugin("org.jetbrains.plugins.github")
 
         instrumentationTools()
 
-        testFramework(TestFrameworkType.Platform.JUnit4)
+        testFramework(TestFrameworkType.Bundled)
 
         pluginVerifier()
     }
