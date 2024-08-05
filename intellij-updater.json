@@ -11,7 +11,7 @@
         "versionFlavor": "eap"
     }, {
         "file": "gradle.properties",
-        "field": "untilBuildVersion",
+        "field": "pluginUntilBuild",
         "kind": "intellij-idea-community",
         "versionFlavor": "release",
         "augmentation": "nextMajor"
