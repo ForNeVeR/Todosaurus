@@ -21,8 +21,6 @@ jobs:
       - id: update
         uses: ForNeVeR/intellij-updater@v1
         name: "Update the dependency versions"
-        with:
-          config-file: ./intellij-updater.json # the default
 
       - if: steps.update.outputs.has-changes == 'true' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
         name: "Create a PR"
