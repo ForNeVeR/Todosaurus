@@ -12,6 +12,10 @@ on:
 
 jobs:
   main:
+    permissions:
+      contents: write
+      pull-requests: write
+
     runs-on: ubuntu-22.04
     timeout-minutes: 15
     steps:
