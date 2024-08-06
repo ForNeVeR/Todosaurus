@@ -1,7 +1,7 @@
 [versions]
-ideaSdk = "2024.1"
-ideaSdkPreview = "242.20224-EAP-CANDIDATE-SNAPSHOT"
-kotlin = "1.9.24"
+ideaSdk = "2024.1.5"
+ideaSdkPreview = "242.20224.159-EAP-SNAPSHOT"
+kotlin = "1.9.22"
 
 [libraries]
 junit = "junit:junit:4.13.2"
