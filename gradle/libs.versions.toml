@@ -1,6 +1,6 @@
 [versions]
-ideaSdk = "2024.2.0.2"
-ideaSdkPreview = "2024.2.0.2"
+ideaSdk = "2024.2.1"
+ideaSdkPreview = "2024.2.1"
 kotlin = "1.9.24"
 
 [libraries]
