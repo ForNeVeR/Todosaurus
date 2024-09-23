@@ -2,6 +2,9 @@ Todosaurus Changelog
 ====================
 
 ## [Unreleased]
+### Changed
+- **Requirement update:** from now on, the plugin only supports IntelliJ 2024.2 and later.
+- [#17](https://github.com/ForNeVeR/Todosaurus/issues/17): do not add "TODO:" into the default issue title.
 
 ## [1.0.1] - 2024-02-27
 ### Changed
