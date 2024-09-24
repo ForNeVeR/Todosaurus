@@ -14,8 +14,8 @@ plugins {
     alias(libs.plugins.gradleJvmWrapper)
 }
 
-group = properties("pluginGroup").get()
-version = properties("pluginVersion").get()
+group = providers.gradleProperty("pluginGroup").get()
+version = providers.gradleProperty("pluginVersion").get()
 
 // Configure project's dependencies
 repositories {
@@ -60,13 +60,13 @@ intellijPlatform {
 // Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
 changelog {
     groups.empty()
-    repositoryUrl = properties("pluginRepositoryUrl")
+    repositoryUrl = providers.gradleProperty("pluginRepositoryUrl").get()
 }
 
 tasks {
     patchPluginXml {
-        version = properties("pluginVersion")
-        untilBuild = properties("pluginUntilBuild")
+        version = providers.gradleProperty("pluginVersion").get()
+        untilBuild = providers.gradleProperty("pluginUntilBuild").get()
 
         // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
         pluginDescription = providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
