@@ -52,7 +52,7 @@ intellijPlatform {
     pluginConfiguration {
         name = properties("pluginName")
     }
-    verifyPlugin.ides {
+    pluginVerification.ides {
         recommended()
     }
 }
