@@ -2,6 +2,7 @@ package me.fornever.todosaurus.services
 
 import com.intellij.dvcs.repo.VcsRepositoryManager
 import com.intellij.ide.BrowserUtil
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.application.writeAction
 import com.intellij.openapi.command.executeCommand
 import com.intellij.openapi.components.Service
@@ -40,11 +41,17 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         // TODO: We need to decide which repository and account to use to open the link
         val repository = collectRepositories().firstOrNull()
         val account = collectAccounts().firstOrNull()
+        val toDoItem = ToDoItem(range)
 
-        val data = GetIssueModel(repository, account, ToDoItem(range))
+        try {
+            val issueNumber = readAction { toDoItem.issueNumber } ?: error("Issue number must be specified.")
 
-        val issue = try {
-            GitHubService.getInstance(project).getIssue(data) ?: error("Issue with number \"${data.toDoItem.issueNumber}\" not found")
+            val data = GetIssueModel(repository, account, issueNumber)
+            val issue = GitHubService.getInstance(project).getIssue(data) ?: error("Issue with number \"${issueNumber}\" not found.")
+
+            withContext(Dispatchers.IO) {
+                BrowserUtil.browse(issue.htmlUrl, project)
+            }
         }
         catch (exception: Exception)
         {
@@ -52,12 +59,6 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
                 .warn(exception)
 
             Notifications.OpenIssueInBrowser.failed(exception, project)
-
-            return
-        }
-
-        withContext(Dispatchers.IO) {
-            BrowserUtil.browse(issue.htmlUrl, project)
         }
     }
 
