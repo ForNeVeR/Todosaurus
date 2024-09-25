@@ -13,6 +13,7 @@ import git4idea.repo.GitRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.fornever.todosaurus.models.CreateIssueModel
+import me.fornever.todosaurus.models.GetIssueModel
 import me.fornever.todosaurus.models.RepositoryModel
 import org.jetbrains.plugins.github.api.GithubApiRequestExecutor
 import org.jetbrains.plugins.github.api.GithubApiRequests
@@ -30,6 +31,22 @@ class GitHubService(private val project: Project) {
         fun getInstance(project: Project): GitHubService = project.service()
     }
 
+    suspend fun getIssue(model: GetIssueModel): GithubIssue? {
+        val repository = model.repository ?: error("Repository for this project not found.")
+        val issueNumber = readAction {
+            model.toDoItem.issueNumber?.toString() ?: error("Issue number must be specified.")
+        }
+
+        val executorFactory = GithubApiRequestExecutor.Factory.getInstance()
+        val executor = if (model.account != null) executorFactory.create(getApiToken(model.account)) else executorFactory.create()
+
+        val request = GithubApiRequests.Repos.Issues.get(GithubServerPath.DEFAULT_SERVER, repository.owner, repository.name, issueNumber)
+
+        return withContext(Dispatchers.IO) {
+            executor.execute(request)
+        }
+    }
+
     suspend fun createIssue(model: CreateIssueModel): GithubIssue {
         val repository = model.selectedRepository ?: error("Repository is not selected.")
         val account = model.selectedAccount ?: error("Account is not selected.")
@@ -40,6 +57,7 @@ class GitHubService(private val project: Project) {
         val issueBody = readAction {
             replacePatterns(repository, model.toDoItem)
         }
+
         val request = GithubApiRequests.Repos.Issues.create(
             GithubServerPath.DEFAULT_SERVER,
             repository.owner,
