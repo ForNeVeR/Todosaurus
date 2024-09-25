@@ -1,18 +1,24 @@
 package me.fornever.todosaurus.services
 
 import com.intellij.dvcs.repo.VcsRepositoryManager
+import com.intellij.ide.BrowserUtil
 import com.intellij.openapi.application.writeAction
 import com.intellij.openapi.command.executeCommand
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.editor.RangeMarker
 import com.intellij.openapi.project.Project
 import git4idea.repo.GitRepository
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import me.fornever.todosaurus.TodosaurusBundle
 import me.fornever.todosaurus.models.CreateIssueModel
+import me.fornever.todosaurus.models.GetIssueModel
 import me.fornever.todosaurus.models.RepositoryModel
 import me.fornever.todosaurus.views.CreateIssueDialog
+import me.fornever.todosaurus.views.Notifications
 import org.jetbrains.plugins.github.api.data.GithubIssue
 import org.jetbrains.plugins.github.authentication.GHAccountsUtil
 import org.jetbrains.plugins.github.authentication.accounts.GithubAccount
@@ -28,6 +34,31 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
     fun showCreateIssueDialog(range: RangeMarker) {
         val data = createIssue(range)
         CreateIssueDialog(project, scope, collectAccounts(), collectRepositories(), data).show()
+    }
+
+    suspend fun openIssueInBrowser(range: RangeMarker) {
+        // TODO: We need to decide which repository and account to use to open the link
+        val repository = collectRepositories().firstOrNull()
+        val account = collectAccounts().firstOrNull()
+
+        val data = GetIssueModel(repository, account, ToDoItem(range))
+
+        val issue = try {
+            GitHubService.getInstance(project).getIssue(data) ?: error("Issue with number \"${data.toDoItem.issueNumber}\" not found")
+        }
+        catch (exception: Exception)
+        {
+            thisLogger()
+                .warn(exception)
+
+            Notifications.OpenIssueInBrowser.failed(exception, project)
+
+            return
+        }
+
+        withContext(Dispatchers.IO) {
+            BrowserUtil.browse(issue.htmlUrl, project)
+        }
     }
 
     suspend fun updateDocumentText(toDoItem: ToDoItem, issue: GithubIssue) {
