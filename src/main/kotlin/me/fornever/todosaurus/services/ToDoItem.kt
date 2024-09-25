@@ -1,6 +1,7 @@
 package me.fornever.todosaurus.services
 
 import com.intellij.openapi.editor.RangeMarker
+import com.intellij.util.concurrency.annotations.RequiresReadLock
 import com.intellij.util.concurrency.annotations.RequiresWriteLock
 
 class ToDoItem(val range: RangeMarker) {
@@ -31,6 +32,21 @@ class ToDoItem(val range: RangeMarker) {
     val description: String
         get() = (if (text.contains("\n")) text.substringAfter('\n') + "\n" else "") +
             issueDescriptionTemplate
+
+    @get:RequiresReadLock
+    val issueNumber: Long?
+        get() {
+            if (isNew)
+                return null
+
+            val number = text
+                .substringAfter("[")
+                .substringBefore("]")
+                .replace("#", "")
+                .takeIf { it.all { symbol -> symbol.isDigit() } }
+
+            return number?.toLongOrNull()
+        }
 
     @RequiresWriteLock
     fun markAsReported(issueNumber: Long) {
