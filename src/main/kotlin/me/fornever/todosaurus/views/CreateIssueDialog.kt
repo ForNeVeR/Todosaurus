@@ -94,7 +94,7 @@ class CreateIssueDialog(
                 isInProgress = true
                 try {
                     val newIssue = GitHubService.getInstance(project).createIssue(model)
-                    Notifications.issueCreated(newIssue, project)
+                    Notifications.CreateIssue.success(newIssue, project)
                     ToDoService.getInstance(project).updateDocumentText(model.toDoItem, newIssue)
                     withUiContext {
                         doOKAction()
