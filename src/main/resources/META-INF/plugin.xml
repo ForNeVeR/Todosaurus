@@ -13,6 +13,9 @@
         <action id="CreateIssue" class="me.fornever.todosaurus.actions.CreateIssueAction">
             <add-to-group group-id="VersionControlsGroup" /> <!-- TODO[#18]: This is a temporary solution until the TODO tool window supports a proper action group -->
         </action>
+        <action id="OpenIssueInBrowser" class="me.fornever.todosaurus.actions.OpenIssueInBrowserAction">
+            <add-to-group group-id="VersionControlsGroup" /> <!-- TODO[#18]: This is a temporary solution until the TODO tool window supports a proper action group -->
+        </action>
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
