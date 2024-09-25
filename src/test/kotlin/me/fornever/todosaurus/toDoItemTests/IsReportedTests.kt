@@ -9,7 +9,7 @@ import org.junit.runners.Parameterized
 import org.junit.runners.Parameterized.Parameters
 
 @RunWith(Parameterized::class)
-class IsReadyTests(private val readyItem: String) {
+class IsReportedTests(private val readyItem: String) {
     companion object {
         @JvmStatic
         @Parameters
@@ -20,7 +20,7 @@ class IsReadyTests(private val readyItem: String) {
     }
 
     @Test
-    fun `ToDo item should be ready`() {
+    fun `ToDo item should be reported`() {
         // Arrange
         val sut = ToDoItem(FakeRangeMarker(readyItem))
 
