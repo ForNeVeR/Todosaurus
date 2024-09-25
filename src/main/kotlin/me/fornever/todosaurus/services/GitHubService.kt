@@ -34,7 +34,7 @@ class GitHubService(private val project: Project) {
     suspend fun getIssue(model: GetIssueModel): GithubIssue? {
         val repository = model.repository ?: error("Repository for this project not found.")
         val issueNumber = readAction {
-            model.toDoItem.issueNumber?.toString() ?: error("Issue number must be specified.")
+            model.issueNumber.toString()
         }
 
         val executorFactory = GithubApiRequestExecutor.Factory.getInstance()
