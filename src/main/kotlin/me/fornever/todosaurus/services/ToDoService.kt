@@ -38,7 +38,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
     }
 
     suspend fun openIssueInBrowser(range: RangeMarker) {
-        // TODO: We need to decide which repository and account to use to open the link
+        // TODO[#91]: We need to decide which repository and account to use to open the link
         val repository = collectRepositories().firstOrNull()
         val account = collectAccounts().firstOrNull()
         val toDoItem = ToDoItem(range)
