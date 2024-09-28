@@ -37,7 +37,7 @@ if ($issues) {
     if ($localTreeHash -eq $remoteTreeHash) {
         Write-Output "Local tree hash is the same as the remote tree hash: `"$localTreeHash`"."
     } else {
-        Write-Output "Local tree hash `"$localTreeHash`" is not the same as the remote tree hash `"$remoteTreeHash`"."
+        Write-Output "Local tree hash `"$localTreeHash`" is not the same as the remote tree hash `"$remoteTreeHash`". Skipping the branch push."
 
         Write-Output 'Force-pushing the branch…'
         git push --force --set-upstream origin $BranchName
