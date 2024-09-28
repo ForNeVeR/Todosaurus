@@ -21,7 +21,7 @@ git switch --force-create $BranchName
 if (!$?) { throw "Error running git switch: $LASTEXITCODE." }
 git commit --all --message $CommitMessage
 if (!$?) { throw "Error running git commit: $LASTEXITCODE." }
-git push --set-upstream origin $BranchName
+git push --force --set-upstream origin $BranchName
 if (!$?) { throw "Error running git push: $LASTEXITCODE." }
 
 Write-Output 'Creating a pull request…'
