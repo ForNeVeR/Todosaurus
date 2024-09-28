@@ -29,7 +29,7 @@ jobs:
       - if: steps.update.outputs.has-changes == 'true' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
         name: "Create a PR"
         shell: pwsh
-        run: ./scripts/Create-PR.ps1 -BranchName $env:BRANCH_NAME -CommitMessage $env:COMMIT_MESSAGE -PrTitle $env:PR_TITLE -PrBodyPath $env:PR_BODY_PATH
+        run: ./scripts/New-PR.ps1 -BranchName $env:BRANCH_NAME -CommitMessage $env:COMMIT_MESSAGE -PrTitle $env:PR_TITLE -PrBodyPath $env:PR_BODY_PATH
         env:
           GITHUB_TOKEN: ${{ secrets.PR_TOKEN }}
           BRANCH_NAME: ${{ steps.update.outputs.branch-name }}
