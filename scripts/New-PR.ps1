@@ -24,9 +24,16 @@ if (!$?) { throw "Error running git commit: $LASTEXITCODE." }
 git push --force --set-upstream origin $BranchName
 if (!$?) { throw "Error running git push: $LASTEXITCODE." }
 
-Write-Output 'Creating a pull request…'
-gh pr create `
-    --title $PrTitle `
-    --body-file $PrBodyPath `
-    --head $BranchName
-if (!$?) { throw "Error running gh pr create: $LASTEXITCODE." }
+Write-Output 'Checking if a PR already exists…'
+[array] $issues = gh pr list --head $BranchName --json url | ConvertFrom-Json
+if (!$?) { throw "Error running gh pr list: $LASTEXITCODE." }
+if ($issues) {
+    Write-Output "PR already exists: $($issues[0])."
+} else {
+    Write-Output 'Creating a pull request…'
+    gh pr create `
+        --title $PrTitle `
+        --body-file $PrBodyPath `
+        --head $BranchName
+    if (!$?) { throw "Error running gh pr create: $LASTEXITCODE." }
+}
