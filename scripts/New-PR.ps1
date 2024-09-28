@@ -44,8 +44,8 @@ if ($issues) {
         if (!$?) { throw "Error running git push: $LASTEXITCODE." }
     }
 } else {
-    Write-Output 'Pushing the branch…'
-    git push --set-upstream origin $BranchName
+    Write-Output 'Force-pushing the branch…'
+    git push --force --set-upstream origin $BranchName
     if (!$?) { throw "Error running git push: $LASTEXITCODE." }
 
     Write-Output 'Creating a pull request…'
