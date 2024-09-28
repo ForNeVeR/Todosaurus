@@ -16,7 +16,6 @@ fun AnActionEvent.getToDoTextRange(): RangeMarker? {
 
 fun AnActionEvent.tryActivateThisAction(): Boolean {
     val toDoPanel = getData(TodoPanel.TODO_PANEL_DATA_KEY)
-    val project = project
 
     if (toDoPanel == null || project == null) {
         presentation.isEnabledAndVisible = false
