@@ -26,7 +26,7 @@ Write-Output 'Checking if a PR already exists…'
 [array] $issues = gh pr list --head $BranchName --json url | ConvertFrom-Json
 if (!$?) { throw "Error running gh pr list: $LASTEXITCODE." }
 if ($issues) {
-    Write-Output "PR already exists: $($issues[0])."
+    Write-Output "PR already exists: $($issues[0].url)."
     Write-Output 'Comparing the local branch with the server one…'
     $localTreeHash = git rev-parse 'HEAD^{tree}'
     if (!$?) { throw "Error running git rev-parse: $LASTEXITCODE." }
