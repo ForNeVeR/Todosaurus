@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Added
+- [#21](https://github.com/ForNeVeR/Todosaurus/issues/21): an action to open the issue page corresponding to the selected TODO in the tracker. Thanks to @y0ung3r.
+### Fixed
+- Publication to the default Marketplace channel was broken.
+
 ## [1.1.0] - 2024-09-24
 
 ### Changed
