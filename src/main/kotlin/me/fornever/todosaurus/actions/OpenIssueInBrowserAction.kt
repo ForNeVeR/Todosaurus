@@ -3,16 +3,15 @@ package me.fornever.todosaurus.actions
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import kotlinx.coroutines.*
-import me.fornever.todosaurus.TodosaurusBundle
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import me.fornever.todosaurus.actions.extensions.getToDoTextRange
 import me.fornever.todosaurus.actions.extensions.tryActivateThisAction
 import me.fornever.todosaurus.services.ToDoItem
 import me.fornever.todosaurus.services.ToDoService
 
-class OpenIssueInBrowserAction : AnAction(
-    TodosaurusBundle.message("notification.openIssueInBrowser.action.name")
-) {
+class OpenIssueInBrowserAction : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
