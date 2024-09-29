@@ -174,3 +174,11 @@ jobs:
         with:
           name: pluginVerifier-result
           path: ${{ github.workspace }}/build/reports/pluginVerifier
+
+  licenses:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out the sources
+        uses: actions/checkout@v4
+      - name: REUSE license check
+        uses: fsfe/reuse-action@v4
