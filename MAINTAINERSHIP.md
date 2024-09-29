@@ -4,13 +4,15 @@ Maintainer Guide
 Publish a Release
 -----------------
 To publish a new release, follow these steps:
-1. Update the `LICENSE.md` file, if required.
-2. Prepare an `[Unreleased]` section in the `CHANGELOG.md` file.
-3. Update the version in the `gradle.properties` file.
-4. Merge the changes via a GitHub PR.
-5. Go to the Releases **section** on GitHub, press **Publish a Release** for the latest release draft.
 
-   The GitHub actions will manage the rest and upload the plugin to the Marketplace.
+1. Update the copyright year in the `LICENSE.md`, if required.
+2. Choose the new version according to [Semantic Versioning][semver]. It should consist of three numbers (i.e. `1.0.0`).
+3. Update the version in the `gradle.properties` file.
+4. Make sure there's a properly formed version entry in the `CHANGELOG.md`.
+5. Merge these changes via a PR.
+6. Push a tag named `v<VERSION>` to GitHub.
+
+The new release will be published automatically.
 
 Rotate the Publishing Key
 -------------------------
@@ -34,3 +36,4 @@ To refresh it, follow the steps:
 [github.secrets]: https://github.com/ForNeVeR/Todosaurus/settings/secrets/actions
 [github.tokens]: https://github.com/settings/tokens?type=beta
 [marketplace.tokens]: https://plugins.jetbrains.com/author/me/tokens
+[semver]: https://semver.org/spec/v2.0.0.html
