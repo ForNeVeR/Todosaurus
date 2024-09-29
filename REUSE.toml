@@ -1,0 +1,20 @@
+# SPDX-FileCopyrightText: 2024 Friedrich von Never <friedrich@fornever.me>
+#
+# SPDX-License-Identifier: MIT
+
+version = 1
+SPDX-PackageName = "Todosaurus"
+SPDX-PackageSupplier = "Friedrich von Never <friedrich@fornever.me>"
+SPDX-PackageDownloadLocation = "https://github.com/ForNeVeR/Todosaurus"
+
+[[annotations]]
+path = [".idea/**/**", ".run/*.xml"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = ["gradle/wrapper/gradle-wrapper.jar", "gradle/wrapper/gradle-wrapper.properties"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Gradle authors <https://gradle.org/>"
+SPDX-License-Identifier = "Apache-2.0"

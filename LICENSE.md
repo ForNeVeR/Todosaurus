@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+
+SPDX-License-Identifier: MIT
+-->
+
 The MIT License
 ===============
 Copyright (C) 2024 Todosaurus contributors

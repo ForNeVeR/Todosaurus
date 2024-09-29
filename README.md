@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+
+SPDX-License-Identifier: MIT
+-->
+
 Todosaurus [![Status Enfer][status-enfer]][andivionian-status-classifier] [![Download][badge.plugin]][marketplace.plugin]
 ==========
 
