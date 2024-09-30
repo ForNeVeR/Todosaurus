@@ -38,6 +38,7 @@ kotlin {
 dependencies {
     intellijPlatform {
         intellijIdeaCommunity(libs.versions.ideaSdk)
+        bundledModule("intellij.platform.vcs.dvcs.impl")
         bundledPlugin("Git4Idea")
         bundledPlugin("org.jetbrains.plugins.github")
 
