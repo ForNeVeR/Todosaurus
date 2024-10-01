@@ -25,6 +25,11 @@ SPDX-License-Identifier: MIT
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceImplementation="me.fornever.todosaurus.settings.TodosaurusSettings"/>
+        <applicationConfigurable parentId="tools"
+                                 instance="me.fornever.todosaurus.settings.TodosaurusConfigurable"
+                                 id="me.fornever.todosaurus.settings.TodosaurusConfigurable"
+                                 displayName="Todosaurus"/>
         <notificationGroup id="TodosaurusNotifications"
                            displayType="BALLOON"
                            key="notification.group.name"/>
