@@ -15,7 +15,7 @@ class TodosaurusSettings : SimplePersistentStateComponent<TodosaurusSettings.Sta
         fun getInstance(): TodosaurusSettings = service()
     }
 
-    class State(var numberPattern: String, var descriptionTemplate: String) : BaseState() {
+    class State : BaseState() {
         companion object {
             private const val DEFAULT_NUMBER_PATTERN = "[#$ISSUE_NUMBER_REPLACEMENT]:"
             private const val DEFAULT_DESCRIPTION_TEMPLATE = """
@@ -24,9 +24,10 @@ class TodosaurusSettings : SimplePersistentStateComponent<TodosaurusSettings.Sta
                 Also, look for the number of this issue in the project code base.
             """
 
-            val defaultState: State = State(
-                DEFAULT_NUMBER_PATTERN,
-                DEFAULT_DESCRIPTION_TEMPLATE.trimIndent())
+            val defaultState: State = State()
         }
+
+        var numberPattern: String = DEFAULT_NUMBER_PATTERN
+        var descriptionTemplate: String = DEFAULT_DESCRIPTION_TEMPLATE
     }
 }

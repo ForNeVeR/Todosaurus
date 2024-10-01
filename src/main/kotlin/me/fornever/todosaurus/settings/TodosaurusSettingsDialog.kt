@@ -23,7 +23,9 @@ class TodosaurusSettingsDialog {
             descriptionTemplateField.text = value
         }
 
-    fun createPanel(): JComponent = panel { // TODO: Move all text to TodosaurusBundle.properties
+    fun createPanel(): JComponent = panel {
+        // TODO: Move all text to TodosaurusBundle.properties
+        // TODO: Add validation
         group("Patterns") {
             row {
                 textField()
