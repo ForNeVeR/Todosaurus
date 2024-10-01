@@ -13,7 +13,7 @@ Build
 
 ### Prerequisites
 
-- OpenJDK-compatible JDK version 17 or later (installed automatically for shell tooling, recommended to acquire separately for IDE)
+- OpenJDK-compatible JDK version 21 or later (installed automatically for shell tooling, recommended to acquire separately for IDE)
 
 ### Build
 
