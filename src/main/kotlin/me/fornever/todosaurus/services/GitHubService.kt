@@ -42,7 +42,9 @@ class GitHubService(private val project: Project) {
         }
 
         val executorFactory = GithubApiRequestExecutor.Factory.getInstance()
-        val executor = if (model.account != null) executorFactory.create(getApiToken(model.account)) else executorFactory.create()
+        val executor = if (model.account != null) {
+            executorFactory.create(model.account.server, getApiToken(model.account))
+        } else executorFactory.create()
 
         val request = GithubApiRequests.Repos.Issues.get(GithubServerPath.DEFAULT_SERVER, repository.owner, repository.name, issueNumber)
 
@@ -56,7 +58,7 @@ class GitHubService(private val project: Project) {
         val account = model.selectedAccount ?: error("Account is not selected.")
 
         val token = getApiToken(account)
-        val executor = GithubApiRequestExecutor.Factory.getInstance().create(token)
+        val executor = GithubApiRequestExecutor.Factory.getInstance().create(account.server, token)
 
         val issueBody = readAction {
             replacePatterns(repository, model.toDoItem)

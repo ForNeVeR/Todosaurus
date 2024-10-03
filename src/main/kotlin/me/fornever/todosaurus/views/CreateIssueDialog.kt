@@ -4,8 +4,8 @@
 
 package me.fornever.todosaurus.views
 
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.rd.util.withUiContext
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.ui.components.JBTextArea
 import com.intellij.ui.components.JBTextField
@@ -13,10 +13,7 @@ import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.builder.text
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import me.fornever.todosaurus.TodosaurusBundle
 import me.fornever.todosaurus.models.CreateIssueModel
 import me.fornever.todosaurus.models.RepositoryModel
@@ -100,7 +97,7 @@ class CreateIssueDialog(
                     val newIssue = GitHubService.getInstance(project).createIssue(model)
                     Notifications.CreateIssue.success(newIssue, project)
                     ToDoService.getInstance(project).updateDocumentText(model.toDoItem, newIssue)
-                    withUiContext {
+                    withContext(Dispatchers.EDT) {
                         doOKAction()
                     }
                 } finally {

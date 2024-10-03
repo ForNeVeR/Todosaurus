@@ -41,6 +41,9 @@ kotlin {
     jvmToolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
+    compilerOptions {
+        allWarningsAsErrors = true
+    }
 }
 
 dependencies {
