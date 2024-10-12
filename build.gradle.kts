@@ -41,6 +41,7 @@ dependencies {
         bundledModule("intellij.platform.vcs.dvcs.impl")
         bundledPlugin("Git4Idea")
         bundledPlugin("org.jetbrains.plugins.github")
+        bundledPlugin("org.jetbrains.plugins.gitlab")
 
         instrumentationTools()
 
