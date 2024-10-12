@@ -1,4 +1,4 @@
-package me.fornever.todosaurus.settings
+package me.fornever.todosaurus.settings.ui
 
 import com.intellij.ui.components.JBTextArea
 import com.intellij.ui.components.JBTextField

@@ -1,6 +1,7 @@
-package me.fornever.todosaurus.settings
+package me.fornever.todosaurus.settings.ui
 
 import com.intellij.openapi.options.Configurable
+import me.fornever.todosaurus.settings.TodosaurusSettings
 import org.jetbrains.annotations.Nls
 import javax.swing.JComponent
 
@@ -27,7 +28,6 @@ class TodosaurusConfigurable : Configurable {
     override fun reset() {
         val settings = TodosaurusSettings.getInstance()
 
-        // TODO: Default values
         settingsDialog.numberPattern = settings.state.numberPattern
         settingsDialog.descriptionTemplate = settings.state.descriptionTemplate
     }
