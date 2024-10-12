@@ -171,7 +171,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val model: To
                                     listener(invoke())
                                 }
 
-                                connectAnonymouslyCheckBox.addChangeListener {
+                                connectAnonymouslyCheckBox.addActionListener {
                                     listener(invoke())
                                 }
                             }
@@ -252,7 +252,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val model: To
             })
             .enabledIf(object : ComponentPredicate() {
                 override fun addListener(listener: (Boolean) -> Unit) {
-                    connectAnonymouslyCheckBox.addChangeListener {
+                    connectAnonymouslyCheckBox.addActionListener {
                         listener(invoke())
                     }
                 }
