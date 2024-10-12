@@ -59,16 +59,23 @@ class TodosaurusWizard(title: String, project: Project, steps: MutableList<Todos
             return doOKAction()
         }
 
-        val nextStepIndex = getNextStep(myCurrentStep)
-        val nextStep = mySteps[nextStepIndex] as TodosaurusStep
-
         if (currentStep is OptionalStepProvider) {
             val optionalStepId = currentStep.chooseOptionalStepId()
+            val optionalStepIndex = stepIndexes.getInt(optionalStepId)
+            val optionalStep = mySteps[optionalStepIndex] as TodosaurusStep
+
+            val endpointStepIndex = stepIndexes.getInt(optionalStep.nextId)
+            val endpointStep = mySteps[endpointStepIndex] as TodosaurusStep
+
             currentStep.nextId = optionalStepId
-            nextStep.previousId = optionalStepId
+            endpointStep.previousId = optionalStepId
+
+            myCurrentStep = optionalStepIndex
+        }
+        else {
+            myCurrentStep = getNextStep(myCurrentStep)
         }
 
-        myCurrentStep = nextStepIndex
         updateStep(SwipeDirection.FORWARD)
     }
 

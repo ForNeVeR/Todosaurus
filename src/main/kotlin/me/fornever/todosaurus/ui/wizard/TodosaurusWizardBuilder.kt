@@ -31,15 +31,15 @@ class TodosaurusWizardBuilder(private val project: Project) {
             val lastOptionalStepProvider = steps.lastOrNull { it is OptionalStepProvider } as? OptionalStepProvider
             val previousStep = steps[steps.lastIndex]
 
-            if (lastOptionalStepProvider == null) {
-                step.previousId = previousStep.id
-            }
-            else {
+            if (lastOptionalStepProvider != null) {
                 lastOptionalStepProvider
                     .optionalSteps
                     .forEach {
                         it.nextId = step.id
                     }
+            }
+            else {
+                step.previousId = previousStep.id
             }
 
             previousStep.nextId = step.id
@@ -47,48 +47,17 @@ class TodosaurusWizardBuilder(private val project: Project) {
 
         steps.add(step)
 
-        if (step is OptionalStepProvider) {
+        if (step is OptionalStepProvider && step.optionalSteps.isNotEmpty()) {
+            step.nextId = step.optionalSteps[0].id
+
             step.optionalSteps
                 .forEach {
                     it.previousId = step.id
-                    steps.add(step)
+                    steps.add(it)
                 }
         }
 
         return this
-
-        /*val isWizardEmpty = steps.isEmpty()
-
-        steps.add(step)
-
-        if (step is OptionalStepProvider) {
-            step.nextId = step.id
-
-            step.optionalSteps.forEach {
-                it.previousId = step.id
-                steps.add(it)
-            }
-        }
-
-        if (isWizardEmpty)
-            return this
-
-        steps.filterIsInstance(OptionalStepProvider::class.java)
-            .lastOrNull()
-            ?.optionalSteps
-            ?.forEach {
-                it.nextId = step.id
-            }
-
-        steps.lastOrNull { it !is OptionalStepProvider }
-            ?.let {
-                it.nextId = step.id
-
-                if (it.id != step.id)
-                    step.previousId = it.id
-            }
-
-        return this*/
     }
 
     fun setFinalAction(action: suspend () -> WizardResult): TodosaurusWizardBuilder {

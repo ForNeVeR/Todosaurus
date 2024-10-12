@@ -30,7 +30,37 @@ class TodosaurusWizardBuilderTests {
     }
 
     @Test
-    fun `Previous step id for optional steps should be equals parent id`() {
+    fun `Should add optional steps properly`() {
+        // Arrange
+        val sut = TodosaurusWizardBuilder(FakeProject())
+        val optionalSteps = mutableListOf<TodosaurusStep>(FakeStep("2"), FakeStep("3"), FakeStep("4"))
+        val step = FakeOptionalStepProvider("1", optionalSteps)
+
+        // Act
+        sut.addStep(step)
+
+        // Assert
+        optionalSteps.forEach { expected ->
+            Assert.assertTrue(sut.steps.contains(expected))
+        }
+    }
+
+    @Test
+    fun `Parent step next id should not be null`() {
+        // Arrange
+        val sut = TodosaurusWizardBuilder(FakeProject())
+        val optionalSteps = mutableListOf<TodosaurusStep>(FakeStep("2"), FakeStep("3"), FakeStep("4"))
+        val step = FakeOptionalStepProvider("1", optionalSteps)
+
+        // Act
+        sut.addStep(step)
+
+        // Assert
+        Assert.assertNotEquals(null, step.nextId)
+    }
+
+    @Test
+    fun `Previous step id for optional steps should be equals parent step id`() {
         // Arrange
         val sut = TodosaurusWizardBuilder(FakeProject())
         val optionalSteps = mutableListOf<TodosaurusStep>(FakeStep("2"), FakeStep("3"), FakeStep("4"))
