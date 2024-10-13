@@ -43,7 +43,8 @@ class GitHubClient(private val gitHub: GitHub, private val credentials: IssueTra
     }
 
     override suspend fun getIssue(toDoItem: ToDoItem): IssueModel? {
-        val issueNumber = toDoItem.issueNumber ?: return null
+        val issueNumber = readAction { toDoItem.issueNumber }
+            ?: return null
 
         val request = GithubApiRequests.Repos.Issues.get(
             gitHub.getGitHubPath(credentials),

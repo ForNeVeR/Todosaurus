@@ -1,49 +1,95 @@
 package me.fornever.todosaurus.ui.wizard
 
-import com.intellij.ide.wizard.AbstractWizardEx
+import com.intellij.ide.wizard.AbstractWizard
+import com.intellij.ide.wizard.AbstractWizardStepEx
 import com.intellij.ide.wizard.CommitStepCancelledException
 import com.intellij.ide.wizard.CommitStepException
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
+import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.wm.IdeFocusManager
 import com.intellij.ui.JBCardLayout.SwipeDirection
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntMap
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.swing.JComponent
 
-class TodosaurusWizard(title: String, project: Project, steps: MutableList<TodosaurusStep>, private val finalAction: suspend () -> WizardResult)
-    : AbstractWizardEx(title, project, steps) {
+
+class TodosaurusWizard(title: String, project: Project, private val finalAction: suspend () -> WizardResult)
+    : AbstractWizard<TodosaurusStep>(title, project) {
     companion object {
         private const val CREATE_BUTTON_NAME: String = "Create"
         private const val BUTTON_NAME_PROPERTY: String = "text"
     }
 
-    private val stepIndexes: Object2IntMap<Any> = Object2IntOpenHashMap()
+    private val stepsToIndexes: Object2IntMap<Any> = Object2IntOpenHashMap()
+    private val indexesToSteps: Int2ObjectMap<TodosaurusStep> = Int2ObjectOpenHashMap()
+    private val dynamicSteps: Int2ObjectMap<TodosaurusStep> = Int2ObjectOpenHashMap()
 
     init {
         isModal = false
         helpButton.isVisible = false
+    }
 
-        steps.forEachIndexed { index, step ->
-            stepIndexes.put(step.id, index)
-        }
+    override fun show() {
+        init()
+        super.show()
     }
 
     fun setFinalNameButton(newName: String) {
-        nextButton.addPropertyChangeListener {
+        nextButton.addPropertyChangeListener(BUTTON_NAME_PROPERTY) {
             // Dirty hack to change text of next button :p
-            if (it.propertyName == BUTTON_NAME_PROPERTY && it.newValue == CREATE_BUTTON_NAME) {
+            if (it.newValue == CREATE_BUTTON_NAME) {
                 nextButton.text = newName
                 repaint()
             }
         }
     }
 
+    override fun addStep(step: TodosaurusStep, index: Int) {
+        stepsToIndexes.put(step.id, index)
+        indexesToSteps.put(index, step)
+
+        super.addStep(step, index)
+
+        step.addStepListener(object: AbstractWizardStepEx.Listener {
+            override fun stateChanged() {
+                updateButtons()
+            }
+
+            override fun doNextAction() {
+                if (nextButton.isEnabled) {
+                    doNextAction()
+                }
+            }
+        })
+    }
+
+    override fun doPreviousAction() {
+        val currentStep = indexesToSteps.get(myCurrentStep)
+
+        try {
+            currentStep._commitPrev()
+        }
+        catch (exception: CommitStepCancelledException) {
+            return
+        }
+        catch (exception: CommitStepException) {
+            return Messages.showErrorDialog(contentPane, exception.message)
+        }
+
+        myCurrentStep = getPreviousStep(myCurrentStep)
+        updateStep(SwipeDirection.BACKWARD)
+    }
+
     override fun doNextAction() {
-        val currentStep = mySteps[myCurrentStep] as TodosaurusStep
+        val currentStep = indexesToSteps.get(myCurrentStep)
 
         try {
             currentStep._commit(false)
@@ -59,22 +105,28 @@ class TodosaurusWizard(title: String, project: Project, steps: MutableList<Todos
             return doOKAction()
         }
 
-        if (currentStep is OptionalStepProvider) {
-            val optionalStepId = currentStep.chooseOptionalStepId()
-            val optionalStepIndex = stepIndexes.getInt(optionalStepId)
-            val optionalStep = mySteps[optionalStepIndex] as TodosaurusStep
+        val nextStepIndex = getNextStep(myCurrentStep)
 
-            val endpointStepIndex = stepIndexes.getInt(optionalStep.nextId)
-            val endpointStep = mySteps[endpointStepIndex] as TodosaurusStep
-
-            currentStep.nextId = optionalStepId
-            endpointStep.previousId = optionalStepId
-
-            myCurrentStep = optionalStepIndex
+        if (currentStep !is DynamicStepProvider || dynamicSteps.containsKey(nextStepIndex)) {
+            myCurrentStep = nextStepIndex
+            return updateStep(SwipeDirection.FORWARD)
         }
-        else {
-            myCurrentStep = getNextStep(myCurrentStep)
+
+        val nextStep = indexesToSteps.get(nextStepIndex)
+        val dynamicStep = currentStep.createDynamicStep()
+
+        dynamicStep.previousId = currentStep.id
+        currentStep.nextId = dynamicStep.id
+
+        if (nextStep.id != currentStep.id) {
+            dynamicStep.nextId = nextStep.id
+            nextStep.previousId = dynamicStep.id
         }
+
+        addStep(dynamicStep)
+
+        myCurrentStep = mySteps.size - 1
+        dynamicSteps.put(myCurrentStep, dynamicStep)
 
         updateStep(SwipeDirection.FORWARD)
     }
@@ -93,6 +145,54 @@ class TodosaurusWizard(title: String, project: Project, steps: MutableList<Todos
 					close(0)
 				}
             }
+        }
+    }
+
+    override fun getNextStep(stepIndex: Int): Int {
+        val step = indexesToSteps.get(stepIndex)
+        return stepsToIndexes.getInt(step.nextId)
+    }
+
+    override fun getPreviousStep(stepIndex: Int): Int {
+        val step = indexesToSteps.get(stepIndex)
+        return stepsToIndexes.getInt(step.previousId)
+    }
+
+    override fun updateStep() {
+        super.updateStep()
+        updateButtons()
+
+        currentStepObject
+            .preferredFocusedComponent
+            ?.let {
+                IdeFocusManager
+                    .findInstanceByComponent(window)
+                    .requestFocus(it, true)
+            }
+    }
+
+    override fun updateButtons() {
+        super.updateButtons()
+
+        val currentStep = indexesToSteps.get(myCurrentStep)
+        previousButton.isEnabled = currentStep.previousId != null
+        nextButton.isEnabled = currentStep.isComplete && !isLastStep || isLastStep && canFinish()
+    }
+
+    override fun canGoNext(): Boolean
+        = indexesToSteps.get(myCurrentStep).isComplete
+
+    override fun isLastStep(): Boolean
+        = indexesToSteps.get(myCurrentStep).nextId == null
+
+    override fun canFinish(): Boolean
+        = mySteps.all { it.isComplete }
+
+    override fun dispose() {
+        super.dispose()
+
+        for (step in mySteps) {
+            Disposer.dispose(step)
         }
     }
 

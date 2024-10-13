@@ -27,34 +27,16 @@ class TodosaurusWizardBuilder(private val project: Project) {
     }
 
     fun addStep(step: TodosaurusStep): TodosaurusWizardBuilder {
-        if (steps.isNotEmpty()) {
-            val lastOptionalStepProvider = steps.lastOrNull { it is OptionalStepProvider } as? OptionalStepProvider
+        if (steps.isNotEmpty() && step !is EmptyStep) {
             val previousStep = steps[steps.lastIndex]
-
-            if (lastOptionalStepProvider != null) {
-                lastOptionalStepProvider
-                    .optionalSteps
-                    .forEach {
-                        it.nextId = step.id
-                    }
-            }
-            else {
-                step.previousId = previousStep.id
-            }
-
+            step.previousId = previousStep.id
             previousStep.nextId = step.id
         }
 
         steps.add(step)
 
-        if (step is OptionalStepProvider && step.optionalSteps.isNotEmpty()) {
-            step.nextId = step.optionalSteps[0].id
-
-            step.optionalSteps
-                .forEach {
-                    it.previousId = step.id
-                    steps.add(it)
-                }
+        if (step is DynamicStepProvider) {
+            step.nextId = step.id
         }
 
         return this
@@ -67,14 +49,25 @@ class TodosaurusWizardBuilder(private val project: Project) {
     }
 
     fun build(): TodosaurusWizard {
+        if (steps.isEmpty())
+            error("Steps is required for wizard")
+
         val wizard = TodosaurusWizard(
             wizardTitle ?: error("Title is required for wizard"),
             project,
-            steps,
             finalAction ?: error("Final action is required for wizard"))
 
         finalButtonName?.let {
             wizard.setFinalNameButton(it)
+        }
+
+        if (steps.size == 1 && steps[0] is DynamicStepProvider) {
+            // Dirty hack to prevent removing Previous button for dynamic steps
+            addStep(EmptyStep())
+        }
+
+        steps.forEach {
+            wizard.addStep(it)
         }
 
         return wizard
