@@ -1,7 +1,6 @@
 package me.fornever.todosaurus.ui.wizard
 
 import com.intellij.ide.wizard.AbstractWizard
-import com.intellij.ide.wizard.AbstractWizardStepEx
 import com.intellij.ide.wizard.CommitStepCancelledException
 import com.intellij.ide.wizard.CommitStepException
 import com.intellij.openapi.application.EDT
@@ -18,7 +17,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import javax.swing.JComponent
 
 
 class TodosaurusWizard(title: String, project: Project, private val finalAction: suspend () -> WizardResult)
@@ -58,7 +56,7 @@ class TodosaurusWizard(title: String, project: Project, private val finalAction:
 
         super.addStep(step, index)
 
-        step.addStepListener(object: AbstractWizardStepEx.Listener {
+        step.addStepListener(object: TodosaurusStep.Listener {
             override fun stateChanged() {
                 updateButtons()
             }
@@ -75,7 +73,7 @@ class TodosaurusWizard(title: String, project: Project, private val finalAction:
         val currentStep = indexesToSteps.get(myCurrentStep)
 
         try {
-            currentStep._commitPrev()
+            currentStep.commitPrevious()
         }
         catch (exception: CommitStepCancelledException) {
             return
@@ -176,17 +174,17 @@ class TodosaurusWizard(title: String, project: Project, private val finalAction:
 
         val currentStep = indexesToSteps.get(myCurrentStep)
         previousButton.isEnabled = currentStep.previousId != null
-        nextButton.isEnabled = currentStep.isComplete && !isLastStep || isLastStep && canFinish()
+        nextButton.isEnabled = currentStep.isComplete() && !isLastStep || isLastStep && canFinish()
     }
 
     override fun canGoNext(): Boolean
-        = indexesToSteps.get(myCurrentStep).isComplete
+        = indexesToSteps.get(myCurrentStep).isComplete()
 
     override fun isLastStep(): Boolean
         = indexesToSteps.get(myCurrentStep).nextId == null
 
     override fun canFinish(): Boolean
-        = mySteps.all { it.isComplete }
+        = mySteps.all { it.isComplete() }
 
     override fun dispose() {
         super.dispose()
