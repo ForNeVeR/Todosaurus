@@ -58,7 +58,7 @@ class TodosaurusWizardBuilder(private val project: Project) {
             finalAction ?: error("Final action is required for wizard"))
 
         finalButtonName?.let {
-            wizard.setFinalNameButton(it)
+            wizard.nextButtonName = it
         }
 
         if (steps.size == 1 && steps[0] is DynamicStepProvider) {

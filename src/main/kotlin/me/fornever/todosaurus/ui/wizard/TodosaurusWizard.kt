@@ -1,14 +1,17 @@
 package me.fornever.todosaurus.ui.wizard
 
+import com.intellij.ide.IdeBundle
 import com.intellij.ide.wizard.AbstractWizard
 import com.intellij.ide.wizard.CommitStepCancelledException
 import com.intellij.ide.wizard.CommitStepException
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.wm.IdeFocusManager
 import com.intellij.ui.JBCardLayout.SwipeDirection
+import com.intellij.util.ui.UIUtil
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntMap
@@ -21,14 +24,11 @@ import kotlinx.coroutines.withContext
 
 class TodosaurusWizard(title: String, project: Project, private val finalAction: suspend () -> WizardResult)
     : AbstractWizard<TodosaurusStep>(title, project) {
-    companion object {
-        private const val CREATE_BUTTON_NAME: String = "Create"
-        private const val BUTTON_NAME_PROPERTY: String = "text"
-    }
-
     private val stepsToIndexes: Object2IntMap<Any> = Object2IntOpenHashMap()
     private val indexesToSteps: Int2ObjectMap<TodosaurusStep> = Int2ObjectOpenHashMap()
     private val dynamicSteps: Int2ObjectMap<TodosaurusStep> = Int2ObjectOpenHashMap()
+
+    var nextButtonName: String? = null
 
     init {
         isModal = false
@@ -38,16 +38,6 @@ class TodosaurusWizard(title: String, project: Project, private val finalAction:
     override fun show() {
         init()
         super.show()
-    }
-
-    fun setFinalNameButton(newName: String) {
-        nextButton.addPropertyChangeListener(BUTTON_NAME_PROPERTY) {
-            // Dirty hack to change text of next button :p
-            if (it.newValue == CREATE_BUTTON_NAME) {
-                nextButton.text = newName
-                repaint()
-            }
-        }
     }
 
     override fun addStep(step: TodosaurusStep, index: Int) {
@@ -175,6 +165,34 @@ class TodosaurusWizard(title: String, project: Project, private val finalAction:
         val currentStep = indexesToSteps.get(myCurrentStep)
         previousButton.isEnabled = currentStep.previousId != null
         nextButton.isEnabled = currentStep.isComplete() && !isLastStep || isLastStep && canFinish()
+    }
+
+    override fun updateButtons(lastStep: Boolean, canGoNext: Boolean, firstStep: Boolean) {
+        if (lastStep) {
+            if (nextButtonName != null) {
+                nextButton.text = nextButtonName
+            }
+            else if (mySteps.size > 1) {
+                nextButton.mnemonic = 67
+                nextButton.text = UIUtil.removeMnemonic(IdeBundle.message("button.create"))
+            }
+            else {
+                nextButton.text = IdeBundle.message("button.ok")
+            }
+        }
+        else {
+            nextButton.text = UIUtil.removeMnemonic(IdeBundle.message("button.wizard.next"))
+            nextButton.mnemonic = 78
+        }
+
+        nextButton.setEnabled(canGoNext)
+
+        if (nextButton.isEnabled && !ApplicationManager.getApplication().isUnitTestMode) {
+            rootPane?.setDefaultButton(nextButton)
+        }
+
+        previousButton.isEnabled = !firstStep
+        previousButton.isVisible = !firstStep
     }
 
     override fun canGoNext(): Boolean
