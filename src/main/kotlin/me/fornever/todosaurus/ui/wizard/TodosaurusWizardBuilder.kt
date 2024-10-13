@@ -27,7 +27,7 @@ class TodosaurusWizardBuilder(private val project: Project) {
     }
 
     fun addStep(step: TodosaurusStep): TodosaurusWizardBuilder {
-        if (steps.isNotEmpty() && step !is EmptyStep) {
+        if (steps.isNotEmpty()) {
             val previousStep = steps[steps.lastIndex]
             step.previousId = previousStep.id
             previousStep.nextId = step.id
@@ -59,11 +59,6 @@ class TodosaurusWizardBuilder(private val project: Project) {
 
         finalButtonName?.let {
             wizard.nextButtonName = it
-        }
-
-        if (steps.size == 1 && steps[0] is DynamicStepProvider) {
-            // Dirty hack to prevent removing Previous button for dynamic steps
-            addStep(EmptyStep())
         }
 
         steps.forEach {
