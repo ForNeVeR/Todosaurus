@@ -17,6 +17,7 @@ import me.fornever.todosaurus.issueTrackers.ui.controls.IssueTrackerComboBox
 import me.fornever.todosaurus.issueTrackers.ui.controls.IssueTrackerCredentialsComboBox
 import me.fornever.todosaurus.issueTrackers.ui.controls.ServerHostComboBox
 import me.fornever.todosaurus.ui.wizard.DynamicStepProvider
+import me.fornever.todosaurus.ui.wizard.MemorableStep
 import me.fornever.todosaurus.ui.wizard.TodosaurusContext
 import me.fornever.todosaurus.ui.wizard.TodosaurusStep
 import me.fornever.todosaurus.vcs.git.ui.wizard.ChooseGitRemoteStep
@@ -24,7 +25,8 @@ import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JLabel
 
-class ChooseIssueTrackerStep(private val project: Project, private val model: TodosaurusContext) : TodosaurusStep(), DynamicStepProvider {
+class ChooseIssueTrackerStep(private val project: Project, private val model: TodosaurusContext)
+    : TodosaurusStep(), DynamicStepProvider, MemorableStep {
     companion object {
         val id: Any = ChooseIssueTrackerStep::class.java
     }
@@ -305,5 +307,9 @@ class ChooseIssueTrackerStep(private val project: Project, private val model: To
         = SpecificIssueTrackerStepFactory
             .getInstance(project)
             .create(model)
-                ?: this
+                ?: error("Cannot create specific step for ${model.connectionDetails.issueTracker?.title}")
+
+    override fun rememberUserChoice() {
+
+    }
 }
