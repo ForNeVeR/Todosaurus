@@ -188,6 +188,7 @@ class TodosaurusWizard(title: String, project: Project, private val finalAction:
         }
 
         val buttonPanel = JPanel()
+        val hasOnlyDynamicStepProvider = mySteps.size == 1 && mySteps[0] is DynamicStepProvider
 
         if (SystemInfo.isMac) {
             panel.add(buttonPanel, BorderLayout.EAST)
@@ -211,7 +212,7 @@ class TodosaurusWizard(title: String, project: Project, private val finalAction:
 
             val principalTouchbarButtons: MutableList<JButton> = ArrayList()
 
-            if (mySteps.size > 1 || mySteps[0] is DynamicStepProvider) {
+            if (mySteps.size > 1 || hasOnlyDynamicStepProvider) {
                 buttonPanel.add(Box.createHorizontalStrut(5))
                 buttonPanel.add(previousButton)
                 principalTouchbarButtons.add(previousButton)
@@ -238,7 +239,7 @@ class TodosaurusWizard(title: String, project: Project, private val finalAction:
 
             fillComponentGroups(horizontalGroup, verticalGroup, null, Box.createHorizontalGlue())
 
-            if (mySteps.size > 1 || mySteps[0] is DynamicStepProvider) {
+            if (mySteps.size > 1 || hasOnlyDynamicStepProvider) {
                 fillComponentGroups(horizontalGroup, verticalGroup, buttons, previousButton)
             }
 
