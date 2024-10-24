@@ -5,7 +5,7 @@
 
 [versions]
 ideaSdk = "2024.2"
-ideaSdkPreview = "2024.2.3"
+ideaSdkPreview = "2024.2.4"
 kotlin = "1.9.24"
 
 [libraries]
