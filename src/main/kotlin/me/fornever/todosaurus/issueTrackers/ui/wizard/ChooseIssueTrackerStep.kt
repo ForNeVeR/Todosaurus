@@ -16,6 +16,7 @@ import me.fornever.todosaurus.issueTrackers.anonymous.AnonymousCredentials
 import me.fornever.todosaurus.issueTrackers.ui.controls.IssueTrackerComboBox
 import me.fornever.todosaurus.issueTrackers.ui.controls.IssueTrackerCredentialsComboBox
 import me.fornever.todosaurus.issueTrackers.ui.controls.ServerHostComboBox
+import me.fornever.todosaurus.settings.TodosaurusSettings
 import me.fornever.todosaurus.ui.wizard.DynamicStepProvider
 import me.fornever.todosaurus.ui.wizard.MemorableStep
 import me.fornever.todosaurus.ui.wizard.TodosaurusContext
@@ -310,6 +311,9 @@ class ChooseIssueTrackerStep(private val project: Project, private val model: To
                 ?: error("Cannot create specific step for ${model.connectionDetails.issueTracker?.title}")
 
     override fun rememberUserChoice() {
+        val todosaurusSettings = TodosaurusSettings.getInstance()
 
+        todosaurusSettings.state.issueTracker = model.connectionDetails.issueTracker
+        todosaurusSettings.state.credentials = model.connectionDetails.credentials
     }
 }
