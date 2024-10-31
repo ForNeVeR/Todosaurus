@@ -6,10 +6,13 @@
 ideaSdk = "2024.2"
 ideaSdkPreview = "2024.2.3"
 kotlin = "1.9.24"
+kotlinSerializationLibrary = "1.7.3"
+kotlinSerializationPlugin = "2.0.20"
 
 [libraries]
 junit = "junit:junit:4.13.2"
 openTest4J = "org.opentest4j:opentest4j:1.3.0"
+kotlinSerializationLibrary = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerializationLibrary" }
 
 [plugins]
 changelog = "org.jetbrains.changelog:2.2.1"
@@ -17,3 +20,4 @@ gradleIntelliJPlatformPlugin = "org.jetbrains.intellij.platform:2.1.0"
 gradleJvmWrapper = "me.filippov.gradle.jvm.wrapper:0.14.0"
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 qodana = "org.jetbrains.qodana:2024.2.3"
+kotlinSerializationPlugin = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerializationPlugin" }

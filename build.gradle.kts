@@ -12,6 +12,7 @@ fun environment(key: String) = providers.environmentVariable(key)
 plugins {
     id("java")
     alias(libs.plugins.kotlin)
+    alias(libs.plugins.kotlinSerializationPlugin)
     alias(libs.plugins.gradleIntelliJPlatformPlugin)
     alias(libs.plugins.changelog)
     alias(libs.plugins.qodana)
@@ -52,6 +53,7 @@ dependencies {
 
     testImplementation(libs.junit)
     testImplementation(libs.openTest4J)
+    implementation(libs.kotlinSerializationLibrary)
 }
 
 intellijPlatform {
