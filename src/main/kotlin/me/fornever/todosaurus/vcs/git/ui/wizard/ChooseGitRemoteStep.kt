@@ -5,7 +5,6 @@ import com.intellij.ui.UserActivityWatcher
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.ComponentPredicate
-import me.fornever.todosaurus.settings.TodosaurusSettings
 import me.fornever.todosaurus.ui.wizard.MemorableStep
 import me.fornever.todosaurus.ui.wizard.TodosaurusContext
 import me.fornever.todosaurus.ui.wizard.TodosaurusStep
@@ -93,8 +92,6 @@ class ChooseGitRemoteStep(private val project: Project, private val model: Todos
     }
 
     override fun rememberUserChoice() {
-        val todosaurusSettings = TodosaurusSettings.getInstance()
-
-        todosaurusSettings.state.gitRemote = (model.placementDetails as? GitBasedPlacementDetails)?.remote
+        // TODO[#38]: Remember last selected account
     }
 }

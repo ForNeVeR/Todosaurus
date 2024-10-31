@@ -7,11 +7,8 @@ import com.intellij.openapi.command.executeCommand
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.fornever.todosaurus.issueTrackers.IssueTrackerConnectionDetails
 import me.fornever.todosaurus.issueTrackers.ui.wizard.ChooseIssueTrackerStep
 import me.fornever.todosaurus.settings.TodosaurusSettings
 import me.fornever.todosaurus.ui.Notifications
@@ -19,8 +16,6 @@ import me.fornever.todosaurus.ui.wizard.CreateNewIssueStep
 import me.fornever.todosaurus.ui.wizard.TodosaurusContext
 import me.fornever.todosaurus.ui.wizard.TodosaurusWizardBuilder
 import me.fornever.todosaurus.ui.wizard.WizardResult
-import me.fornever.todosaurus.vcs.git.GitBasedPlacementDetails
-import me.fornever.todosaurus.vcs.git.ui.wizard.ChooseGitRemoteStep
 
 @Service(Service.Level.PROJECT)
 class ToDoService(private val project: Project) {
@@ -31,25 +26,8 @@ class ToDoService(private val project: Project) {
     private val todosaurusSettings: TodosaurusSettings = TodosaurusSettings.getInstance()
 
     fun createNewIssue(toDoItem: ToDoItem) {
-        if (todosaurusSettings.state.hasCredentials()) {
-            val connectionDetails = IssueTrackerConnectionDetails().also {
-                it.issueTracker = todosaurusSettings.state.issueTracker
-                it.credentials = todosaurusSettings.state.credentials
-            }
-
-            val placementDetails = GitBasedPlacementDetails().also {
-                it.remote = todosaurusSettings.state.gitRemote
-            }
-
-            val model = TodosaurusContext(toDoItem, connectionDetails, placementDetails)
-
-            return TodosaurusWizardBuilder(project)
-                .setTitle("Create New Issue")
-                .addStep(CreateNewIssueStep(project, model))
-                .setFinalAction { createNewIssue(model) }
-                .build()
-                .show()
-        }
+        // TODO[#38]: Remember last selected account
+        // if (rememberChoiceStore.isSaved()) ...
 
         val model = TodosaurusContext(toDoItem)
 
@@ -96,24 +74,8 @@ class ToDoService(private val project: Project) {
     }
 
     fun openReportedIssueInBrowser(toDoItem: ToDoItem) {
-        if (todosaurusSettings.state.hasCredentials()) {
-            val connectionDetails = IssueTrackerConnectionDetails().also {
-                it.issueTracker = todosaurusSettings.state.issueTracker
-                it.credentials = todosaurusSettings.state.credentials
-            }
-
-            val placementDetails = GitBasedPlacementDetails().also {
-                it.remote = todosaurusSettings.state.gitRemote
-            }
-
-            val model = TodosaurusContext(toDoItem, connectionDetails, placementDetails)
-
-            CoroutineScope(Dispatchers.IO).launch {
-                openReportedIssueInBrowser(model)
-            }
-
-            return
-        }
+        // TODO[#38]: Remember last selected account
+        // if (rememberChoiceStore.isSaved()) ...
 
         val model = TodosaurusContext(toDoItem)
 

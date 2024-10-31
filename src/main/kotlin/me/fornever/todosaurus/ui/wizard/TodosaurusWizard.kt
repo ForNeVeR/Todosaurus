@@ -206,12 +206,13 @@ class TodosaurusWizard(title: String, project: Project, private val finalAction:
 
         val bottomPanel = JPanel()
 
-        if (mySteps.any { it is MemorableStep }) {
+        // TODO[#38]: Uncomment this condition while implementing task #38 (This will create a “Remember my choice” checkbox for the desired steps)
+        /*if (mySteps.any { it is MemorableStep }) {
             JPanel(BorderLayout()).also {
                 it.add(rememberUserChoiceCheckBox, BorderLayout.CENTER)
                 topPanel.add(it, BorderLayout.EAST)
             }
-        }
+        }*/
 
         if (SystemInfo.isMac) {
             bottomPanel.layout = BorderLayout()
