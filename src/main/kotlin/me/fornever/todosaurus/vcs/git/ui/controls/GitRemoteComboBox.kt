@@ -1,3 +1,7 @@
+// SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+//
+// SPDX-License-Identifier: MIT
+
 package me.fornever.todosaurus.vcs.git.ui.controls
 
 import com.intellij.openapi.ui.ComboBox
