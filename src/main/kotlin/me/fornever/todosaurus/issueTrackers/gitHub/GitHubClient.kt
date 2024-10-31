@@ -21,7 +21,6 @@ import me.fornever.todosaurus.settings.TodosaurusSettings
 import me.fornever.todosaurus.vcs.git.GitRemote
 import org.jetbrains.plugins.github.api.GithubApiRequests
 import org.jetbrains.plugins.github.api.GithubServerPath
-import org.jetbrains.plugins.github.api.executeSuspend
 
 class GitHubClient(private val gitHub: GitHub, private val credentials: IssueTrackerCredentials, private val gitRemote: GitRemote) : IssueTrackerClient {
     override suspend fun createIssue(toDoItem: ToDoItem): IssueModel {

@@ -10,7 +10,7 @@ class TodosaurusWizardBuilder(private val project: Project) {
     private var wizardTitle: String? = null
     private var finalButtonName: String? = null
     private var finalAction: (suspend () -> WizardResult)? = null
-    val steps: MutableList<TodosaurusStep> = mutableListOf()
+    private val steps: MutableList<TodosaurusStep> = mutableListOf()
 
     fun setTitle(title: String): TodosaurusWizardBuilder {
         if (title.isEmpty())

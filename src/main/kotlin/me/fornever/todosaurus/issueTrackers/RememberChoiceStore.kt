@@ -16,10 +16,10 @@ class RememberChoiceStore {
     }
 
     suspend fun remember() {
-
+        // TODO[#38]: Remember last selected account
     }
 
     suspend fun forget() {
-
+        // TODO[#38]: Remember last selected account
     }
 }

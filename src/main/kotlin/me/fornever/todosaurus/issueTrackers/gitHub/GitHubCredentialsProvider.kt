@@ -22,9 +22,6 @@ class GitHubCredentialsProvider(private val project: Project) : IssueTrackerCred
             .plus(fromTasks())
             .toArray(emptyArray())
 
-    override suspend fun provide(id: String): IssueTrackerCredentials?
-        = provideAll().singleOrNull { it.id == id }
-
     private suspend fun fromPlugin(): List<IssueTrackerCredentials> {
         val pluginManager = service<GHAccountManager>()
 
