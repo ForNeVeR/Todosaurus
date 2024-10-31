@@ -28,67 +28,18 @@ class TodosaurusWizardBuilder(private val project: Project) {
 
     fun addStep(step: TodosaurusStep): TodosaurusWizardBuilder {
         if (steps.isNotEmpty()) {
-            val lastOptionalStepProvider = steps.lastOrNull { it is OptionalStepProvider } as? OptionalStepProvider
             val previousStep = steps[steps.lastIndex]
-
-            if (lastOptionalStepProvider == null) {
-                step.previousId = previousStep.id
-            }
-            else {
-                lastOptionalStepProvider
-                    .optionalSteps
-                    .forEach {
-                        it.nextId = step.id
-                    }
-            }
-
+            step.previousId = previousStep.id
             previousStep.nextId = step.id
         }
 
         steps.add(step)
 
-        if (step is OptionalStepProvider) {
-            step.optionalSteps
-                .forEach {
-                    it.previousId = step.id
-                    steps.add(step)
-                }
+        if (step is DynamicStepProvider) {
+            step.nextId = step.id
         }
 
         return this
-
-        /*val isWizardEmpty = steps.isEmpty()
-
-        steps.add(step)
-
-        if (step is OptionalStepProvider) {
-            step.nextId = step.id
-
-            step.optionalSteps.forEach {
-                it.previousId = step.id
-                steps.add(it)
-            }
-        }
-
-        if (isWizardEmpty)
-            return this
-
-        steps.filterIsInstance(OptionalStepProvider::class.java)
-            .lastOrNull()
-            ?.optionalSteps
-            ?.forEach {
-                it.nextId = step.id
-            }
-
-        steps.lastOrNull { it !is OptionalStepProvider }
-            ?.let {
-                it.nextId = step.id
-
-                if (it.id != step.id)
-                    step.previousId = it.id
-            }
-
-        return this*/
     }
 
     fun setFinalAction(action: suspend () -> WizardResult): TodosaurusWizardBuilder {
@@ -98,14 +49,20 @@ class TodosaurusWizardBuilder(private val project: Project) {
     }
 
     fun build(): TodosaurusWizard {
+        if (steps.isEmpty())
+            error("Steps is required for wizard")
+
         val wizard = TodosaurusWizard(
             wizardTitle ?: error("Title is required for wizard"),
             project,
-            steps,
             finalAction ?: error("Final action is required for wizard"))
 
         finalButtonName?.let {
-            wizard.setFinalNameButton(it)
+            wizard.nextButtonName = it
+        }
+
+        steps.forEach {
+            wizard.addStep(it)
         }
 
         return wizard

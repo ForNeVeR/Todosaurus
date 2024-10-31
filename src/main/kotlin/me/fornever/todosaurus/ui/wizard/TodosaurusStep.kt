@@ -1,22 +1,52 @@
 package me.fornever.todosaurus.ui.wizard
 
-import com.intellij.ide.wizard.AbstractWizardStepEx
+import com.intellij.ide.wizard.Step
+import com.intellij.ide.wizard.StepListener
+import com.intellij.openapi.Disposable
+import com.intellij.util.EventDispatcher
+import javax.swing.Icon
 
-abstract class TodosaurusStep : AbstractWizardStepEx(null) {
+abstract class TodosaurusStep : Step, Disposable {
+    interface Listener : StepListener {
+        fun doNextAction()
+    }
+
+    enum class CommitType {
+        Previous,
+        Next,
+        Finish
+    }
+
     abstract val id: Any
 
     var nextId: Any? = null
     var previousId: Any? = null
 
-    override fun getStepId(): Any
-        = id
+    private val eventDispatcher: EventDispatcher<Listener> = EventDispatcher.create(Listener::class.java)
 
-    override fun getNextStepId(): Any?
-        = nextId
+    abstract fun isComplete(): Boolean
 
-    override fun getPreviousStepId(): Any?
-        = previousId
+    fun addStepListener(stepListener: Listener)
+        = eventDispatcher.addListener(stepListener)
 
-    override fun commit(commitType: CommitType?)
+    fun fireStateChanged()
+        = eventDispatcher.multicaster.stateChanged()
+
+    fun commitPrevious()
+        = commit(CommitType.Previous)
+
+    override fun _commit(finishChosen: Boolean)
+        = commit(if (finishChosen) CommitType.Finish else CommitType.Next)
+
+    override fun getIcon(): Icon?
+        = null
+
+    override fun _init()
+    { }
+
+    open fun commit(commitType: CommitType?)
+    { }
+
+    override fun dispose()
     { }
 }

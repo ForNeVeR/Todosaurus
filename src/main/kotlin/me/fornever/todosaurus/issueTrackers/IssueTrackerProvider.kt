@@ -4,10 +4,8 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.tasks.TaskRepositoryType
-import com.intellij.tasks.youtrack.YouTrackRepository
 import com.intellij.util.containers.toArray
 import me.fornever.todosaurus.issueTrackers.gitHub.GitHub
-import me.fornever.todosaurus.issueTrackers.youTrack.YouTrack
 
 @Service(Service.Level.PROJECT)
 class IssueTrackerProvider(private val project: Project) {
@@ -21,6 +19,9 @@ class IssueTrackerProvider(private val project: Project) {
             .mapNotNull { createTracker(it) }
             .toArray(emptyArray())
 
+    fun provide(title: String): IssueTracker?
+        = provideAll().singleOrNull { it.title == title }
+
     private fun createTracker(issueTrackerType: TaskRepositoryType<*>): IssueTracker? {
         val icon = issueTrackerType.icon
         val title = issueTrackerType.name
@@ -29,7 +30,6 @@ class IssueTrackerProvider(private val project: Project) {
             return GitHub(project, icon, title)
 
         return when (issueTrackerType.repositoryClass) {
-            YouTrackRepository::class.java -> YouTrack(icon, title)
             else -> null
         }
     }

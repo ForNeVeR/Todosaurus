@@ -16,7 +16,9 @@ import me.fornever.todosaurus.issueTrackers.anonymous.AnonymousCredentials
 import me.fornever.todosaurus.issueTrackers.ui.controls.IssueTrackerComboBox
 import me.fornever.todosaurus.issueTrackers.ui.controls.IssueTrackerCredentialsComboBox
 import me.fornever.todosaurus.issueTrackers.ui.controls.ServerHostComboBox
-import me.fornever.todosaurus.ui.wizard.OptionalStepProvider
+import me.fornever.todosaurus.settings.TodosaurusSettings
+import me.fornever.todosaurus.ui.wizard.DynamicStepProvider
+import me.fornever.todosaurus.ui.wizard.MemorableStep
 import me.fornever.todosaurus.ui.wizard.TodosaurusContext
 import me.fornever.todosaurus.ui.wizard.TodosaurusStep
 import me.fornever.todosaurus.vcs.git.ui.wizard.ChooseGitRemoteStep
@@ -24,7 +26,8 @@ import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JLabel
 
-class ChooseIssueTrackerStep(private val project: Project, private val model: TodosaurusContext) : TodosaurusStep(), OptionalStepProvider {
+class ChooseIssueTrackerStep(private val project: Project, private val model: TodosaurusContext)
+    : TodosaurusStep(), DynamicStepProvider, MemorableStep {
     companion object {
         val id: Any = ChooseIssueTrackerStep::class.java
     }
@@ -171,7 +174,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val model: To
                                     listener(invoke())
                                 }
 
-                                connectAnonymouslyCheckBox.addChangeListener {
+                                connectAnonymouslyCheckBox.addActionListener {
                                     listener(invoke())
                                 }
                             }
@@ -252,7 +255,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val model: To
             })
             .enabledIf(object : ComponentPredicate() {
                 override fun addListener(listener: (Boolean) -> Unit) {
-                    connectAnonymouslyCheckBox.addChangeListener {
+                    connectAnonymouslyCheckBox.addActionListener {
                         listener(invoke())
                     }
                 }
@@ -301,18 +304,16 @@ class ChooseIssueTrackerStep(private val project: Project, private val model: To
         }
     }
 
-    override val optionalSteps: MutableList<TodosaurusStep>
-        get() = mutableListOf(
-            ChooseGitRemoteStep(project, model)
-        )
+    override fun createDynamicStep(): TodosaurusStep
+        = SpecificIssueTrackerStepFactory
+            .getInstance(project)
+            .create(model)
+                ?: error("Cannot create specific step for ${model.connectionDetails.issueTracker?.title}")
 
-    override fun chooseOptionalStepId(): Any {
-        val issueTracker = model.connectionDetails.issueTracker ?: return id
+    override fun rememberUserChoice() {
+        val todosaurusSettings = TodosaurusSettings.getInstance()
 
-        val nextStepId = SpecificIssueTrackerStepProvider
-            .getInstance()
-            .create(issueTracker)
-
-        return nextStepId ?: id
+        todosaurusSettings.state.issueTracker = model.connectionDetails.issueTracker
+        todosaurusSettings.state.credentials = model.connectionDetails.credentials
     }
 }

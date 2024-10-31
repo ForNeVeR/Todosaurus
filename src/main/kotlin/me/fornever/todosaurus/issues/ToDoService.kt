@@ -7,14 +7,19 @@ import com.intellij.openapi.command.executeCommand
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.fornever.todosaurus.issueTrackers.IssueTrackerConnectionDetails
 import me.fornever.todosaurus.issueTrackers.ui.wizard.ChooseIssueTrackerStep
+import me.fornever.todosaurus.settings.TodosaurusSettings
 import me.fornever.todosaurus.ui.Notifications
 import me.fornever.todosaurus.ui.wizard.CreateNewIssueStep
 import me.fornever.todosaurus.ui.wizard.TodosaurusContext
 import me.fornever.todosaurus.ui.wizard.TodosaurusWizardBuilder
 import me.fornever.todosaurus.ui.wizard.WizardResult
+import me.fornever.todosaurus.vcs.git.GitBasedPlacementDetails
 import me.fornever.todosaurus.vcs.git.ui.wizard.ChooseGitRemoteStep
 
 @Service(Service.Level.PROJECT)
@@ -23,88 +28,133 @@ class ToDoService(private val project: Project) {
         fun getInstance(project: Project): ToDoService = project.service()
     }
 
+    private val todosaurusSettings: TodosaurusSettings = TodosaurusSettings.getInstance()
+
     fun createNewIssue(toDoItem: ToDoItem) {
+        if (todosaurusSettings.state.hasCredentials()) {
+            val connectionDetails = IssueTrackerConnectionDetails().also {
+                it.issueTracker = todosaurusSettings.state.issueTracker
+                it.credentials = todosaurusSettings.state.credentials
+            }
+
+            val placementDetails = GitBasedPlacementDetails().also {
+                it.remote = todosaurusSettings.state.gitRemote
+            }
+
+            val model = TodosaurusContext(toDoItem, connectionDetails, placementDetails)
+
+            return TodosaurusWizardBuilder(project)
+                .setTitle("Create New Issue")
+                .addStep(CreateNewIssueStep(project, model))
+                .setFinalAction { createNewIssue(model) }
+                .build()
+                .show()
+        }
+
         val model = TodosaurusContext(toDoItem)
 
-        TodosaurusWizardBuilder(project)
+        return TodosaurusWizardBuilder(project)
             .setTitle("Create New Issue")
             .addStep(ChooseIssueTrackerStep(project, model))
             .addStep(CreateNewIssueStep(project, model))
-            .setFinalAction {
-                try {
-                    val issueTracker = model.connectionDetails.issueTracker
-                        ?: error("Issue tracker must be specified")
-
-                    val credentials = model.connectionDetails.credentials
-                        ?: error("Credentials must be specified")
-
-                    val placementDetails = model.placementDetails
-                        ?: error("Placement details must be specified")
-
-                    val newIssue = issueTracker
-                        .createClient(credentials, placementDetails)
-                        .createIssue(model.toDoItem)
-
-                    @Suppress("UnstableApiUsage")
-                    writeAction {
-                        executeCommand(project, "Update TODO Item") {
-                            model.toDoItem.markAsReported(newIssue.number)
-                        }
-                    }
-
-                    Notifications.CreateNewIssue.success(newIssue, project)
-
-                    return@setFinalAction WizardResult.Success
-                }
-                catch (exception: Exception) {
-                    Notifications.CreateNewIssue.failed(project)
-
-                    return@setFinalAction WizardResult.Failed
-                }
-            }
+            .setFinalAction { createNewIssue(model) }
             .build()
             .show()
     }
 
+    private suspend fun createNewIssue(model: TodosaurusContext): WizardResult {
+        try {
+            val issueTracker = model.connectionDetails.issueTracker
+                ?: error("Issue tracker must be specified")
+
+            val credentials = model.connectionDetails.credentials
+                ?: error("Credentials must be specified")
+
+            val placementDetails = model.placementDetails
+                ?: error("Placement details must be specified")
+
+            val newIssue = issueTracker
+                .createClient(credentials, placementDetails)
+                .createIssue(model.toDoItem)
+
+            @Suppress("UnstableApiUsage")
+            writeAction {
+                executeCommand(project, "Update TODO Item") {
+                    model.toDoItem.markAsReported(newIssue.number)
+                }
+            }
+
+            Notifications.CreateNewIssue.success(newIssue, project)
+
+            return WizardResult.Success
+        }
+        catch (exception: Exception) {
+            Notifications.CreateNewIssue.failed(exception, project)
+
+            return WizardResult.Failed
+        }
+    }
+
     fun openReportedIssueInBrowser(toDoItem: ToDoItem) {
+        if (todosaurusSettings.state.hasCredentials()) {
+            val connectionDetails = IssueTrackerConnectionDetails().also {
+                it.issueTracker = todosaurusSettings.state.issueTracker
+                it.credentials = todosaurusSettings.state.credentials
+            }
+
+            val placementDetails = GitBasedPlacementDetails().also {
+                it.remote = todosaurusSettings.state.gitRemote
+            }
+
+            val model = TodosaurusContext(toDoItem, connectionDetails, placementDetails)
+
+            CoroutineScope(Dispatchers.IO).launch {
+                openReportedIssueInBrowser(model)
+            }
+
+            return
+        }
+
         val model = TodosaurusContext(toDoItem)
 
-        TodosaurusWizardBuilder(project)
+        return TodosaurusWizardBuilder(project)
             .setTitle("Open Issue In Browser")
             .setFinalButtonName("Open")
             .addStep(ChooseIssueTrackerStep(project, model))
-            .setFinalAction {
-                try {
-                    val issueTracker = model.connectionDetails.issueTracker
-                        ?: error("Issue tracker must be specified")
-
-                    val credentials = model.connectionDetails.credentials
-                        ?: error("Credentials must be specified")
-
-                    val placementDetails = model.placementDetails
-                        ?: error("Placement details must be specified")
-
-                    val issueNumber = readAction { model.toDoItem.issueNumber }
-                        ?: error("Issue number must be specified")
-
-                    val issue = issueTracker
-                        .createClient(credentials, placementDetails)
-                        .getIssue(model.toDoItem)
-                            ?: error("Issue with number \"${issueNumber}\" not found on ${issueTracker.title}")
-
-                    withContext(Dispatchers.IO) {
-                        BrowserUtil.browse(issue.url, project)
-                    }
-
-                    return@setFinalAction WizardResult.Success
-                }
-                catch (exception: Exception) {
-                    Notifications.OpenReportedIssueInBrowser.failed(exception, project)
-
-                    return@setFinalAction WizardResult.Failed
-                }
-            }
+            .setFinalAction { openReportedIssueInBrowser(model) }
             .build()
             .show()
+    }
+
+    private suspend fun openReportedIssueInBrowser(model: TodosaurusContext): WizardResult {
+        try {
+            val issueTracker = model.connectionDetails.issueTracker
+                ?: error("Issue tracker must be specified")
+
+            val credentials = model.connectionDetails.credentials
+                ?: error("Credentials must be specified")
+
+            val placementDetails = model.placementDetails
+                ?: error("Placement details must be specified")
+
+            val issueNumber = readAction { model.toDoItem.issueNumber }
+                ?: error("Issue number must be specified")
+
+            val issue = issueTracker
+                .createClient(credentials, placementDetails)
+                .getIssue(model.toDoItem)
+                    ?: error("Issue with number \"${issueNumber}\" not found on ${issueTracker.title}")
+
+            withContext(Dispatchers.IO) {
+                BrowserUtil.browse(issue.url, project)
+            }
+
+            return WizardResult.Success
+        }
+        catch (exception: Exception) {
+            Notifications.OpenReportedIssueInBrowser.failed(exception, project)
+
+            return WizardResult.Failed
+        }
     }
 }

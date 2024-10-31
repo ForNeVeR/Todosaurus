@@ -5,6 +5,8 @@ import com.intellij.ui.UserActivityWatcher
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.ComponentPredicate
+import me.fornever.todosaurus.settings.TodosaurusSettings
+import me.fornever.todosaurus.ui.wizard.MemorableStep
 import me.fornever.todosaurus.ui.wizard.TodosaurusContext
 import me.fornever.todosaurus.ui.wizard.TodosaurusStep
 import me.fornever.todosaurus.vcs.git.GitBasedPlacementDetails
@@ -13,7 +15,7 @@ import me.fornever.todosaurus.vcs.git.GitRemoteProvider
 import me.fornever.todosaurus.vcs.git.ui.controls.GitRemoteComboBox
 import javax.swing.JComponent
 
-class ChooseGitRemoteStep(private val project: Project, private val model: TodosaurusContext) : TodosaurusStep() {
+class ChooseGitRemoteStep(private val project: Project, private val model: TodosaurusContext) : TodosaurusStep(), MemorableStep {
     companion object {
         val id: Any = ChooseGitRemoteStep::class.java
     }
@@ -88,5 +90,11 @@ class ChooseGitRemoteStep(private val project: Project, private val model: Todos
     private fun updateIssuePlacementDetails() {
         val placementDetails = model.placementDetails as? GitBasedPlacementDetails ?: return
         placementDetails.remote = gitRemotePicker.selectedItem as? GitRemote
+    }
+
+    override fun rememberUserChoice() {
+        val todosaurusSettings = TodosaurusSettings.getInstance()
+
+        todosaurusSettings.state.gitRemote = (model.placementDetails as? GitBasedPlacementDetails)?.remote
     }
 }

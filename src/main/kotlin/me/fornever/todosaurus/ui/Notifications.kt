@@ -17,11 +17,11 @@ object Notifications {
                 .notify(project)
         }
 
-        fun failed(project: Project) {
+        fun failed(exception: Exception, project: Project) {
             NotificationGroupManager
                 .getInstance()
                 .getNotificationGroup("TodosaurusNotifications")
-                .createNotification("Create new issue", "Failed to create issue", NotificationType.ERROR)
+                .createNotification("Create new issue", "Failed to create issue: ${exception.message}", NotificationType.ERROR)
                 .notify(project)
         }
     }
