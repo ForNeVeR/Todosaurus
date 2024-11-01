@@ -4,6 +4,7 @@
 
 package me.fornever.todosaurus.issues
 
+import com.intellij.openapi.components.serviceOrNull
 import com.intellij.openapi.editor.RangeMarker
 import com.intellij.util.concurrency.annotations.RequiresReadLock
 import com.intellij.util.concurrency.annotations.RequiresWriteLock
@@ -13,13 +14,6 @@ class ToDoItem(val toDoRange: RangeMarker) {
     private companion object {
         val newItemPattern: Regex
             = Regex("\\b(?i)TODO(?-i)\\b:?(?!\\[.*?])") // https://regex101.com/r/lDDqm7/2
-
-        fun formReportedItemPattern(issueNumber: String): String {
-            if (issueNumber.all { it.isDigit() })
-                return "TODO[#${issueNumber}]:"
-
-            return "TODO[${issueNumber}]:"
-        }
     }
 
     private val text: String
@@ -27,15 +21,13 @@ class ToDoItem(val toDoRange: RangeMarker) {
             .document
             .getText(toDoRange.textRange)
 
-    val title: String
-        get() = text
-            .substringBefore('\n')
-            .replace(newItemPattern, "")
-            .trim()
+    var title: String = text
+        .substringBefore('\n')
+        .replace(newItemPattern, "")
+        .trim()
 
-    val description: String
-        get() = (if (text.contains("\n")) text.substringAfter('\n') + "\n" else "") +
-            TodosaurusSettings.getInstance().state.descriptionTemplate
+    var description: String = (if (text.contains("\n")) text.substringAfter('\n') + "\n" else "") +
+        TodosaurusSettings.getInstance().state.descriptionTemplate
 
     @get:RequiresReadLock
     val issueNumber: String?
@@ -54,11 +46,20 @@ class ToDoItem(val toDoRange: RangeMarker) {
         if (!isNew)
             return
 
-        val previousText = text
+        val previousText = text // TODO: We should update title in document (because title can be changed by user now)
         val newText = previousText.replace(newItemPattern, formReportedItemPattern(issueNumber))
         toDoRange.document.replaceString(toDoRange.startOffset, toDoRange.endOffset, newText)
     }
 
     val isNew: Boolean
         get() = newItemPattern.containsMatchIn(text)
+
+    private fun formReportedItemPattern(issueNumber: String): String {
+        // TODO: Allow to customize template for issue number. This is difficult task because the "newItemPattern" is now linked to a regular [.*?] pattern
+
+        val settings = serviceOrNull<TodosaurusSettings>()?.state // TODO: Tests broke if we replaced serviceOrNull with TodosaurusSettings.getInstance
+            ?: TodosaurusSettings.State.defaultState
+
+        return "TODO${settings.numberPattern}".replace(TodosaurusSettings.ISSUE_NUMBER_REPLACEMENT, issueNumber)
+    }
 }

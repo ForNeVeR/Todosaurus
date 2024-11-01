@@ -27,6 +27,9 @@ class CreateNewIssueStep(private val project: Project, private val model: Todosa
                 .label(TodosaurusBundle.getMessage("wizard.steps.createNewIssue.title"), LabelPosition.TOP)
                 .align(AlignX.FILL)
                 .text(model.toDoItem.title)
+                .onChanged { // For some reason bindText({ model.toDoItem.title }, { model.toDoItem.title = it }) function is not working :(
+                    model.toDoItem.title = it.text
+                }
                 .component
         }
 
@@ -35,6 +38,9 @@ class CreateNewIssueStep(private val project: Project, private val model: Todosa
                 .label(TodosaurusBundle.getMessage("wizard.steps.createNewIssue.description"), LabelPosition.TOP)
                 .align(Align.FILL)
                 .text(model.toDoItem.description)
+                .onChanged {
+                    model.toDoItem.description = it.text
+                }
                 .component
                 .also {
                     it.lineWrap = true
