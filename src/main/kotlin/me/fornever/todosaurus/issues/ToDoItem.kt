@@ -16,6 +16,9 @@ class ToDoItem(val toDoRange: RangeMarker) {
             = Regex("\\b(?i)TODO(?-i)\\b:?(?!\\[.*?])") // https://regex101.com/r/lDDqm7/2
     }
 
+    private val settings = serviceOrNull<TodosaurusSettings>()?.state
+        ?: TodosaurusSettings.State.defaultState // TODO: Tests broke if we replaced serviceOrNull with TodosaurusSettings.getInstance
+
     private val text: String
         get() = toDoRange
             .document
@@ -27,7 +30,7 @@ class ToDoItem(val toDoRange: RangeMarker) {
         .trim()
 
     var description: String = (if (text.contains("\n")) text.substringAfter('\n') + "\n" else "") +
-        TodosaurusSettings.getInstance().state.descriptionTemplate
+        settings.descriptionTemplate
 
     @get:RequiresReadLock
     val issueNumber: String?
@@ -56,10 +59,6 @@ class ToDoItem(val toDoRange: RangeMarker) {
 
     private fun formReportedItemPattern(issueNumber: String): String {
         // TODO: Allow to customize template for issue number. This is difficult task because the "newItemPattern" is now linked to a regular [.*?] pattern
-
-        val settings = serviceOrNull<TodosaurusSettings>()?.state // TODO: Tests broke if we replaced serviceOrNull with TodosaurusSettings.getInstance
-            ?: TodosaurusSettings.State.defaultState
-
         return "TODO${settings.numberPattern}".replace(TodosaurusSettings.ISSUE_NUMBER_REPLACEMENT, issueNumber)
     }
 }
