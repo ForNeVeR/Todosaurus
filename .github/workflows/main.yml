@@ -1,6 +1,7 @@
+# SPDX-FileCopyrightText: 2000-2021 JetBrains s.r.o.
 # SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 #
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: Apache-2.0
 
 # GitHub Actions Workflow is created for testing and preparing the plugin release in the following steps:
 # - Validate Gradle Wrapper.
@@ -136,12 +137,12 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: zulu
-          java-version: 17
+          distribution: oracle
+          java-version: 21
 
       # Run Qodana inspections
       - name: Qodana - Code Inspection
-        uses: JetBrains/qodana-action@v2024.2.3
+        uses: JetBrains/qodana-action@v2024.2.6
         with:
           cache-default-branch-only: true
 
