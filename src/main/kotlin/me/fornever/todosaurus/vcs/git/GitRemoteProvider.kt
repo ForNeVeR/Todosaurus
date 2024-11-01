@@ -29,9 +29,6 @@ class GitRemoteProvider(private val project: Project) {
             .toList()
             .toTypedArray()
 
-    fun provide(connectionDetails: IssueTrackerConnectionDetails, url: URI): GitRemote?
-        = provideAll(connectionDetails).singleOrNull { it.url == url }
-
     private fun mapToRemotes(repository: GitRepository, connectionDetails: IssueTrackerConnectionDetails): Sequence<GitRemote>
         = repository
             .remotes

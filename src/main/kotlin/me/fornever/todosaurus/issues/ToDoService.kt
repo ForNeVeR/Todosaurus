@@ -13,6 +13,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import me.fornever.todosaurus.TodosaurusBundle
 import me.fornever.todosaurus.issueTrackers.ui.wizard.ChooseIssueTrackerStep
 import me.fornever.todosaurus.settings.TodosaurusSettings
 import me.fornever.todosaurus.ui.Notifications
@@ -36,7 +37,7 @@ class ToDoService(private val project: Project) {
         val model = TodosaurusContext(toDoItem)
 
         return TodosaurusWizardBuilder(project)
-            .setTitle("Create New Issue")
+            .setTitle(TodosaurusBundle.message("action.CreateNewIssue.text"))
             .addStep(ChooseIssueTrackerStep(project, model))
             .addStep(CreateNewIssueStep(project, model))
             .setFinalAction { createNewIssue(model) }
@@ -84,8 +85,8 @@ class ToDoService(private val project: Project) {
         val model = TodosaurusContext(toDoItem)
 
         return TodosaurusWizardBuilder(project)
-            .setTitle("Open Issue In Browser")
-            .setFinalButtonName("Open")
+            .setTitle(TodosaurusBundle.message("action.OpenReportedIssueInBrowser.text"))
+            .setFinalButtonName(TodosaurusBundle.message("wizard.steps.chooseGitRemote.openReportedIssueInBrowser.primaryButton.name"))
             .addStep(ChooseIssueTrackerStep(project, model))
             .setFinalAction { openReportedIssueInBrowser(model) }
             .build()

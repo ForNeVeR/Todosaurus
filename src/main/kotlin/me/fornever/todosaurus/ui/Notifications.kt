@@ -7,6 +7,7 @@ package me.fornever.todosaurus.ui
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
+import me.fornever.todosaurus.TodosaurusBundle
 import me.fornever.todosaurus.issues.IssueModel
 import me.fornever.todosaurus.ui.actions.OpenNewIssueInBrowserAction
 
@@ -16,7 +17,10 @@ object Notifications {
             NotificationGroupManager
                 .getInstance()
                 .getNotificationGroup("TodosaurusNotifications")
-                .createNotification("Issue ${issue.number} has been created.", NotificationType.INFORMATION)
+                .createNotification(
+                    TodosaurusBundle.getMessage("notifications.createNewIssue.title"),
+                    TodosaurusBundle.getMessage("notifications.createNewIssue.success.text", issue.number),
+                    NotificationType.INFORMATION)
                 .addAction(OpenNewIssueInBrowserAction(issue))
                 .notify(project)
         }
@@ -25,16 +29,23 @@ object Notifications {
             NotificationGroupManager
                 .getInstance()
                 .getNotificationGroup("TodosaurusNotifications")
-                .createNotification("Create new issue", "Failed to create issue: ${exception.message}", NotificationType.ERROR)
+                .createNotification(
+                    TodosaurusBundle.getMessage("notifications.createNewIssue.title"),
+                    TodosaurusBundle.getMessage("notifications.createNewIssue.failed.text", exception.message),
+                    NotificationType.ERROR)
                 .notify(project)
         }
     }
 
     object OpenReportedIssueInBrowser {
         fun failed(exception: Exception, project: Project) {
-            NotificationGroupManager.getInstance()
+            NotificationGroupManager
+                .getInstance()
                 .getNotificationGroup("TodosaurusNotifications")
-                .createNotification("Failed to open issue in browser", exception.message ?: "Unexpected error", NotificationType.ERROR)
+                .createNotification(
+                    TodosaurusBundle.getMessage("notifications.openReportedIssueInBrowser.title"),
+                    TodosaurusBundle.getMessage("notifications.openReportedIssueInBrowser.failed.text", exception.message),
+                    NotificationType.ERROR)
                 .notify(project)
         }
     }

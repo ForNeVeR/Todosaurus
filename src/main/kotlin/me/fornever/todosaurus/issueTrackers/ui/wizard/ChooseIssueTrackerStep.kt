@@ -15,6 +15,7 @@ import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.ComponentPredicate
 import kotlinx.coroutines.*
+import me.fornever.todosaurus.TodosaurusBundle
 import me.fornever.todosaurus.issueTrackers.*
 import me.fornever.todosaurus.issueTrackers.anonymous.AnonymousCredentials
 import me.fornever.todosaurus.issueTrackers.ui.controls.IssueTrackerComboBox
@@ -39,7 +40,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val model: To
     private var issueTrackerPicker: IssueTrackerComboBox = IssueTrackerComboBox()
     private var serverHostPicker: ServerHostComboBox = ServerHostComboBox()
     private var credentialsPicker: IssueTrackerCredentialsComboBox = IssueTrackerCredentialsComboBox()
-    private var connectAnonymouslyCheckBox: JBCheckBox = JBCheckBox("Connect anonymously")
+    private var connectAnonymouslyCheckBox: JBCheckBox = JBCheckBox(TodosaurusBundle.message("wizard.steps.chooseIssueTracker.account.connectAnonymously"))
     private var testConnectionResultLabel: JLabel = JLabel()
     private lateinit var testConnectionButton: JButton
 
@@ -105,7 +106,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val model: To
     override fun getComponent(): JComponent = panel {
 		panel {
             row {
-                label("Choose an issue tracker:")
+                label(TodosaurusBundle.message("wizard.steps.chooseIssueTracker.issueTracker.title"))
             }
 
             row {
@@ -125,14 +126,14 @@ class ChooseIssueTrackerStep(private val project: Project, private val model: To
             }
 
             row {
-                comment("This list contains issue trackers supported by Todosaurus")
+                comment(TodosaurusBundle.message("wizard.steps.chooseIssueTracker.issueTracker.description"))
             }
         }
 
         // For some reason `label` cannot be hidden using `visibleIf` if they are attached to `serverHostPicker` row
         panel {
             row {
-                label("Choose a server:")
+                label(TodosaurusBundle.message("wizard.steps.chooseIssueTracker.serverHost.title"))
             }
 
             row {
@@ -164,7 +165,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val model: To
 
         panel {
             row {
-                label("Choose an account:")
+                label(TodosaurusBundle.message("wizard.steps.chooseIssueTracker.account.title"))
             }
 
             row {
@@ -212,7 +213,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val model: To
         })
 
         row {
-            testConnectionButton = button("Test Connection") {
+            testConnectionButton = button(TodosaurusBundle.message("wizard.steps.chooseIssueTracker.testConnection.title")) {
                 val button = it.source as? JButton ?: return@button
 
                 val defaultIcon = button.icon
@@ -228,11 +229,11 @@ class ChooseIssueTrackerStep(private val project: Project, private val model: To
 
                     withContext(Dispatchers.EDT) {
                         if (result is TestConnectionResult.Failed) {
-                            testConnectionResultLabel.text = result.reason ?: "Unexpected error"
+                            testConnectionResultLabel.text = result.reason ?: TodosaurusBundle.message("wizard.steps.chooseIssueTracker.testConnection.unexpectedError")
                             testConnectionResultLabel.foreground = JBColor.RED
                         }
                         else {
-                            testConnectionResultLabel.text = "Connection is successful!"
+                            testConnectionResultLabel.text = TodosaurusBundle.message("wizard.steps.chooseIssueTracker.testConnection.success")
                             testConnectionResultLabel.foreground = JBColor.GREEN
                         }
 

@@ -23,14 +23,11 @@ class IssueTrackerProvider(private val project: Project) {
             .mapNotNull { createTracker(it) }
             .toArray(emptyArray())
 
-    fun provide(title: String): IssueTracker?
-        = provideAll().singleOrNull { it.title == title }
-
     private fun createTracker(issueTrackerType: TaskRepositoryType<*>): IssueTracker? {
         val icon = issueTrackerType.icon
         val title = issueTrackerType.name
 
-        if (title == GitHub::class.simpleName) // TODO: Mark GithubRepository in intellij-community as public. Then change this condition to "details.repositoryClass == GithubRepository::class.java"
+        if (title == GitHub::class.simpleName) // TODO: Mark GithubRepository in intellij-community as public. Then move this condition to "when" below: "GithubRepository::class.java -> GitHub()"
             return GitHub(project, icon, title)
 
         return when (issueTrackerType.repositoryClass) {

@@ -201,7 +201,7 @@ class TodosaurusWizard(title: String, project: Project, private val finalAction:
         }
 
         if (style == DialogStyle.COMPACT) {
-            verticalPanel.setBorder(BorderFactory.createEmptyBorder(4, 15, 4, 15))
+            verticalPanel.border = BorderFactory.createEmptyBorder(4, 15, 4, 15)
         }
 
         val topPanel = JPanel().also {
@@ -324,10 +324,10 @@ class TodosaurusWizard(title: String, project: Project, private val finalAction:
             nextButton.mnemonic = 78
         }
 
-        nextButton.setEnabled(canGoNext)
+        nextButton.isEnabled = canGoNext
 
         if (nextButton.isEnabled && !ApplicationManager.getApplication().isUnitTestMode) {
-            rootPane?.setDefaultButton(nextButton)
+            rootPane?.defaultButton = nextButton
         }
 
         previousButton.isEnabled = !firstStep

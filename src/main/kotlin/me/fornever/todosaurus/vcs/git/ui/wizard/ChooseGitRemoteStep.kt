@@ -9,6 +9,7 @@ import com.intellij.ui.UserActivityWatcher
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.ComponentPredicate
+import me.fornever.todosaurus.TodosaurusBundle
 import me.fornever.todosaurus.ui.wizard.MemorableStep
 import me.fornever.todosaurus.ui.wizard.TodosaurusContext
 import me.fornever.todosaurus.ui.wizard.TodosaurusStep
@@ -50,7 +51,7 @@ class ChooseGitRemoteStep(private val project: Project, private val model: Todos
     override fun getComponent(): JComponent = panel {
         panel {
             row {
-                label("Choose a remote repository:")
+                label(TodosaurusBundle.message("wizard.steps.chooseGitRemote.remoteUrl.title"))
             }
 
             row {

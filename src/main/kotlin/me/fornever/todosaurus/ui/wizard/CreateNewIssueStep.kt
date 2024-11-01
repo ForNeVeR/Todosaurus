@@ -8,6 +8,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBTextArea
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
+import me.fornever.todosaurus.TodosaurusBundle
 import javax.swing.JComponent
 
 class CreateNewIssueStep(private val project: Project, private val model: TodosaurusContext) : TodosaurusStep() {
@@ -23,7 +24,7 @@ class CreateNewIssueStep(private val project: Project, private val model: Todosa
     override fun getComponent(): JComponent = panel {
         row {
             titleField = textField()
-                .label("Issue title:", LabelPosition.TOP)
+                .label(TodosaurusBundle.getMessage("wizard.steps.createNewIssue.title"), LabelPosition.TOP)
                 .align(AlignX.FILL)
                 .text(model.toDoItem.title)
                 .component
@@ -31,7 +32,7 @@ class CreateNewIssueStep(private val project: Project, private val model: Todosa
 
         row {
             descriptionField = textArea()
-                .label("Description:", LabelPosition.TOP)
+                .label(TodosaurusBundle.getMessage("wizard.steps.createNewIssue.description"), LabelPosition.TOP)
                 .align(Align.FILL)
                 .text(model.toDoItem.description)
                 .component

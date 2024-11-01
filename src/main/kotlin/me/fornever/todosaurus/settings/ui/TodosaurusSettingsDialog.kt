@@ -9,6 +9,7 @@ import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.LabelPosition
 import com.intellij.ui.dsl.builder.panel
+import me.fornever.todosaurus.TodosaurusBundle
 import javax.swing.JComponent
 
 class TodosaurusSettingsDialog {
@@ -28,21 +29,21 @@ class TodosaurusSettingsDialog {
         }
 
     fun createPanel(): JComponent = panel {
-        // TODO: Move all text to TodosaurusBundle.properties
         // TODO: Add validation
-        group("Patterns") {
+        group(TodosaurusBundle.message("settings.patterns.title")) {
             row {
                 textField()
-                    .label("Issue number pattern:", LabelPosition.TOP)
-                    .comment("This pattern is used when inserting a number into the TODO after creating a task in the issue tracker")
+                    .label(TodosaurusBundle.message("settings.patterns.issueNumber.title"), LabelPosition.TOP)
+                    .comment(TodosaurusBundle.message("settings.patterns.issueNumber.description"))
                     .align(AlignX.FILL)
+                    .enabled(false) // TODO: Allow to customize template for issue number. This is difficult task because the "newItemPattern" is now linked to a regular [.*?] pattern
                     .let { numberPatternField = it.component }
             }
 
             row {
                 textArea()
-                    .label("Issue description template:", LabelPosition.TOP)
-                    .comment("This template is used as the initial text when creating a new issue")
+                    .label(TodosaurusBundle.message("settings.patterns.descriptionTemplate.title"), LabelPosition.TOP)
+                    .comment(TodosaurusBundle.message("settings.patterns.descriptionTemplate.description"))
                     .align(AlignX.FILL)
                     .let { descriptionTemplateField = it.component }
             }
