@@ -38,12 +38,12 @@ class IssueNumberTests(private val source: String, private val expected: String?
                 arrayOf("TODO [124]", null),
                 arrayOf("todo [125]", null),
                 arrayOf("text Todo [#126]", null),
-                arrayOf("ToDo[a127]:", null),
-                arrayOf("Todo[c128b]:text", null),
-                arrayOf("ToDo[129d]: Text", null),
-                arrayOf("ToDo[1a30]:", null),
-                arrayOf("Todo[13c1]:text", null),
-                arrayOf("ToDo[1b3c2]: Text", null)
+                arrayOf("ToDo[a127]:", "a127"),
+                arrayOf("Todo[c128b]:text", "c128b"),
+                arrayOf("ToDo[129d]: Text", "129d"),
+                arrayOf("ToDo[1a30]:", "1a30"),
+                arrayOf("Todo[13c1]:text", "13c1"),
+                arrayOf("ToDo[1b3c2]: Text", "1b3c2")
             )
     }
 
