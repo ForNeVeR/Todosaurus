@@ -4,9 +4,9 @@
 # SPDX-License-Identifier: Apache-2.0
 
 [versions]
-ideaSdk = "2024.2"
-ideaSdkPreview = "2024.2.4"
-kotlin = "1.9.24"
+ideaSdk = "2024.3"
+ideaSdkPreview = "2024.3"
+kotlin = "2.0.20"
 
 [libraries]
 junit = "junit:junit:4.13.2"
