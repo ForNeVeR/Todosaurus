@@ -9,6 +9,6 @@ param(
 )
 
 gh release create --title "Todosaurus v$Version" --notes-file $ReleaseNotesFilePath "v$Version" $FileToUpload
-if (!$$) {
+if (!$?) {
     throw "Error running gh release: $LASTEXITCODE."
 }
