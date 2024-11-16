@@ -49,6 +49,10 @@ jobs:
         with:
           gradle-home-cache-cleanup: true
 
+      - name: 'Build the plugin'
+        shell: pwsh
+        run: ./gradlew buildPlugin
+
       - name: Upload the artifact
         uses: actions/upload-artifact@v4
         with:
