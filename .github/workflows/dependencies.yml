@@ -37,7 +37,7 @@ jobs:
         shell: pwsh
         run: ./scripts/New-PR.ps1 -BranchName $env:BRANCH_NAME -CommitMessage $env:COMMIT_MESSAGE -PrTitle $env:PR_TITLE -PrBodyPath $env:PR_BODY_PATH
         env:
-          GITHUB_TOKEN: ${{ secrets.PR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH_NAME: ${{ steps.update.outputs.branch-name }}
           COMMIT_MESSAGE: ${{ steps.update.outputs.commit-message }}
           PR_TITLE: ${{ steps.update.outputs.pr-title }}
