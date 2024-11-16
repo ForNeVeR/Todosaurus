@@ -104,7 +104,7 @@ class GitHubService(private val project: Project) {
         val virtualRoot = LocalFileSystem.getInstance().findFileByNioFile(model.rootPath)
             ?: error("Cannot find virtual file for \"${model.rootPath}\".")
 
-        val repository = manager.repositories
+        val repository = manager.getRepositories()
             .asSequence()
             .filterIsInstance<GitRepository>()
             .filter { it.root == virtualRoot }

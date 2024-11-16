@@ -86,7 +86,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
 
     private fun collectRepositories(): Array<RepositoryModel> {
         val repositoryManager = VcsRepositoryManager.getInstance(project)
-        return repositoryManager.repositories
+        return repositoryManager.getRepositories()
             .asSequence()
             .filterIsInstance<GitRepository>()
             .flatMap(::getRepositoryModels)
