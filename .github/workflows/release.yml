@@ -66,6 +66,7 @@ jobs:
         shell: pwsh
         run: scripts/New-Release.ps1 -Version $env:VERSION -ReleaseNotesFilePath ./changelog-section.md -FileToUpload $env:FILE_TO_UPLOAD
         env:
+          GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.version.outputs.version }}
           FILE_TO_UPLOAD: build/distributions/Todosaurus-${{ steps.version.outputs.version }}.zip
 
