@@ -43,7 +43,14 @@ jobs:
           input: ./CHANGELOG.md
           output: ./changelog-section.md
 
-      # Setup Gradle
+      - name: 'Cache downloaded JDK'
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.local/share/gradle-jvm
+            ~/AppData/Local/gradle-jvm
+          key: ${{ runner.os }}-${{ hashFiles('gradlew*') }}
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
