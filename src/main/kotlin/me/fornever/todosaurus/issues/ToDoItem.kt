@@ -49,7 +49,7 @@ class ToDoItem(val toDoRange: RangeMarker) {
         if (!isNew)
             return
 
-        val previousText = text // TODO: We should update title in document (because title can be changed by user now)
+        val previousText = text
         val newText = previousText.replace(newItemPattern, formReportedItemPattern(issueNumber))
         toDoRange.document.replaceString(toDoRange.startOffset, toDoRange.endOffset, newText)
     }
