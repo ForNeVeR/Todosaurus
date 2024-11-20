@@ -29,7 +29,7 @@ import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JLabel
 
-class ChooseIssueTrackerStep(private val project: Project, private val model: TodosaurusContext)
+class ChooseIssueTrackerStep(private val project: Project, private val scope: CoroutineScope, private val model: TodosaurusContext)
     : TodosaurusStep(), DynamicStepProvider, MemorableStep {
     companion object {
         val id: Any = ChooseIssueTrackerStep::class.java
@@ -48,8 +48,6 @@ class ChooseIssueTrackerStep(private val project: Project, private val model: To
     private var cachedCredentials: Map<String, List<IssueTrackerCredentials>?>? = null
 
     init {
-        issueTrackerPicker.removeAllItems()
-
         credentialsPicker.addItemListener {
             testConnectionResultLabel.text = ""
         }
@@ -224,7 +222,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val model: To
                 connectAnonymouslyCheckBox.isEnabled = false
                 button.isEnabled = false
 
-                CoroutineScope(Dispatchers.IO).launch {
+                scope.launch(Dispatchers.IO) {
                     val result = checkConnection()
 
                     withContext(Dispatchers.EDT) {
