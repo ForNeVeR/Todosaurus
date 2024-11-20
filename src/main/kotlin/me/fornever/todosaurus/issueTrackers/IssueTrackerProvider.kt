@@ -27,10 +27,8 @@ class IssueTrackerProvider(private val project: Project) {
         val icon = issueTrackerType.icon
         val title = issueTrackerType.name
 
-        if (title == GitHub::class.simpleName) // TODO: Mark GithubRepository in intellij-community as public. Then move this condition to "when" below: "GithubRepository::class.java -> GitHub()"
-            return GitHub(project, icon, title)
-
-        return when (issueTrackerType.repositoryClass) {
+        return when {
+            issueTrackerType.isGitHub() -> GitHub(project, icon, title)
             else -> null
         }
     }
