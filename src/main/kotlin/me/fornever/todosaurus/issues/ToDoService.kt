@@ -11,6 +11,7 @@ import com.intellij.openapi.command.executeCommand
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import me.fornever.todosaurus.TodosaurusBundle
@@ -23,7 +24,7 @@ import me.fornever.todosaurus.ui.wizard.TodosaurusWizardBuilder
 import me.fornever.todosaurus.ui.wizard.WizardResult
 
 @Service(Service.Level.PROJECT)
-class ToDoService(private val project: Project) {
+class ToDoService(private val project: Project, private val scope: CoroutineScope) {
     companion object {
         fun getInstance(project: Project): ToDoService = project.service()
     }
@@ -36,9 +37,9 @@ class ToDoService(private val project: Project) {
 
         val model = TodosaurusContext(toDoItem)
 
-        return TodosaurusWizardBuilder(project)
+        return TodosaurusWizardBuilder(project, scope)
             .setTitle(TodosaurusBundle.message("action.CreateNewIssue.text"))
-            .addStep(ChooseIssueTrackerStep(project, model))
+            .addStep(ChooseIssueTrackerStep(project, scope, model))
             .addStep(CreateNewIssueStep(project, model))
             .setFinalAction { createNewIssue(model) }
             .build()
@@ -84,10 +85,10 @@ class ToDoService(private val project: Project) {
 
         val model = TodosaurusContext(toDoItem)
 
-        return TodosaurusWizardBuilder(project)
+        return TodosaurusWizardBuilder(project, scope)
             .setTitle(TodosaurusBundle.message("action.OpenReportedIssueInBrowser.text"))
             .setFinalButtonName(TodosaurusBundle.message("wizard.steps.chooseGitRemote.openReportedIssueInBrowser.primaryButton.name"))
-            .addStep(ChooseIssueTrackerStep(project, model))
+            .addStep(ChooseIssueTrackerStep(project, scope, model))
             .setFinalAction { openReportedIssueInBrowser(model) }
             .build()
             .show()

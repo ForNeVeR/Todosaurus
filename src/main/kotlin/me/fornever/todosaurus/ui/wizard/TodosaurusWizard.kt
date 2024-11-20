@@ -34,7 +34,7 @@ import java.awt.Component
 import javax.swing.*
 
 
-class TodosaurusWizard(title: String, project: Project, private val finalAction: suspend () -> WizardResult)
+class TodosaurusWizard(title: String, project: Project, private val scope: CoroutineScope, private val finalAction: suspend () -> WizardResult)
     : AbstractWizard<TodosaurusStep>(title, project) {
     private val stepsToIndexes: Object2IntMap<Any> = Object2IntOpenHashMap()
     private val indexesToSteps: Int2ObjectMap<TodosaurusStep> = Int2ObjectOpenHashMap()
@@ -146,7 +146,7 @@ class TodosaurusWizard(title: String, project: Project, private val finalAction:
                 }
         }
 
-        CoroutineScope(Dispatchers.IO).launch {
+        scope.launch(Dispatchers.IO) {
             val result = finalAction()
 
             if (result == WizardResult.Success) {

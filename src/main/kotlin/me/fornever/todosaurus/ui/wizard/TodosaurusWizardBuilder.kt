@@ -5,8 +5,9 @@
 package me.fornever.todosaurus.ui.wizard
 
 import com.intellij.openapi.project.Project
+import kotlinx.coroutines.CoroutineScope
 
-class TodosaurusWizardBuilder(private val project: Project) {
+class TodosaurusWizardBuilder(private val project: Project, private val scope: CoroutineScope) {
     private var wizardTitle: String? = null
     private var finalButtonName: String? = null
     private var finalAction: (suspend () -> WizardResult)? = null
@@ -59,6 +60,7 @@ class TodosaurusWizardBuilder(private val project: Project) {
         val wizard = TodosaurusWizard(
             wizardTitle ?: error("Title is required for wizard"),
             project,
+            scope,
             finalAction ?: error("Final action is required for wizard"))
 
         finalButtonName?.let {
