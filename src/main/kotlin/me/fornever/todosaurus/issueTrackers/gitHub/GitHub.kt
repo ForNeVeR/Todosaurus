@@ -24,7 +24,7 @@ class GitHub(val project: Project, override val icon: Icon, override val title: 
             val request = GithubApiRequests.CurrentUser.get(getGitHubPath(credentials))
             createRequestExecutor(credentials).executeSuspend(request)
 
-            TestConnectionResult.Success()
+            TestConnectionResult.Success
         } catch (exception: Exception) {
             TestConnectionResult.Failed(exception.message)
         }

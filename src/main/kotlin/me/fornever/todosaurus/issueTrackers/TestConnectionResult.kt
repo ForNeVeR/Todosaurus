@@ -6,8 +6,8 @@ package me.fornever.todosaurus.issueTrackers
 
 import me.fornever.todosaurus.TodosaurusBundle
 
-open class TestConnectionResult {
-    class Success : TestConnectionResult()
+sealed class TestConnectionResult {
+    data object Success : TestConnectionResult()
 
     class Failed(val reason: String? = TodosaurusBundle.message("wizard.steps.chooseIssueTracker.testConnection.unexpectedError")) : TestConnectionResult()
 }
