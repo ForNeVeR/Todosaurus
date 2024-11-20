@@ -12,7 +12,6 @@ SPDX-License-Identifier: MIT
     <depends>com.intellij.modules.platform</depends>
     <depends>Git4Idea</depends>
     <depends>org.jetbrains.plugins.github</depends>
-    <depends>org.jetbrains.plugins.gitlab</depends>
 
     <resource-bundle>messages.TodosaurusBundle</resource-bundle>
 
