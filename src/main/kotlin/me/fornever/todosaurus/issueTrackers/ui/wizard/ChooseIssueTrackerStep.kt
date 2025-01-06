@@ -71,7 +71,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
             serverHostPicker.removeAllItems()
             testConnectionResultLabel.text = ""
 
-            val credentials = runBlocking {
+            val credentials = runBlocking { // TODO: Introduce "loading" state for credentials
                 IssueTrackerCredentialsProviderFactory
                     .getInstance(project)
                     .create(issueTracker)
