@@ -7,7 +7,7 @@ package me.fornever.todosaurus.vcs.git
 import java.net.URI
 import java.nio.file.Path
 
-data class GitRemote(val url: URI, val rootPath: Path) {
+data class GitHostingRemote(val url: URI, val rootPath: Path) {
     val ownerAndName: String
         get() = url.path.removePrefix("/")
 

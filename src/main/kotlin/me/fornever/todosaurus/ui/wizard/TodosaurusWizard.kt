@@ -140,7 +140,7 @@ class TodosaurusWizard(title: String, project: Project, private val scope: Corou
 
         if (rememberUserChoiceCheckBox.isSelected) {
             mySteps
-                .filterIsInstance(MemorableStep::class.java)
+                .filterIsInstance<MemorableStep>()
                 .forEach {
                     it.rememberUserChoice()
                 }

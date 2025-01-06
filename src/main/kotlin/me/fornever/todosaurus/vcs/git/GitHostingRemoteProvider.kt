@@ -13,12 +13,12 @@ import me.fornever.todosaurus.issueTrackers.IssueTrackerConnectionDetails
 import java.net.URI
 
 @Service(Service.Level.PROJECT)
-class GitRemoteProvider(private val project: Project) {
+class GitHostingRemoteProvider(private val project: Project) {
     companion object {
-        fun getInstance(project: Project): GitRemoteProvider = project.service()
+        fun getInstance(project: Project): GitHostingRemoteProvider = project.service()
     }
 
-    fun provideAll(connectionDetails: IssueTrackerConnectionDetails): Array<GitRemote>
+    fun provideAll(connectionDetails: IssueTrackerConnectionDetails): Array<GitHostingRemote>
         = VcsRepositoryManager
             .getInstance(project)
             .repositories
@@ -29,13 +29,13 @@ class GitRemoteProvider(private val project: Project) {
             .toList()
             .toTypedArray()
 
-    private fun mapToRemotes(repository: GitRepository, connectionDetails: IssueTrackerConnectionDetails): Sequence<GitRemote>
+    private fun mapToRemotes(repository: GitRepository, connectionDetails: IssueTrackerConnectionDetails): Sequence<GitHostingRemote>
         = repository
             .remotes
             .asSequence()
             .flatMap { it.urls }
             .flatMap { getRepositoryUrls(it, connectionDetails) }
-            .map { GitRemote(it, repository.root.toNioPath()) }
+            .map { GitHostingRemote(it, repository.root.toNioPath()) }
 
     private fun getRepositoryUrls(remoteUrl: String, connectionDetails: IssueTrackerConnectionDetails): List<URI> {
         val serverHost = connectionDetails.serverHost ?: return emptyList()

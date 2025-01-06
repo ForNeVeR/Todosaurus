@@ -14,8 +14,8 @@ import me.fornever.todosaurus.ui.wizard.MemorableStep
 import me.fornever.todosaurus.ui.wizard.TodosaurusContext
 import me.fornever.todosaurus.ui.wizard.TodosaurusStep
 import me.fornever.todosaurus.vcs.git.GitBasedPlacementDetails
-import me.fornever.todosaurus.vcs.git.GitRemote
-import me.fornever.todosaurus.vcs.git.GitRemoteProvider
+import me.fornever.todosaurus.vcs.git.GitHostingRemote
+import me.fornever.todosaurus.vcs.git.GitHostingRemoteProvider
 import me.fornever.todosaurus.vcs.git.ui.controls.GitRemoteComboBox
 import javax.swing.JComponent
 
@@ -37,7 +37,7 @@ class ChooseGitRemoteStep(private val project: Project, private val model: Todos
 
         gitRemotePicker.removeAllItems()
 
-        GitRemoteProvider
+        GitHostingRemoteProvider
             .getInstance(project)
             .provideAll(model.connectionDetails)
             .forEach {
@@ -93,7 +93,7 @@ class ChooseGitRemoteStep(private val project: Project, private val model: Todos
 
     private fun updateIssuePlacementDetails() {
         val placementDetails = model.placementDetails as? GitBasedPlacementDetails ?: return
-        placementDetails.remote = gitRemotePicker.selectedItem as? GitRemote
+        placementDetails.remote = gitRemotePicker.selectedItem as? GitHostingRemote
     }
 
     override fun rememberUserChoice() {

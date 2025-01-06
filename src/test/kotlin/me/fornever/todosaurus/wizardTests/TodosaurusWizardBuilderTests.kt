@@ -4,6 +4,8 @@
 
 package me.fornever.todosaurus.wizardTests
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import me.fornever.todosaurus.testFramework.FakeProject
 import me.fornever.todosaurus.ui.wizard.TodosaurusWizardBuilder
 import org.junit.Assert
@@ -13,7 +15,7 @@ class TodosaurusWizardBuilderTests {
     @Test
     fun `Should link steps properly`() {
         // Arrange
-        val sut = TodosaurusWizardBuilder(FakeProject())
+        val sut = TodosaurusWizardBuilder(FakeProject(), CoroutineScope(Dispatchers.IO))
         val firstStep = FakeStep("1")
         val secondStep = FakeStep("2")
         val lastStep = FakeStep("3")
