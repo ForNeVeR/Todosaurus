@@ -9,6 +9,8 @@ import com.intellij.ui.UserActivityWatcher
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.ComponentPredicate
+import git4idea.GitUtil
+import git4idea.remote.GitConfigureRemotesDialog
 import me.fornever.todosaurus.TodosaurusBundle
 import me.fornever.todosaurus.ui.wizard.MemorableStep
 import me.fornever.todosaurus.ui.wizard.TodosaurusContext
@@ -16,46 +18,34 @@ import me.fornever.todosaurus.ui.wizard.TodosaurusStep
 import me.fornever.todosaurus.vcs.git.GitBasedPlacementDetails
 import me.fornever.todosaurus.vcs.git.GitHostingRemote
 import me.fornever.todosaurus.vcs.git.GitHostingRemoteProvider
-import me.fornever.todosaurus.vcs.git.ui.controls.GitRemoteComboBox
+import me.fornever.todosaurus.vcs.git.ui.controls.GitHostingRemoteComboBox
 import javax.swing.JComponent
 
-class ChooseGitRemoteStep(private val project: Project, private val model: TodosaurusContext) : TodosaurusStep(), MemorableStep {
+class ChooseGitHostingRemoteStep(private val project: Project, private val model: TodosaurusContext) : TodosaurusStep(), MemorableStep {
     companion object {
-        val id: Any = ChooseGitRemoteStep::class.java
+        val id: Any = ChooseGitHostingRemoteStep::class.java
     }
 
     override val id: Any = Companion.id
 
-    private val gitRemotePicker: GitRemoteComboBox = GitRemoteComboBox()
+    private val gitHostingRemotePicker: GitHostingRemoteComboBox = GitHostingRemoteComboBox()
 
     override fun _init() {
         super._init()
 
         model.placementDetails = GitBasedPlacementDetails()
 
-        val selectedIndex = gitRemotePicker.selectedIndex
-
-        gitRemotePicker.removeAllItems()
-
-        GitHostingRemoteProvider
-            .getInstance(project)
-            .provideAll(model.connectionDetails)
-            .forEach {
-                gitRemotePicker.addItem(it)
-            }
-
-        if (selectedIndex > -1)
-            gitRemotePicker.selectedIndex = selectedIndex
+        updateHostingRemotePicker()
     }
 
     override fun getComponent(): JComponent = panel {
         panel {
             row {
-                label(TodosaurusBundle.message("wizard.steps.chooseGitRemote.remoteUrl.title"))
+                label(TodosaurusBundle.message("wizard.steps.chooseGitHostingRemote.remoteUrl.title"))
             }
 
             row {
-                gitRemotePicker.also {
+                gitHostingRemotePicker.also {
                     cell(it)
                         .enabledIf(object : ComponentPredicate() {
                             override fun addListener(listener: (Boolean) -> Unit)
@@ -67,6 +57,13 @@ class ChooseGitRemoteStep(private val project: Project, private val model: Todos
                                 = it.itemCount != 0
                         })
                         .align(Align.FILL)
+                }
+            }
+
+            row {
+                link(TodosaurusBundle.message("wizard.steps.chooseGitHostingRemote.remoteUrl.notFound.link")) {
+                    if (tryAddRemote())
+                        updateHostingRemotePicker()
                 }
             }
         }
@@ -82,7 +79,7 @@ class ChooseGitRemoteStep(private val project: Project, private val model: Todos
     }
 
     override fun getPreferredFocusedComponent(): JComponent
-        = gitRemotePicker
+        = gitHostingRemotePicker
 
     override fun isComplete(): Boolean {
         val placementDetails = model.placementDetails as? GitBasedPlacementDetails
@@ -93,7 +90,27 @@ class ChooseGitRemoteStep(private val project: Project, private val model: Todos
 
     private fun updateIssuePlacementDetails() {
         val placementDetails = model.placementDetails as? GitBasedPlacementDetails ?: return
-        placementDetails.remote = gitRemotePicker.selectedItem as? GitHostingRemote
+        placementDetails.remote = gitHostingRemotePicker.selectedItem as? GitHostingRemote
+    }
+
+    private fun tryAddRemote(): Boolean
+        = GitConfigureRemotesDialog(project, GitUtil.getRepositoryManager(project).repositories)
+            .showAndGet()
+
+    private fun updateHostingRemotePicker() {
+        val selectedIndex = gitHostingRemotePicker.selectedIndex
+
+        gitHostingRemotePicker.removeAllItems()
+
+        GitHostingRemoteProvider
+            .getInstance(project)
+            .provideAll(model.connectionDetails)
+            .forEach {
+                gitHostingRemotePicker.addItem(it)
+            }
+
+        if (selectedIndex > -1 && selectedIndex <= gitHostingRemotePicker.itemCount - 1)
+            gitHostingRemotePicker.selectedIndex = selectedIndex
     }
 
     override fun rememberUserChoice() {

@@ -6,10 +6,11 @@ package me.fornever.todosaurus.vcs.git.ui.controls
 
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.SimpleListCellRenderer
+import me.fornever.todosaurus.TodosaurusBundle
 import me.fornever.todosaurus.vcs.git.GitHostingRemote
 import javax.swing.JList
 
-class GitRemoteComboBox : ComboBox<GitHostingRemote>() {
+class GitHostingRemoteComboBox : ComboBox<GitHostingRemote>() {
     init {
         renderer = object : SimpleListCellRenderer<GitHostingRemote?>() {
             override fun customize(
@@ -19,7 +20,7 @@ class GitRemoteComboBox : ComboBox<GitHostingRemote>() {
 				selected: Boolean,
 				hasFocus: Boolean
             ) {
-                text = value?.ownerAndName
+                text = value?.ownerAndName ?: TodosaurusBundle.message("wizard.steps.chooseGitHostingRemote.remoteUrl.notFound.title")
             }
         }
     }
