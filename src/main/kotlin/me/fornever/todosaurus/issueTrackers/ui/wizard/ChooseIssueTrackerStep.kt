@@ -6,7 +6,9 @@ package me.fornever.todosaurus.issueTrackers.ui.wizard
 
 import com.intellij.collaboration.api.ServerPath
 import com.intellij.openapi.application.EDT
+import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.Project
+import com.intellij.tasks.config.TaskRepositoriesConfigurable
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.JBColor
 import com.intellij.ui.UserActivityWatcher
@@ -14,7 +16,10 @@ import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.layout.ComponentPredicate
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.fornever.todosaurus.TodosaurusBundle
 import me.fornever.todosaurus.issueTrackers.*
 import me.fornever.todosaurus.issueTrackers.anonymous.AnonymousCredentials
@@ -49,55 +54,18 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
 
     init {
         credentialsPicker.addItemListener {
-            testConnectionResultLabel.text = ""
+            clearTestConnectionResult()
         }
 
-        serverHostPicker.addItemListener { event ->
-            val serverHost = event.item as? String ?: return@addItemListener
-
-            credentialsPicker.removeAllItems()
-            testConnectionResultLabel.text = ""
-
-            cachedCredentials
-                ?.getValue(serverHost)
-                ?.forEach {
-                    credentialsPicker.addItem(it)
-                }
+        serverHostPicker.addItemListener {
+            updateCredentialsPicker(it.item as? String)
         }
 
-        issueTrackerPicker.addItemListener { event ->
-            val issueTracker = event.item as? IssueTracker ?: return@addItemListener
-
-            serverHostPicker.removeAllItems()
-            testConnectionResultLabel.text = ""
-
-            val credentials = runBlocking { // TODO: Introduce "loading" state for credentials
-                IssueTrackerCredentialsProviderFactory
-                    .getInstance(project)
-                    .create(issueTracker)
-                    .provideAll()
-            }
-
-            cachedServerPaths = credentials.associate {
-                it.serverPath.toURI().host to it.serverPath
-            }
-
-            cachedCredentials = credentials.groupBy {
-                it.serverPath.toURI().host
-            }
-
-            cachedServerPaths?.forEach {
-                serverHostPicker.addItem(it.key)
-            }
+        issueTrackerPicker.addItemListener {
+            updateServerHostsPicker(it.item as? IssueTracker)
         }
 
-        IssueTrackerProvider
-            .getInstance(project)
-            .provideAll()
-            .forEach {
-                issueTrackerPicker.addItem(it)
-            }
-
+        updateIssueTrackers()
         updateConnectionDetails()
     }
 
@@ -147,7 +115,13 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
                                 = it.itemCount != 0
                         })
                         .align(Align.FILL)
+                }
+            }
 
+            row {
+                link(TodosaurusBundle.message("wizard.steps.chooseIssueTracker.serverHost.notFound.link")) {
+                    if (tryAddServer())
+                        updateServerHostsPicker(issueTrackerPicker.selectedItem as? IssueTracker)
                 }
             }
         }
@@ -303,6 +277,67 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
             connectAnonymouslyCheckBox.isSelected && serverPath != null -> model.connectionDetails.credentials = AnonymousCredentials(serverPath)
             else -> model.connectionDetails.credentials = credentialsPicker.selectedItem as? IssueTrackerCredentials
         }
+    }
+
+    private fun tryAddServer(): Boolean {
+        val configurable = TaskRepositoriesConfigurable(project)
+        return ShowSettingsUtil.getInstance().editConfigurable(project, configurable)
+    }
+
+    private fun updateIssueTrackers()
+        = IssueTrackerProvider
+            .getInstance(project)
+            .provideAll()
+            .forEach {
+                issueTrackerPicker.addItem(it)
+            }
+
+    private fun updateCredentialsPicker(serverHost: String?) {
+        if (serverHost == null)
+            return
+
+        credentialsPicker.removeAllItems()
+        clearTestConnectionResult()
+
+        cachedCredentials
+            ?.getValue(serverHost)
+            ?.forEach {
+                credentialsPicker.addItem(it)
+            }
+    }
+
+    private fun updateServerHostsPicker(issueTracker: IssueTracker?) {
+        if (issueTracker == null)
+            return
+
+        serverHostPicker.removeAllItems()
+        clearTestConnectionResult()
+
+        scope.launch(Dispatchers.IO) {
+            // TODO: Add loading spinner for "serverHostPicker"
+            val credentials = IssueTrackerCredentialsProviderFactory
+                .getInstance(project)
+                .create(issueTracker)
+                .provideAll()
+
+            withContext(Dispatchers.EDT) {
+                cachedServerPaths = credentials.associate {
+                    it.serverPath.toURI().host to it.serverPath
+                }
+
+                cachedCredentials = credentials.groupBy {
+                    it.serverPath.toURI().host
+                }
+
+                cachedServerPaths?.forEach {
+                    serverHostPicker.addItem(it.key)
+                }
+            }
+        }
+    }
+
+    private fun clearTestConnectionResult() {
+        testConnectionResultLabel.text = ""
     }
 
     override fun createDynamicStep(): TodosaurusStep
