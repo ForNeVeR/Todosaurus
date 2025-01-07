@@ -87,7 +87,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
 
         return TodosaurusWizardBuilder(project, scope)
             .setTitle(TodosaurusBundle.message("action.OpenReportedIssueInBrowser.text"))
-            .setFinalButtonName(TodosaurusBundle.message("wizard.steps.chooseGitRemote.openReportedIssueInBrowser.primaryButton.name"))
+            .setFinalButtonName(TodosaurusBundle.message("wizard.steps.chooseGitHostingRemote.openReportedIssueInBrowser.primaryButton.name"))
             .addStep(ChooseIssueTrackerStep(project, scope, model))
             .setFinalAction { openReportedIssueInBrowser(model) }
             .build()

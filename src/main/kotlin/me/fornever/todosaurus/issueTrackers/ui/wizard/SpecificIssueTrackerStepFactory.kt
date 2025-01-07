@@ -10,7 +10,7 @@ import com.intellij.openapi.project.Project
 import me.fornever.todosaurus.issueTrackers.gitHub.GitHub
 import me.fornever.todosaurus.ui.wizard.TodosaurusContext
 import me.fornever.todosaurus.ui.wizard.TodosaurusStep
-import me.fornever.todosaurus.vcs.git.ui.wizard.ChooseGitRemoteStep
+import me.fornever.todosaurus.vcs.git.ui.wizard.ChooseGitHostingRemoteStep
 
 @Service(Service.Level.PROJECT)
 class SpecificIssueTrackerStepFactory(private val project: Project) {
@@ -20,7 +20,7 @@ class SpecificIssueTrackerStepFactory(private val project: Project) {
 
     fun create(model: TodosaurusContext): TodosaurusStep?
         = when (model.connectionDetails.issueTracker) {
-            is GitHub -> ChooseGitRemoteStep(project, model)
+            is GitHub -> ChooseGitHostingRemoteStep(project, model)
             else -> null
         }
 }
