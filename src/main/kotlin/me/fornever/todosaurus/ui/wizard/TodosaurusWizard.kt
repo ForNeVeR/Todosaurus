@@ -35,10 +35,10 @@ import javax.swing.*
 
 
 class TodosaurusWizard(title: String, project: Project, private val scope: CoroutineScope, private val finalAction: suspend () -> WizardResult)
-    : AbstractWizard<TodosaurusStep>(title, project) {
+    : AbstractWizard<TodosaurusWizardStep>(title, project) {
     private val stepsToIndexes: Object2IntMap<Any> = Object2IntOpenHashMap()
-    private val indexesToSteps: Int2ObjectMap<TodosaurusStep> = Int2ObjectOpenHashMap()
-    private val dynamicSteps: Int2ObjectMap<TodosaurusStep> = Int2ObjectOpenHashMap()
+    private val indexesToSteps: Int2ObjectMap<TodosaurusWizardStep> = Int2ObjectOpenHashMap()
+    private val dynamicSteps: Int2ObjectMap<TodosaurusWizardStep> = Int2ObjectOpenHashMap()
 
     private val rememberUserChoiceCheckBox = JBCheckBox("Remember my choice")
 
@@ -53,13 +53,13 @@ class TodosaurusWizard(title: String, project: Project, private val scope: Corou
         super.show()
     }
 
-    override fun addStep(step: TodosaurusStep, index: Int) {
+    override fun addStep(step: TodosaurusWizardStep, index: Int) {
         stepsToIndexes.put(step.id, index)
         indexesToSteps.put(index, step)
 
         super.addStep(step, index)
 
-        step.addStepListener(object: TodosaurusStep.Listener {
+        step.addStepListener(object: TodosaurusWizardStep.Listener {
             override fun stateChanged() {
                 updateButtons()
             }

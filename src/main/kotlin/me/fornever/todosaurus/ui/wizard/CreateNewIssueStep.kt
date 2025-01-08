@@ -11,7 +11,7 @@ import com.intellij.ui.dsl.builder.*
 import me.fornever.todosaurus.TodosaurusBundle
 import javax.swing.JComponent
 
-class CreateNewIssueStep(private val project: Project, private val model: TodosaurusContext) : TodosaurusStep() {
+class CreateNewIssueStep(private val project: Project, private val model: TodosaurusWizardContext) : TodosaurusWizardStep() {
     companion object {
         val id: Any = CreateNewIssueStep::class.java
     }

@@ -13,15 +13,15 @@ import git4idea.GitUtil
 import git4idea.remote.GitConfigureRemotesDialog
 import me.fornever.todosaurus.TodosaurusBundle
 import me.fornever.todosaurus.ui.wizard.MemorableStep
-import me.fornever.todosaurus.ui.wizard.TodosaurusContext
-import me.fornever.todosaurus.ui.wizard.TodosaurusStep
+import me.fornever.todosaurus.ui.wizard.TodosaurusWizardContext
+import me.fornever.todosaurus.ui.wizard.TodosaurusWizardStep
 import me.fornever.todosaurus.vcs.git.GitBasedPlacementDetails
 import me.fornever.todosaurus.vcs.git.GitHostingRemote
 import me.fornever.todosaurus.vcs.git.GitHostingRemoteProvider
 import me.fornever.todosaurus.vcs.git.ui.controls.GitHostingRemoteComboBox
 import javax.swing.JComponent
 
-class ChooseGitHostingRemoteStep(private val project: Project, private val model: TodosaurusContext) : TodosaurusStep(), MemorableStep {
+class ChooseGitHostingRemoteStep(private val project: Project, private val model: TodosaurusWizardContext) : TodosaurusWizardStep(), MemorableStep {
     companion object {
         val id: Any = ChooseGitHostingRemoteStep::class.java
     }

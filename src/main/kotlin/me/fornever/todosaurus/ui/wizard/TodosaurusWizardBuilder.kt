@@ -11,7 +11,7 @@ class TodosaurusWizardBuilder(private val project: Project, private val scope: C
     private var wizardTitle: String? = null
     private var finalButtonName: String? = null
     private var finalAction: (suspend () -> WizardResult)? = null
-    private val steps: MutableList<TodosaurusStep> = mutableListOf()
+    private val steps: MutableList<TodosaurusWizardStep> = mutableListOf()
 
     fun setTitle(title: String): TodosaurusWizardBuilder {
         if (title.isEmpty())
@@ -31,7 +31,7 @@ class TodosaurusWizardBuilder(private val project: Project, private val scope: C
         return this
     }
 
-    fun addStep(step: TodosaurusStep): TodosaurusWizardBuilder {
+    fun addStep(step: TodosaurusWizardStep): TodosaurusWizardBuilder {
         if (steps.isNotEmpty()) {
             val previousStep = steps[steps.lastIndex]
             step.previousId = previousStep.id

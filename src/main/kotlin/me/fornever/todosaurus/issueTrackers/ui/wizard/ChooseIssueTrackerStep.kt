@@ -28,14 +28,14 @@ import me.fornever.todosaurus.issueTrackers.ui.controls.IssueTrackerCredentialsC
 import me.fornever.todosaurus.issueTrackers.ui.controls.ServerHostComboBox
 import me.fornever.todosaurus.ui.wizard.DynamicStepProvider
 import me.fornever.todosaurus.ui.wizard.MemorableStep
-import me.fornever.todosaurus.ui.wizard.TodosaurusContext
-import me.fornever.todosaurus.ui.wizard.TodosaurusStep
+import me.fornever.todosaurus.ui.wizard.TodosaurusWizardContext
+import me.fornever.todosaurus.ui.wizard.TodosaurusWizardStep
 import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JLabel
 
-class ChooseIssueTrackerStep(private val project: Project, private val scope: CoroutineScope, private val model: TodosaurusContext)
-    : TodosaurusStep(), DynamicStepProvider, MemorableStep {
+class ChooseIssueTrackerStep(private val project: Project, private val scope: CoroutineScope, private val model: TodosaurusWizardContext)
+    : TodosaurusWizardStep(), DynamicStepProvider, MemorableStep {
     companion object {
         val id: Any = ChooseIssueTrackerStep::class.java
     }
@@ -340,7 +340,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
         testConnectionResultLabel.text = ""
     }
 
-    override fun createDynamicStep(): TodosaurusStep
+    override fun createDynamicStep(): TodosaurusWizardStep
         = SpecificIssueTrackerStepFactory
             .getInstance(project)
             .create(model)

@@ -10,7 +10,7 @@ import com.intellij.openapi.Disposable
 import com.intellij.util.EventDispatcher
 import javax.swing.Icon
 
-abstract class TodosaurusStep : Step, Disposable {
+abstract class TodosaurusWizardStep : Step, Disposable {
     interface Listener : StepListener {
         fun doNextAction()
     }

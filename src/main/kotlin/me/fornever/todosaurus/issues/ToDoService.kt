@@ -19,7 +19,7 @@ import me.fornever.todosaurus.issueTrackers.ui.wizard.ChooseIssueTrackerStep
 import me.fornever.todosaurus.settings.TodosaurusSettings
 import me.fornever.todosaurus.ui.Notifications
 import me.fornever.todosaurus.ui.wizard.CreateNewIssueStep
-import me.fornever.todosaurus.ui.wizard.TodosaurusContext
+import me.fornever.todosaurus.ui.wizard.TodosaurusWizardContext
 import me.fornever.todosaurus.ui.wizard.TodosaurusWizardBuilder
 import me.fornever.todosaurus.ui.wizard.WizardResult
 
@@ -35,7 +35,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         // TODO[#38]: Remember last selected account
         // if (rememberChoiceStore.isSaved()) ...
 
-        val model = TodosaurusContext(toDoItem)
+        val model = TodosaurusWizardContext(toDoItem)
 
         return TodosaurusWizardBuilder(project, scope)
             .setTitle(TodosaurusBundle.message("action.CreateNewIssue.text"))
@@ -46,7 +46,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
             .show()
     }
 
-    private suspend fun createNewIssue(model: TodosaurusContext): WizardResult {
+    private suspend fun createNewIssue(model: TodosaurusWizardContext): WizardResult {
         try {
             val issueTracker = model.connectionDetails.issueTracker
                 ?: error("Issue tracker must be specified")
@@ -83,7 +83,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         // TODO[#38]: Remember last selected account
         // if (rememberChoiceStore.isSaved()) ...
 
-        val model = TodosaurusContext(toDoItem)
+        val model = TodosaurusWizardContext(toDoItem)
 
         return TodosaurusWizardBuilder(project, scope)
             .setTitle(TodosaurusBundle.message("action.OpenReportedIssueInBrowser.text"))
@@ -94,7 +94,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
             .show()
     }
 
-    private suspend fun openReportedIssueInBrowser(model: TodosaurusContext): WizardResult {
+    private suspend fun openReportedIssueInBrowser(model: TodosaurusWizardContext): WizardResult {
         try {
             val issueTracker = model.connectionDetails.issueTracker
                 ?: error("Issue tracker must be specified")
