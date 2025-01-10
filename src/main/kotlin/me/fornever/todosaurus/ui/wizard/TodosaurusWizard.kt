@@ -220,6 +220,7 @@ class TodosaurusWizard(title: String, private val project: Project, private val 
             }
         }
 
+        // TODO: This piece of code is partially copied from the intellij-community repository (and rewritten). Please, add licensing information (https://github.com/JetBrains/intellij-community/blob/6e09d1fe40257fac431792afc0e91bb602cea1e9/platform/platform-api/src/com/intellij/ide/wizard/AbstractWizard.java#L123)
         if (SystemInfo.isMac) {
             bottomPanel.layout = BorderLayout()
 
