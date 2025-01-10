@@ -93,9 +93,10 @@ class ChooseGitHostingRemoteStep(private val project: Project, private val model
         placementDetails.remote = gitHostingRemotePicker.selectedItem as? GitHostingRemote
     }
 
-    private fun tryAddRemote(): Boolean
-        = GitConfigureRemotesDialog(project, GitUtil.getRepositoryManager(project).repositories)
-            .showAndGet()
+    private fun tryAddRemote(): Boolean {
+        val remotesDialog = GitConfigureRemotesDialog(project, GitUtil.getRepositoryManager(project).repositories)
+        return remotesDialog.showAndGet() || !remotesDialog.isShowing
+    }
 
     private fun updateHostingRemotePicker() {
         val selectedIndex = gitHostingRemotePicker.selectedIndex
