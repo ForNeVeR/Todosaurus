@@ -99,19 +99,26 @@ class ChooseGitHostingRemoteStep(private val project: Project, private val model
     }
 
     private fun updateHostingRemotePicker() {
-        val selectedIndex = gitHostingRemotePicker.selectedIndex
+        val selectedItem = gitHostingRemotePicker.selectedItem as? GitHostingRemote
 
         gitHostingRemotePicker.removeAllItems()
 
-        GitHostingRemoteProvider
+        val gitHostingRemotes = GitHostingRemoteProvider
             .getInstance(project)
             .provideAll(model.connectionDetails)
+
+        gitHostingRemotes
             .forEach {
                 gitHostingRemotePicker.addItem(it)
             }
 
-        if (selectedIndex > -1 && selectedIndex <= gitHostingRemotePicker.itemCount - 1)
-            gitHostingRemotePicker.selectedIndex = selectedIndex
+        if (selectedItem != null) {
+            // Index of "selectedItem" may be changed after updating
+            val selectedIndex = gitHostingRemotes.indexOfFirst { it.ownerAndName == selectedItem.ownerAndName }
+
+            if (selectedIndex != -1)
+                gitHostingRemotePicker.selectedIndex = selectedIndex
+        }
     }
 
     override fun rememberUserChoice() {
