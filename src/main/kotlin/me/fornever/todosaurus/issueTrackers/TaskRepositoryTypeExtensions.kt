@@ -5,7 +5,6 @@
 package me.fornever.todosaurus.issueTrackers
 
 import com.intellij.tasks.TaskRepositoryType
-import me.fornever.todosaurus.issueTrackers.gitHub.GitHub
 
 fun TaskRepositoryType<*>.isGitHub(): Boolean
-    = name == GitHub::class.simpleName
+    = name == IssueTrackerType.GitHub.name

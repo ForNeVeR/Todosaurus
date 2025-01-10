@@ -27,9 +27,9 @@ import me.fornever.todosaurus.issueTrackers.ui.controls.IssueTrackerComboBox
 import me.fornever.todosaurus.issueTrackers.ui.controls.IssueTrackerCredentialsComboBox
 import me.fornever.todosaurus.issueTrackers.ui.controls.ServerHostComboBox
 import me.fornever.todosaurus.ui.wizard.DynamicStepProvider
-import me.fornever.todosaurus.ui.wizard.MemorableStep
 import me.fornever.todosaurus.ui.wizard.TodosaurusWizardContext
 import me.fornever.todosaurus.ui.wizard.TodosaurusWizardStep
+import me.fornever.todosaurus.ui.wizard.memoization.MemorableStep
 import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JLabel
@@ -345,8 +345,4 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
             .getInstance(project)
             .create(model)
                 ?: error("Cannot create specific step for ${model.connectionDetails.issueTracker?.title}")
-
-    override fun rememberUserChoice() {
-        // TODO[#38]: Remember last selected account
-    }
 }

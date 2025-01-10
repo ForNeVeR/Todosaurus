@@ -5,10 +5,7 @@
 package me.fornever.todosaurus.issueTrackers.gitHub
 
 import com.intellij.openapi.project.Project
-import me.fornever.todosaurus.issueTrackers.IssueTracker
-import me.fornever.todosaurus.issueTrackers.IssueTrackerClient
-import me.fornever.todosaurus.issueTrackers.IssueTrackerCredentials
-import me.fornever.todosaurus.issueTrackers.TestConnectionResult
+import me.fornever.todosaurus.issueTrackers.*
 import me.fornever.todosaurus.issueTrackers.anonymous.AnonymousCredentials
 import me.fornever.todosaurus.issues.IssuePlacementDetails
 import me.fornever.todosaurus.vcs.git.GitBasedPlacementDetails
@@ -19,6 +16,9 @@ import org.jetbrains.plugins.github.api.executeSuspend
 import javax.swing.Icon
 
 class GitHub(val project: Project, override val icon: Icon, override val title: String) : IssueTracker {
+    override val type: IssueTrackerType
+        get() = IssueTrackerType.GitHub
+
     override suspend fun checkConnection(credentials: IssueTrackerCredentials): TestConnectionResult {
         return try {
             val request = GithubApiRequests.CurrentUser.get(getGitHubPath(credentials))

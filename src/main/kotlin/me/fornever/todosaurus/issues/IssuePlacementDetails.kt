@@ -4,4 +4,10 @@
 
 package me.fornever.todosaurus.issues
 
-interface IssuePlacementDetails
+import me.fornever.todosaurus.ui.wizard.memoization.UserChoiceVisitor
+
+interface IssuePlacementDetails {
+    val type: IssuePlacementDetailsType
+
+    fun accept(visitor: UserChoiceVisitor)
+}

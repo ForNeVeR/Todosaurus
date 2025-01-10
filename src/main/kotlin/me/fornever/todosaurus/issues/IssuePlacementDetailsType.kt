@@ -2,8 +2,8 @@
 //
 // SPDX-License-Identifier: MIT
 
-package me.fornever.todosaurus.ui.wizard
+package me.fornever.todosaurus.issues
 
-interface MemorableStep {
-    fun rememberUserChoice()
+enum class IssuePlacementDetailsType {
+    GitBased
 }

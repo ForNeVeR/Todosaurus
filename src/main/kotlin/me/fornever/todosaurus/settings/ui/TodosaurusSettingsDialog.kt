@@ -30,6 +30,7 @@ class TodosaurusSettingsDialog {
 
     fun createPanel(): JComponent = panel {
         // TODO: Add validation
+        // TODO: Add the option to reset data saved with ‘Remember my choice’
         group(TodosaurusBundle.message("settings.patterns.title")) {
             row {
                 textField()

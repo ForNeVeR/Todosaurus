@@ -23,6 +23,12 @@ class IssueTrackerProvider(private val project: Project) {
             .mapNotNull { createTracker(it) }
             .toArray(emptyArray())
 
+    fun provide(issueTrackerType: IssueTrackerType): IssueTracker?
+        = TaskRepositoryType
+            .getRepositoryTypes()
+            .firstOrNull { it.name == issueTrackerType.name }
+            ?.let { createTracker(it)  }
+
     private fun createTracker(issueTrackerType: TaskRepositoryType<*>): IssueTracker? {
         val icon = issueTrackerType.icon
         val title = issueTrackerType.name

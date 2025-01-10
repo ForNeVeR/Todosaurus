@@ -7,7 +7,7 @@ package me.fornever.todosaurus.ui.wizard
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
 
-class TodosaurusWizardBuilder(private val project: Project, private val scope: CoroutineScope) {
+class TodosaurusWizardBuilder(private val project: Project, private val model: TodosaurusWizardContext, private val scope: CoroutineScope) {
     private var wizardTitle: String? = null
     private var finalButtonName: String? = null
     private var finalAction: (suspend () -> WizardResult)? = null
@@ -40,9 +40,8 @@ class TodosaurusWizardBuilder(private val project: Project, private val scope: C
 
         steps.add(step)
 
-        if (step is DynamicStepProvider) {
+        if (step is DynamicStepProvider)
             step.nextId = step.id
-        }
 
         return this
     }
@@ -61,6 +60,7 @@ class TodosaurusWizardBuilder(private val project: Project, private val scope: C
             wizardTitle ?: error("Title is required for wizard"),
             project,
             scope,
+            model,
             finalAction ?: error("Final action is required for wizard"))
 
         finalButtonName?.let {

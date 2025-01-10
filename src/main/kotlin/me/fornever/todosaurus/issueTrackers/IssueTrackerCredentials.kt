@@ -5,9 +5,16 @@
 package me.fornever.todosaurus.issueTrackers
 
 import com.intellij.collaboration.api.ServerPath
+import java.util.*
 
-interface IssueTrackerCredentials {
-    val username: String
+abstract class IssueTrackerCredentials {
+    open val id: String
+        get() {
+            val identifier = username + "_" + serverPath.toString()
+            return Base64.getEncoder().encodeToString(identifier.toByteArray())
+        }
 
-    val serverPath: ServerPath
+    abstract val username: String
+
+    abstract val serverPath: ServerPath
 }

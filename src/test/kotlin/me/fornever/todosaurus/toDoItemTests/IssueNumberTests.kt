@@ -17,7 +17,7 @@ class IssueNumberTests(private val source: String, private val expected: String?
     companion object {
         @JvmStatic
         @Parameters
-        fun newItems()
+        fun items()
             = arrayOf(
                 arrayOf("TODO[#111]:", "111"),
                 arrayOf("todo[#112]:", "112"),

@@ -8,6 +8,8 @@ import me.fornever.todosaurus.issues.IssuePlacementDetails
 import javax.swing.Icon
 
 interface IssueTracker {
+    val type: IssueTrackerType
+
     val icon: Icon
 
     val title: String

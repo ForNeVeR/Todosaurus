@@ -12,16 +12,17 @@ import com.intellij.ui.layout.ComponentPredicate
 import git4idea.GitUtil
 import git4idea.remote.GitConfigureRemotesDialog
 import me.fornever.todosaurus.TodosaurusBundle
-import me.fornever.todosaurus.ui.wizard.MemorableStep
 import me.fornever.todosaurus.ui.wizard.TodosaurusWizardContext
 import me.fornever.todosaurus.ui.wizard.TodosaurusWizardStep
+import me.fornever.todosaurus.ui.wizard.memoization.MemorableStep
 import me.fornever.todosaurus.vcs.git.GitBasedPlacementDetails
 import me.fornever.todosaurus.vcs.git.GitHostingRemote
 import me.fornever.todosaurus.vcs.git.GitHostingRemoteProvider
 import me.fornever.todosaurus.vcs.git.ui.controls.GitHostingRemoteComboBox
 import javax.swing.JComponent
 
-class ChooseGitHostingRemoteStep(private val project: Project, private val model: TodosaurusWizardContext) : TodosaurusWizardStep(), MemorableStep {
+class ChooseGitHostingRemoteStep(private val project: Project, private val model: TodosaurusWizardContext) : TodosaurusWizardStep(),
+    MemorableStep {
     companion object {
         val id: Any = ChooseGitHostingRemoteStep::class.java
     }
@@ -119,9 +120,5 @@ class ChooseGitHostingRemoteStep(private val project: Project, private val model
             if (selectedIndex != -1)
                 gitHostingRemotePicker.selectedIndex = selectedIndex
         }
-    }
-
-    override fun rememberUserChoice() {
-        // TODO[#38]: Remember last selected account
     }
 }

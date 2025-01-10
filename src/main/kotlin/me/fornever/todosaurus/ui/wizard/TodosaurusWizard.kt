@@ -29,18 +29,21 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.fornever.todosaurus.issues.ToDoService
+import me.fornever.todosaurus.ui.wizard.memoization.MemorableStep
+import me.fornever.todosaurus.ui.wizard.memoization.UserChoice
 import java.awt.BorderLayout
 import java.awt.Component
 import javax.swing.*
 
 
-class TodosaurusWizard(title: String, project: Project, private val scope: CoroutineScope, private val finalAction: suspend () -> WizardResult)
+class TodosaurusWizard(title: String, private val project: Project, private val scope: CoroutineScope, private val model: TodosaurusWizardContext, private val finalAction: suspend () -> WizardResult)
     : AbstractWizard<TodosaurusWizardStep>(title, project) {
     private val stepsToIndexes: Object2IntMap<Any> = Object2IntOpenHashMap()
     private val indexesToSteps: Int2ObjectMap<TodosaurusWizardStep> = Int2ObjectOpenHashMap()
     private val dynamicSteps: Int2ObjectMap<TodosaurusWizardStep> = Int2ObjectOpenHashMap()
 
-    private val rememberUserChoiceCheckBox = JBCheckBox("Remember my choice")
+    private val rememberUserChoiceCheckBox = JBCheckBox("Remember my choice", true)
 
     var nextButtonName: String? = null
 
@@ -102,9 +105,8 @@ class TodosaurusWizard(title: String, project: Project, private val scope: Corou
             return Messages.showErrorDialog(contentPane, exception.message)
         }
 
-        if (this.isLastStep) {
+        if (this.isLastStep)
             return doOKAction()
-        }
 
         val nextStepIndex = getNextStep(myCurrentStep)
 
@@ -138,18 +140,19 @@ class TodosaurusWizard(title: String, project: Project, private val scope: Corou
 
         applyFields()
 
-        if (rememberUserChoiceCheckBox.isSelected) {
-            mySteps
-                .filterIsInstance<MemorableStep>()
-                .forEach {
-                    it.rememberUserChoice()
-                }
-        }
-
         scope.launch(Dispatchers.IO) {
             val result = finalAction()
 
             if (result == WizardResult.Success) {
+                if (mySteps.any { it is MemorableStep } && rememberUserChoiceCheckBox.isSelected)
+                    ToDoService
+                        .getInstance(project)
+                        .rememberUserChoice(
+                            UserChoice(
+                                model.connectionDetails.issueTracker?.type,
+                                model.connectionDetails.credentials?.id,
+                                model.placementDetails))
+
 				withContext(Dispatchers.EDT) {
 					close(0)
 				}
@@ -210,13 +213,12 @@ class TodosaurusWizard(title: String, project: Project, private val scope: Corou
 
         val bottomPanel = JPanel()
 
-        // TODO[#38]: Uncomment this condition while implementing task #38 (This will create a “Remember my choice” checkbox for the desired steps)
-        /*if (mySteps.any { it is MemorableStep }) {
+        if (mySteps.any { it is MemorableStep }) {
             JPanel(BorderLayout()).also {
                 it.add(rememberUserChoiceCheckBox, BorderLayout.CENTER)
                 topPanel.add(it, BorderLayout.EAST)
             }
-        }*/
+        }
 
         if (SystemInfo.isMac) {
             bottomPanel.layout = BorderLayout()

@@ -11,4 +11,4 @@ class GitHubCredentials(
     override val username: String,
     val apiToken: String?,
     override val serverPath: GithubServerPath
-) : IssueTrackerCredentials
+) : IssueTrackerCredentials()

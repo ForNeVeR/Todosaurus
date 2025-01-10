@@ -17,7 +17,7 @@ class IsReportedTests(private val readyItem: String) {
     companion object {
         @JvmStatic
         @Parameters
-        fun readyItems()
+        fun reportedItems()
             = arrayOf(
                 "TODO[#2342]:",
                 "Todo[#2123]")
