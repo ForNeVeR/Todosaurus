@@ -38,16 +38,27 @@ jobs:
           ref: ${{ github.event.release.tag_name }}
 
       - name: Read the changelog
-        uses: ForNeVeR/ChangelogAutomation.action@v1
+        uses: ForNeVeR/ChangelogAutomation.action@v2
         with:
           input: ./CHANGELOG.md
           output: ./changelog-section.md
 
-      # Setup Gradle
+      - name: 'Cache downloaded JDK'
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.local/share/gradle-jvm
+            ~/AppData/Local/gradle-jvm
+          key: ${{ runner.os }}-${{ hashFiles('gradlew*') }}
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-home-cache-cleanup: true
+
+      - name: 'Build the plugin'
+        shell: pwsh
+        run: ./gradlew buildPlugin
 
       - name: Upload the artifact
         uses: actions/upload-artifact@v4
@@ -66,6 +77,7 @@ jobs:
         shell: pwsh
         run: scripts/New-Release.ps1 -Version $env:VERSION -ReleaseNotesFilePath ./changelog-section.md -FileToUpload $env:FILE_TO_UPLOAD
         env:
+          GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.version.outputs.version }}
           FILE_TO_UPLOAD: build/distributions/Todosaurus-${{ steps.version.outputs.version }}.zip
 
