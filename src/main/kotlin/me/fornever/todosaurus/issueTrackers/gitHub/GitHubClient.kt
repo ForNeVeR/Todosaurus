@@ -89,7 +89,7 @@ class GitHubClient(private val gitHub: GitHub, private val credentials: IssueTra
 
         val repository = VcsRepositoryManager
             .getInstance(gitHub.project)
-            .repositories
+            .getRepositories()
             .asSequence()
             .filterIsInstance<GitRepository>()
             .filter { it.root == virtualRoot }

@@ -21,7 +21,7 @@ class GitHostingRemoteProvider(private val project: Project) {
     fun provideAll(connectionDetails: IssueTrackerConnectionDetails): Array<GitHostingRemote>
         = VcsRepositoryManager
             .getInstance(project)
-            .repositories
+            .getRepositories()
             .asSequence()
             .filterIsInstance<GitRepository>()
             .flatMap { mapToRemotes(it, connectionDetails) }
