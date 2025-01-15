@@ -23,6 +23,7 @@ class UserChoiceStore {
         fun getInstance(project: Project): UserChoiceStore = project.service()
     }
 
+    // TODO: Make this setting per-project
     suspend fun rememberChoice(userChoice: UserChoice) {
         val choiceWriter = UserChoiceWriter()
         userChoice.accept(choiceWriter)
