@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -286,7 +286,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
 
     private fun updateIssueTrackers()
         = IssueTrackerProvider
-            .getInstance(project)
+            .getInstance()
             .provideAll()
             .forEach {
                 issueTrackerPicker.addItem(it)

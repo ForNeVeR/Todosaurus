@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -15,7 +15,7 @@ import org.jetbrains.plugins.github.api.GithubServerPath
 import org.jetbrains.plugins.github.api.executeSuspend
 import javax.swing.Icon
 
-class GitHub(val project: Project, override val icon: Icon, override val title: String) : IssueTracker {
+class GitHub(override val icon: Icon, override val title: String) : IssueTracker {
     override val type: IssueTrackerType
         get() = IssueTrackerType.GitHub
 
@@ -30,14 +30,14 @@ class GitHub(val project: Project, override val icon: Icon, override val title: 
         }
     }
 
-    override fun createClient(credentials: IssueTrackerCredentials, placementDetails: IssuePlacementDetails): IssueTrackerClient {
+    override fun createClient(project: Project, credentials: IssueTrackerCredentials, placementDetails: IssuePlacementDetails): IssueTrackerClient {
         if (placementDetails !is GitBasedPlacementDetails)
             error("Only ${GitBasedPlacementDetails::class.simpleName} supported")
 
         val remote = placementDetails.remote
             ?: error("Remote must be specified")
 
-        return GitHubClient(this, credentials, remote)
+        return GitHubClient(project, this, credentials, remote)
     }
 
     fun getGitHubPath(credentials: IssueTrackerCredentials): GithubServerPath

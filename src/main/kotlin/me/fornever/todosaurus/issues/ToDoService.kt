@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -96,7 +96,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
                 ?: error("Placement details must be specified")
 
             val newIssue = issueTracker
-                .createClient(credentials, placementDetails)
+                .createClient(project, credentials, placementDetails)
                 .createIssue(model.toDoItem)
 
             @Suppress("UnstableApiUsage")
@@ -158,7 +158,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
                 ?: error("Issue number must be specified")
 
             val issue = issueTracker
-                .createClient(credentials, placementDetails)
+                .createClient(project, credentials, placementDetails)
                 .getIssue(model.toDoItem)
                     ?: error("Issue with number \"${issueNumber}\" not found on ${issueTracker.title}")
 
@@ -183,7 +183,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
             ?: error("Credentials identifier must be specified")
 
         val issueTracker = IssueTrackerProvider
-            .getInstance(project)
+            .getInstance()
             .provide(issueTrackerType)
                 ?: error("Unable to find ${issueTrackerType.name} issue tracker")
 

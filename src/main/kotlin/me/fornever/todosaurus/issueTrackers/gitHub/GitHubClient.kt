@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -7,6 +7,7 @@ package me.fornever.todosaurus.issueTrackers.gitHub
 import com.intellij.dvcs.repo.VcsRepositoryManager
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.util.concurrency.annotations.RequiresReadLock
@@ -22,7 +23,12 @@ import me.fornever.todosaurus.vcs.git.GitHostingRemote
 import org.jetbrains.plugins.github.api.GithubApiRequests
 import org.jetbrains.plugins.github.api.GithubServerPath
 
-class GitHubClient(private val gitHub: GitHub, private val credentials: IssueTrackerCredentials, private val remote: GitHostingRemote) : IssueTrackerClient {
+class GitHubClient(
+    private val project: Project,
+    private val gitHub: GitHub,
+    private val credentials: IssueTrackerCredentials,
+    private val remote: GitHostingRemote
+) : IssueTrackerClient {
     override suspend fun createIssue(toDoItem: ToDoItem): IssueModel {
         val serverPath = gitHub.getGitHubPath(credentials)
 
@@ -88,7 +94,7 @@ class GitHubClient(private val gitHub: GitHub, private val credentials: IssueTra
             ?: error("Cannot find virtual file for \"${remote.rootPath}\"")
 
         val repository = VcsRepositoryManager
-            .getInstance(gitHub.project)
+            .getInstance(project)
             .getRepositories()
             .asSequence()
             .filterIsInstance<GitRepository>()
