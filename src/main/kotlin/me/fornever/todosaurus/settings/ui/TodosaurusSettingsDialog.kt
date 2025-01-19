@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -29,15 +29,15 @@ class TodosaurusSettingsDialog {
         }
 
     fun createPanel(): JComponent = panel {
-        // TODO: Add validation
-        // TODO: Add the option to reset data saved with ‘Remember my choice’
+        // TODO[#136]: Add validation
+        // TODO[#138]: Add the option to reset data saved with ‘Remember my choice’
         group(TodosaurusBundle.message("settings.patterns.title")) {
             row {
                 textField()
                     .label(TodosaurusBundle.message("settings.patterns.issueNumber.title"), LabelPosition.TOP)
                     .comment(TodosaurusBundle.message("settings.patterns.issueNumber.description"))
                     .align(AlignX.FILL)
-                    .enabled(false) // TODO: Allow to customize template for issue number. This is difficult task because the "newItemPattern" is now linked to a regular [.*?] pattern
+                    .enabled(false) // TODO[#134]: Allow to customize template for issue number. This is difficult task because the "newItemPattern" is now linked to a regular [.*?] pattern
                     .let { numberPatternField = it.component }
             }
 

@@ -311,7 +311,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
         clearTestConnectionResult()
 
         scope.launch(Dispatchers.IO) {
-            // TODO: Add loading spinner for "serverHostPicker"
+            // TODO[#135]: Add loading spinner for "serverHostPicker"
             val credentials = IssueTrackerCredentialsProviderFactory
                 .getInstance(project)
                 .create(issueTracker)

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -17,7 +17,7 @@ class ToDoItem(val toDoRange: RangeMarker) {
     }
 
     private val settings = serviceOrNull<TodosaurusSettings>()?.state
-        ?: TodosaurusSettings.State.defaultState // TODO: Tests broke if we replaced serviceOrNull with TodosaurusSettings.getInstance
+        ?: TodosaurusSettings.State.defaultState // TODO[#133]: Tests broke if we replaced serviceOrNull with TodosaurusSettings.getInstance
 
     private val text: String
         get() = toDoRange
@@ -58,7 +58,7 @@ class ToDoItem(val toDoRange: RangeMarker) {
         get() = newItemPattern.containsMatchIn(text)
 
     private fun formReportedItemPattern(issueNumber: String): String {
-        // TODO: Allow to customize template for issue number. This is difficult task because the "newItemPattern" is now linked to a regular [.*?] pattern
+        // TODO[#134]: Allow to customize template for issue number. This is difficult task because the "newItemPattern" is now linked to a regular [.*?] pattern
         return "TODO${settings.numberPattern}".replace(TodosaurusSettings.ISSUE_NUMBER_REPLACEMENT, issueNumber)
     }
 }

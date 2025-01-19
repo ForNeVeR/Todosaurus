@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -63,6 +63,6 @@ class UserChoiceReader(private val json: JsonObject) : UserChoiceVisitor {
             ?.content
                 ?: error("Git hosting remote root path field has invalid value")
 
-        placementDetails.remote = GitHostingRemote(URI(url), Path(rootPath)) // TODO: Add tests which verify this conversions to URI and Path
+        placementDetails.remote = GitHostingRemote(URI(url), Path(rootPath)) // TODO[#139]: Add tests which verify this conversions to URI and Path
     }
 }

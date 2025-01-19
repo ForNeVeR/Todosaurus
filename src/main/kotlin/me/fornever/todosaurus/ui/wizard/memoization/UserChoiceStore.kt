@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -23,7 +23,7 @@ class UserChoiceStore {
         fun getInstance(project: Project): UserChoiceStore = project.service()
     }
 
-    // TODO: Make this setting per-project
+    // TODO[#140]: Make this setting per-project
     suspend fun rememberChoice(userChoice: UserChoice) {
         val choiceWriter = UserChoiceWriter()
         userChoice.accept(choiceWriter)
