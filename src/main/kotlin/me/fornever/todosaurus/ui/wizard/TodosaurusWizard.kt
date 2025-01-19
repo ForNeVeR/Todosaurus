@@ -83,7 +83,7 @@ class TodosaurusWizard(title: String, private val project: Project, private val 
         try {
             currentStep.commitPrevious()
         }
-        catch (exception: CommitStepCancelledException) {
+        catch (_: CommitStepCancelledException) {
             return
         }
         catch (exception: CommitStepException) {
@@ -100,7 +100,7 @@ class TodosaurusWizard(title: String, private val project: Project, private val 
         try {
             currentStep._commit(false)
         }
-        catch (exception: CommitStepCancelledException) {
+        catch (_: CommitStepCancelledException) {
             return
         }
         catch (exception: CommitStepException) {
