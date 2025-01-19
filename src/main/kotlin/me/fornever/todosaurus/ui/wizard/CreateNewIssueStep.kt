@@ -23,7 +23,7 @@ class CreateNewIssueStep(private val model: TodosaurusWizardContext) : Todosauru
                 .label(TodosaurusBundle.getMessage("wizard.steps.createNewIssue.title"), LabelPosition.TOP)
                 .align(AlignX.FILL)
                 .text(model.toDoItem.title)
-                .onChanged { // For some reason bindText({ model.toDoItem.title }, { model.toDoItem.title = it }) function is not working :(
+                .onChanged { // TODO[#141]: For some reason bindText({ model.toDoItem.title }, { model.toDoItem.title = it }) function is not working :(
                     model.toDoItem.title = it.text
                 }
                 .component
