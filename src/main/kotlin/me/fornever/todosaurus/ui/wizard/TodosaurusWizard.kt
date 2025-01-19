@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -35,7 +35,6 @@ import me.fornever.todosaurus.ui.wizard.memoization.UserChoice
 import java.awt.BorderLayout
 import java.awt.Component
 import javax.swing.*
-
 
 class TodosaurusWizard(title: String, private val project: Project, private val scope: CoroutineScope, private val model: TodosaurusWizardContext, private val finalAction: suspend () -> WizardResult)
     : AbstractWizard<TodosaurusWizardStep>(title, project) {
@@ -220,7 +219,11 @@ class TodosaurusWizard(title: String, private val project: Project, private val 
             }
         }
 
-        // TODO: This piece of code is partially copied from the intellij-community repository (and rewritten). Please, add licensing information (https://github.com/JetBrains/intellij-community/blob/6e09d1fe40257fac431792afc0e91bb602cea1e9/platform/platform-api/src/com/intellij/ide/wizard/AbstractWizard.java#L123)
+        // NOTE: The following piece of code is partially copied from the intellij-community repository (and rewritten).
+        // https://github.com/JetBrains/intellij-community/blob/6e09d1fe40257fac431792afc0e91bb602cea1e9/platform/platform-api/src/com/intellij/ide/wizard/AbstractWizard.java#L123
+        // SPDX-SnippetBegin
+        // SPDX-SnippetCopyrightText: Copyright 2000-2024 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license.
+        // SPDX-License-Identifier: Apache-2.0
         if (SystemInfo.isMac) {
             bottomPanel.layout = BorderLayout()
 
@@ -275,6 +278,7 @@ class TodosaurusWizard(title: String, private val project: Project, private val 
             bottomLayout.setVerticalGroup(verticalGroup)
             bottomLayout.linkSize(*buttons.toArray(emptyArray()))
         }
+        // SPDX-SnippetEnd
 
         verticalPanel.add(topPanel)
         verticalPanel.add(Box.createVerticalStrut(5))
