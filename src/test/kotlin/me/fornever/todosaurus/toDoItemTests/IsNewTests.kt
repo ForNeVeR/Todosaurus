@@ -4,7 +4,7 @@
 
 package me.fornever.todosaurus.toDoItemTests
 
-import me.fornever.todosaurus.services.ToDoItem
+import me.fornever.todosaurus.issues.ToDoItem
 import me.fornever.todosaurus.testFramework.FakeRangeMarker
 import org.junit.Assert.assertTrue
 import org.junit.Test

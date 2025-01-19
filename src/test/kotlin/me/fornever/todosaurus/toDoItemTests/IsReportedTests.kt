@@ -4,7 +4,7 @@
 
 package me.fornever.todosaurus.toDoItemTests
 
-import me.fornever.todosaurus.services.ToDoItem
+import me.fornever.todosaurus.issues.ToDoItem
 import me.fornever.todosaurus.testFramework.FakeRangeMarker
 import org.junit.Assert
 import org.junit.Test
@@ -17,7 +17,7 @@ class IsReportedTests(private val readyItem: String) {
     companion object {
         @JvmStatic
         @Parameters
-        fun readyItems()
+        fun reportedItems()
             = arrayOf(
                 "TODO[#2342]:",
                 "Todo[#2123]")
