@@ -62,7 +62,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
                 withContext(Dispatchers.EDT) {
                     TodosaurusWizardBuilder(project, model, scope)
                         .setTitle(TodosaurusBundle.message("action.CreateNewIssue.text"))
-                        .addStep(CreateNewIssueStep(project, model))
+                        .addStep(CreateNewIssueStep(model))
                         .setFinalAction { createNewIssue(model) }
                         .build()
                         .show()
@@ -77,7 +77,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
                 TodosaurusWizardBuilder(project, model, scope)
                     .setTitle(TodosaurusBundle.message("action.CreateNewIssue.text"))
                     .addStep(ChooseIssueTrackerStep(project, scope, model))
-                    .addStep(CreateNewIssueStep(project, model))
+                    .addStep(CreateNewIssueStep(model))
                     .setFinalAction { createNewIssue(model) }
                     .build()
                     .show()

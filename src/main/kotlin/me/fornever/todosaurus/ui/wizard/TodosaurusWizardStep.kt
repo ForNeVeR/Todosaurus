@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -21,10 +21,10 @@ abstract class TodosaurusWizardStep : Step, Disposable {
         Finish
     }
 
-    abstract val id: Any
+    abstract val id: String
 
-    var nextId: Any? = null
-    var previousId: Any? = null
+    var nextId: String? = null
+    var previousId: String? = null
 
     private val eventDispatcher: EventDispatcher<Listener> = EventDispatcher.create(Listener::class.java)
 

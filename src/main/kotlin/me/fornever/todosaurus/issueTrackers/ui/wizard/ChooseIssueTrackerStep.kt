@@ -36,11 +36,8 @@ import javax.swing.JLabel
 
 class ChooseIssueTrackerStep(private val project: Project, private val scope: CoroutineScope, private val model: TodosaurusWizardContext)
     : TodosaurusWizardStep(), DynamicStepProvider, MemorableStep {
-    companion object {
-        val id: Any = ChooseIssueTrackerStep::class.java
-    }
 
-    override val id: Any = Companion.id
+    override val id: String = ChooseIssueTrackerStep::class.java.name
 
     private var issueTrackerPicker: IssueTrackerComboBox = IssueTrackerComboBox()
     private var serverHostPicker: ServerHostComboBox = ServerHostComboBox()

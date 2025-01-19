@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -23,11 +23,8 @@ import javax.swing.JComponent
 
 class ChooseGitHostingRemoteStep(private val project: Project, private val model: TodosaurusWizardContext) : TodosaurusWizardStep(),
     MemorableStep {
-    companion object {
-        val id: Any = ChooseGitHostingRemoteStep::class.java
-    }
 
-    override val id: Any = Companion.id
+    override val id: String = ChooseGitHostingRemoteStep::class.java.name
 
     private val gitHostingRemotePicker: GitHostingRemoteComboBox = GitHostingRemoteComboBox()
 

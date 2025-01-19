@@ -1,22 +1,18 @@
-// SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
 package me.fornever.todosaurus.ui.wizard
 
-import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBTextArea
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import me.fornever.todosaurus.TodosaurusBundle
 import javax.swing.JComponent
 
-class CreateNewIssueStep(private val project: Project, private val model: TodosaurusWizardContext) : TodosaurusWizardStep() {
-    companion object {
-        val id: Any = CreateNewIssueStep::class.java
-    }
+class CreateNewIssueStep(private val model: TodosaurusWizardContext) : TodosaurusWizardStep() {
 
-    override val id: Any = Companion.id
+    override val id: String = CreateNewIssueStep::class.java.name
 
     private lateinit var titleField: JBTextField
     private lateinit var descriptionField: JBTextArea
