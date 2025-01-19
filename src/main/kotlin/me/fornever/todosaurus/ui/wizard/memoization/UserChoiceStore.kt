@@ -50,7 +50,7 @@ class UserChoiceStore {
         try {
             userChoice.accept(choiceReader)
         }
-        catch (exception: Exception) {
+        catch (_: Exception) {
             return null
         }
 
