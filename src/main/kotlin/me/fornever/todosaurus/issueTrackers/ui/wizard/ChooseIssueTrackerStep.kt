@@ -70,7 +70,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
     }
 
     override fun getComponent(): JComponent = panel {
-		panel {
+        panel {
             row {
                 label(TodosaurusBundle.message("wizard.steps.chooseIssueTracker.issueTracker.title"))
             }
@@ -244,7 +244,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
         row {
             cell(testConnectionResultLabel)
         }
-	}
+    }
     .also {
         UserActivityWatcher().also { watcher ->
             watcher.register(it)
