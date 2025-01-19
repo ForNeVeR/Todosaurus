@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2024 Friedrich von Never <friedrich@fornever.me>
+# SPDX-FileCopyrightText: 2024-2025 Friedrich von Never <friedrich@fornever.me>
 #
 # SPDX-License-Identifier: MIT
 
@@ -9,8 +9,8 @@ SPDX-PackageDownloadLocation = "https://github.com/ForNeVeR/Todosaurus"
 
 [[annotations]]
 path = ".idea/**/**"
-precedence = "aggregate"
-SPDX-FileCopyrightText = "2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>"
+precedence = "override"
+SPDX-FileCopyrightText = "2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>"
 SPDX-License-Identifier = "MIT"
 
 [[annotations]]
