@@ -36,18 +36,13 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         fun getInstance(project: Project): ToDoService = project.service()
     }
 
-    suspend fun rememberUserChoice(userChoice: UserChoice) {
+    fun rememberUserChoice(userChoice: UserChoice) {
         val choiceStore = UserChoiceStore.getInstance(project)
 
-        try {
-            if (userChoice.credentialsId == AnonymousCredentials.ID)
-                error("Saving an anonymous account is not supported")
+        if (userChoice.credentialsId == AnonymousCredentials.ID)
+            return Notifications.CreateNewIssue.memoizationWarning("Saving an anonymous account is not supported", project)
 
-            choiceStore.rememberChoice(userChoice)
-        }
-        catch (exception: Exception) {
-            Notifications.CreateNewIssue.memoizationWarning(exception, project)
-        }
+        choiceStore.rememberChoice(userChoice)
     }
 
     fun createNewIssue(toDoItem: ToDoItem)
