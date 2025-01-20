@@ -4,47 +4,43 @@
 
 package me.fornever.todosaurus.ui.wizard.memoization
 
-import com.intellij.openapi.application.PathManager
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
+import com.intellij.openapi.components.*
 import com.intellij.openapi.project.Project
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
-import java.io.File
-import java.nio.file.Path
 
 @Service(Service.Level.PROJECT)
-class UserChoiceStore {
+@State(
+    name = "me.fornever.todosaurus.settings.UserChoiceStore",
+    storages = [Storage("TodosaurusChoice.xml")]
+)
+class UserChoiceStore : SimplePersistentStateComponent<UserChoiceStore.State>(State.defaultState) {
     companion object {
-        const val STORE_FILE_NAME = "TodosaurusChoice.json"
         fun getInstance(project: Project): UserChoiceStore = project.service()
     }
 
-    // TODO[#140]: Make this setting per-project
-    suspend fun rememberChoice(userChoice: UserChoice) {
+    class State : BaseState() {
+        companion object {
+            val defaultState: State = State()
+        }
+
+        var userChoice by string()
+    }
+
+    fun rememberChoice(userChoice: UserChoice) {
         val choiceWriter = UserChoiceWriter()
         userChoice.accept(choiceWriter)
 
-        val storeFile = openOrCreateStoreFile()
-
-        storeFile.writeText(
-            choiceWriter.json.toString())
+        state.userChoice = choiceWriter.json.toString()
     }
 
-    suspend fun forgetChoice()
-        = forgetChoice(
-            openOrCreateStoreFile())
+    fun forgetChoice() {
+        state.userChoice = null
+    }
 
-    suspend fun getChoice(): UserChoice? {
-        val storeFile = openOrCreateStoreFile()
-
-        val choiceJson = parseChoice(storeFile)
-            ?: return null
-
-        val choiceReader = UserChoiceReader(choiceJson)
+    fun getChoiceOrNull(): UserChoice? {
+        val choiceReader = UserChoiceReader(parseChoice() ?: return null)
         val userChoice = UserChoice()
 
         try {
@@ -57,30 +53,18 @@ class UserChoiceStore {
         return userChoice
     }
 
-    private fun forgetChoice(storeFile: File)
-        = storeFile.writeText(
-            JsonObject(emptyMap()).toString())
+    private fun parseChoice(): JsonObject? {
+        val userChoice = state.userChoice
+            ?: return null
 
-    private fun parseChoice(storeFile: File): JsonObject? {
-        val fileContent = storeFile.readText()
-
-        if (fileContent.isBlank())
+        if (userChoice.isBlank())
             return null
 
-        val json = Json.parseToJsonElement(fileContent)
+        val json = Json.parseToJsonElement(userChoice)
 
         if (json !is JsonObject)
             return null
 
         return json.jsonObject
-    }
-
-    private suspend fun openOrCreateStoreFile(): File {
-        val storeFile = Path.of(PathManager.getOptionsPath(), STORE_FILE_NAME).toFile()
-
-        if (withContext(Dispatchers.IO) { storeFile.createNewFile() })
-            forgetChoice(storeFile)
-
-        return storeFile
     }
 }
