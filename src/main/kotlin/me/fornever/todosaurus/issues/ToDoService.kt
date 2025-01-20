@@ -49,7 +49,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         = scope.launch(Dispatchers.IO) {
             val savedChoice = UserChoiceStore
                 .getInstance(project)
-                .getChoice()
+                .getChoiceOrNull()
 
             if (savedChoice != null) {
                 val model = retrieveWizardContextBasedOnUserChoice(toDoItem, savedChoice)
@@ -116,7 +116,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         = scope.launch(Dispatchers.IO) {
             val savedChoice = UserChoiceStore
                 .getInstance(project)
-                .getChoice()
+                .getChoiceOrNull()
 
             if (savedChoice != null) {
                 openReportedIssueInBrowser(
