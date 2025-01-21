@@ -58,6 +58,10 @@ class TodosaurusSettingsDialog {
                 }
                 .enabled(choiceStore?.getChoiceOrNull() != null)
                 .align(AlignX.RIGHT)
+                .apply {
+                    if (choiceStore == null)
+                        component.toolTipText = TodosaurusBundle.message("settings.common.userChoice.forget.tooltip")
+                }
             }
         }
 
