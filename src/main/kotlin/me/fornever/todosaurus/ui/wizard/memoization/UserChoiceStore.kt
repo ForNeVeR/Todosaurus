@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
+import me.fornever.todosaurus.issueTrackers.anonymous.AnonymousCredentials
 
 @Service(Service.Level.PROJECT)
 @State(
@@ -29,6 +30,9 @@ class UserChoiceStore : SimplePersistentStateComponent<UserChoiceStore.State>(St
     }
 
     fun rememberChoice(userChoice: UserChoice) {
+        if (userChoice.credentialsId == AnonymousCredentials.ID)
+            error("Saving an anonymous account is not supported")
+
         val choiceWriter = UserChoiceWriter()
         userChoice.accept(choiceWriter)
 
