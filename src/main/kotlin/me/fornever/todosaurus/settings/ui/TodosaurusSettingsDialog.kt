@@ -35,8 +35,12 @@ class TodosaurusSettingsDialog {
         // TODO[#136]: Add validation
         group(TodosaurusBundle.message("settings.common.title")) {
             row {
-                label(TodosaurusBundle.message("settings.common.userChoice.title"))
-                    .comment(TodosaurusBundle.message("settings.common.userChoice.description"))
+                panel {
+                    row {
+                        label(TodosaurusBundle.message("settings.common.userChoice.title"))
+                            .comment(TodosaurusBundle.message("settings.common.userChoice.description"))
+                    }
+                }
 
                 val choiceStore = ProjectManager
                     .getInstance()
