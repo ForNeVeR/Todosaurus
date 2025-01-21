@@ -20,7 +20,6 @@ import me.fornever.todosaurus.TodosaurusBundle
 import me.fornever.todosaurus.issueTrackers.IssueTrackerConnectionDetails
 import me.fornever.todosaurus.issueTrackers.IssueTrackerCredentialsProviderFactory
 import me.fornever.todosaurus.issueTrackers.IssueTrackerProvider
-import me.fornever.todosaurus.issueTrackers.anonymous.AnonymousCredentials
 import me.fornever.todosaurus.issueTrackers.ui.wizard.ChooseIssueTrackerStep
 import me.fornever.todosaurus.ui.Notifications
 import me.fornever.todosaurus.ui.wizard.CreateNewIssueStep
@@ -36,15 +35,6 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         fun getInstance(project: Project): ToDoService = project.service()
     }
 
-    fun rememberUserChoice(userChoice: UserChoice) {
-        val choiceStore = UserChoiceStore.getInstance(project)
-
-        if (userChoice.credentialsId == AnonymousCredentials.ID)
-            return Notifications.CreateNewIssue.memoizationWarning("Saving an anonymous account is not supported", project)
-
-        choiceStore.rememberChoice(userChoice)
-    }
-
     fun createNewIssue(toDoItem: ToDoItem)
         = scope.launch(Dispatchers.IO) {
             val savedChoice = UserChoiceStore
@@ -57,7 +47,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
                 withContext(Dispatchers.EDT) {
                     TodosaurusWizardBuilder(project, model, scope)
                         .setTitle(TodosaurusBundle.message("action.CreateNewIssue.text"))
-                        .addStep(CreateNewIssueStep(model))
+                        .addStep(CreateNewIssueStep(project, model))
                         .setFinalAction { createNewIssue(model) }
                         .build()
                         .show()
@@ -72,7 +62,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
                 TodosaurusWizardBuilder(project, model, scope)
                     .setTitle(TodosaurusBundle.message("action.CreateNewIssue.text"))
                     .addStep(ChooseIssueTrackerStep(project, scope, model))
-                    .addStep(CreateNewIssueStep(model))
+                    .addStep(CreateNewIssueStep(project, model))
                     .setFinalAction { createNewIssue(model) }
                     .build()
                     .show()

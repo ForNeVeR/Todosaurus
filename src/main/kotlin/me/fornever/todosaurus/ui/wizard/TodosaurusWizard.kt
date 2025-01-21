@@ -20,6 +20,7 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.openapi.wm.IdeFocusManager
 import com.intellij.ui.JBCardLayout.SwipeDirection
+import com.intellij.ui.components.ActionLink
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.mac.touchbar.Touchbar
 import com.intellij.util.containers.toArray
@@ -32,20 +33,29 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.fornever.todosaurus.issues.ToDoService
+import me.fornever.todosaurus.TodosaurusBundle
+import me.fornever.todosaurus.ui.Notifications
+import me.fornever.todosaurus.ui.wizard.memoization.ForgettableStep
 import me.fornever.todosaurus.ui.wizard.memoization.MemorableStep
 import me.fornever.todosaurus.ui.wizard.memoization.UserChoice
+import me.fornever.todosaurus.ui.wizard.memoization.UserChoiceStore
 import java.awt.BorderLayout
 import java.awt.Component
 import javax.swing.*
 
-class TodosaurusWizard(title: String, private val project: Project, private val scope: CoroutineScope, private val model: TodosaurusWizardContext, private val finalAction: suspend () -> WizardResult)
+class TodosaurusWizard(
+    title: String,
+    private val project: Project,
+    private val scope: CoroutineScope,
+    private val model: TodosaurusWizardContext,
+    private val finalAction: suspend () -> WizardResult)
     : AbstractWizard<TodosaurusWizardStep>(title, project) {
+
     private val stepsToIndexes: Object2IntMap<Any> = Object2IntOpenHashMap()
     private val indexesToSteps: Int2ObjectMap<TodosaurusWizardStep> = Int2ObjectOpenHashMap()
     private val dynamicSteps: Int2ObjectMap<TodosaurusWizardStep> = Int2ObjectOpenHashMap()
 
-    private val rememberUserChoiceCheckBox = JBCheckBox("Remember my choice", true)
+    private val rememberUserChoiceCheckBox = JBCheckBox(TodosaurusBundle.message("wizard.rememberMyChoice.title"), true)
 
     var nextButtonName: String? = null
 
@@ -146,14 +156,21 @@ class TodosaurusWizard(title: String, private val project: Project, private val 
             val result = finalAction()
 
             if (result == WizardResult.Success) {
-                if (mySteps.any { it is MemorableStep } && rememberUserChoiceCheckBox.isSelected)
-                    ToDoService
-                        .getInstance(project)
-                        .rememberUserChoice(
-                            UserChoice(
-                                model.connectionDetails.issueTracker?.type,
-                                model.connectionDetails.credentials?.id,
-                                model.placementDetails))
+                if (mySteps.any { it is MemorableStep } && rememberUserChoiceCheckBox.isSelected) {
+                    try {
+                        UserChoiceStore
+                            .getInstance(project)
+                            .rememberChoice(
+                                UserChoice(
+                                    model.connectionDetails.issueTracker?.type,
+                                    model.connectionDetails.credentials?.id,
+                                    model.placementDetails)
+                            )
+                    }
+                    catch (exception: Exception) {
+                        Notifications.CreateNewIssue.memoizationWarning(exception, project)
+                    }
+                }
 
 				withContext(Dispatchers.EDT) {
 					close(0)
@@ -215,7 +232,22 @@ class TodosaurusWizard(title: String, private val project: Project, private val 
 
         val bottomPanel = JPanel()
 
-        if (mySteps.any { it is MemorableStep }) {
+        if (UserChoiceStore.getInstance(project).getChoiceOrNull() != null) {
+            val forgettableStep = mySteps.firstOrNull { it is ForgettableStep }
+
+            if (forgettableStep is ForgettableStep) {
+                JPanel(BorderLayout()).also {
+                    val link = ActionLink(TodosaurusBundle.message("wizard.forgetMyChoice.title")) {
+                        forgettableStep.forgetUserChoice()
+                        close(0)
+                    }
+
+                    it.add(link, BorderLayout.CENTER)
+                    topPanel.add(it, BorderLayout.EAST)
+                }
+            }
+        }
+        else if (mySteps.any { it is MemorableStep }) {
             JPanel(BorderLayout()).also {
                 it.add(rememberUserChoiceCheckBox, BorderLayout.CENTER)
                 topPanel.add(it, BorderLayout.EAST)

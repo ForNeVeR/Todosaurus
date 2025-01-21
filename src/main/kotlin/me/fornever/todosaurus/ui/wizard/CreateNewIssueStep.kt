@@ -4,13 +4,17 @@
 
 package me.fornever.todosaurus.ui.wizard
 
+import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBTextArea
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import me.fornever.todosaurus.TodosaurusBundle
+import me.fornever.todosaurus.issues.ToDoService
+import me.fornever.todosaurus.ui.wizard.memoization.ForgettableStep
+import me.fornever.todosaurus.ui.wizard.memoization.UserChoiceStore
 import javax.swing.JComponent
 
-class CreateNewIssueStep(private val model: TodosaurusWizardContext) : TodosaurusWizardStep() {
+class CreateNewIssueStep(private val project: Project, private val model: TodosaurusWizardContext) : TodosaurusWizardStep(), ForgettableStep {
 
     override val id: String = CreateNewIssueStep::class.java.name
 
@@ -50,4 +54,9 @@ class CreateNewIssueStep(private val model: TodosaurusWizardContext) : Todosauru
 
     override fun isComplete(): Boolean
         = true
+
+    override fun forgetUserChoice() {
+        UserChoiceStore.getInstance(project).forgetChoice()
+        ToDoService.getInstance(project).createNewIssue(model.toDoItem)
+    }
 }

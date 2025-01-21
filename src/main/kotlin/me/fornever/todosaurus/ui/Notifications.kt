@@ -24,13 +24,13 @@ object Notifications {
                 .addAction(OpenNewIssueInBrowserAction(issue))
                 .notify(project)
 
-        fun memoizationWarning(message: String, project: Project)
+        fun memoizationWarning(exception: Exception, project: Project)
             = NotificationGroupManager
                 .getInstance()
                 .getNotificationGroup("TodosaurusNotifications")
                 .createNotification(
                     TodosaurusBundle.getMessage("notifications.createNewIssue.title"),
-                    TodosaurusBundle.getMessage("notifications.createNewIssue.memoizationWarning.text", message),
+                    TodosaurusBundle.getMessage("notifications.createNewIssue.memoizationWarning.text", exception),
                     NotificationType.WARNING)
                 .notify(project)
 
