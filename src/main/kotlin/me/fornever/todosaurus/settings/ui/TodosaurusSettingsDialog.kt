@@ -4,12 +4,10 @@
 
 package me.fornever.todosaurus.settings.ui
 
-import com.intellij.openapi.project.ProjectManager
+import com.intellij.ide.impl.ProjectUtil
 import com.intellij.ui.components.JBTextArea
 import com.intellij.ui.components.JBTextField
-import com.intellij.ui.dsl.builder.AlignX
-import com.intellij.ui.dsl.builder.LabelPosition
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.*
 import me.fornever.todosaurus.TodosaurusBundle
 import me.fornever.todosaurus.ui.wizard.memoization.UserChoiceStore
 import javax.swing.JButton
@@ -42,26 +40,8 @@ class TodosaurusSettingsDialog {
                     }
                 }
 
-                val choiceStore = ProjectManager
-                    .getInstance()
-                    .openProjects
-                    .firstOrNull { it.isOpen } // TODO: Looks like an unreliable way to get a project
-                    ?.let { UserChoiceStore.getInstance(it) }
-
-                button(TodosaurusBundle.message("settings.common.userChoice.forget.title")) {
-                    choiceStore?.forgetChoice()
-
-                    val button = it.source as? JButton
-                        ?: return@button
-
-                    button.isEnabled = false
-                }
-                .enabled(choiceStore?.getChoiceOrNull() != null)
-                .align(AlignX.RIGHT)
-                .apply {
-                    if (choiceStore == null)
-                        component.toolTipText = TodosaurusBundle.message("settings.common.userChoice.forget.tooltip")
-                }
+                forgetButton()
+                    .align(AlignX.RIGHT)
             }
         }
 
@@ -84,5 +64,28 @@ class TodosaurusSettingsDialog {
             }
             .resizableRow()
         }
+    }
+
+    private fun Row.forgetButton(): Cell<JButton> {
+        val forgetTitle = TodosaurusBundle.message("settings.common.userChoice.forget.title")
+        val activeProject = ProjectUtil.getActiveProject()
+
+        if (activeProject == null || activeProject.isDefault)
+            return button(forgetTitle) { }
+                .enabled(false)
+                .apply {
+                    component.toolTipText = TodosaurusBundle.message("settings.common.userChoice.forget.tooltip")
+                }
+
+        val choiceStore = UserChoiceStore.getInstance(activeProject)
+
+        return button(forgetTitle) {
+            val button = it.source as? JButton
+                ?: return@button
+
+            choiceStore.forgetChoice()
+            button.isEnabled = false
+        }
+        .enabled(choiceStore.getChoiceOrNull() != null)
     }
 }
