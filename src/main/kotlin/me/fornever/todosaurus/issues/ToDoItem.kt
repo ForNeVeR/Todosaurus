@@ -4,20 +4,16 @@
 
 package me.fornever.todosaurus.issues
 
-import com.intellij.openapi.components.serviceOrNull
 import com.intellij.openapi.editor.RangeMarker
 import com.intellij.util.concurrency.annotations.RequiresReadLock
 import com.intellij.util.concurrency.annotations.RequiresWriteLock
 import me.fornever.todosaurus.settings.TodosaurusSettings
 
-class ToDoItem(val toDoRange: RangeMarker) {
+class ToDoItem(private val settings: TodosaurusSettings.State, val toDoRange: RangeMarker) {
     private companion object {
         val newItemPattern: Regex
             = Regex("\\b(?i)TODO(?-i)\\b:?(?!\\[.*?])") // https://regex101.com/r/lDDqm7/2
     }
-
-    private val settings = serviceOrNull<TodosaurusSettings>()?.state
-        ?: TodosaurusSettings.State.defaultState // TODO[#133]: Tests broke if we replaced serviceOrNull with TodosaurusSettings.getInstance
 
     private val text: String
         get() = toDoRange
