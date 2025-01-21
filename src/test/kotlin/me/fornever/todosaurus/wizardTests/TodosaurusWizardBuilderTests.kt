@@ -7,6 +7,7 @@ package me.fornever.todosaurus.wizardTests
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import me.fornever.todosaurus.issues.ToDoItem
+import me.fornever.todosaurus.settings.TodosaurusSettings
 import me.fornever.todosaurus.testFramework.FakeProject
 import me.fornever.todosaurus.testFramework.FakeRangeMarker
 import me.fornever.todosaurus.ui.wizard.TodosaurusWizardBuilder
@@ -18,7 +19,7 @@ class TodosaurusWizardBuilderTests {
     @Test
     fun `Should link steps properly`() {
         // Arrange
-        val model = TodosaurusWizardContext(ToDoItem(FakeRangeMarker("TODO")))
+        val model = TodosaurusWizardContext(ToDoItem(TodosaurusSettings.State.defaultState, FakeRangeMarker("TODO")))
         val sut = TodosaurusWizardBuilder(FakeProject(), model, CoroutineScope(Dispatchers.IO))
         val firstStep = FakeWizardStep("1")
         val secondStep = FakeWizardStep("2")
