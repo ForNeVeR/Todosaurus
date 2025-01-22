@@ -233,9 +233,7 @@ class TodosaurusWizard(
         val bottomPanel = JPanel()
 
         if (UserChoiceStore.getInstance(project).getChoiceOrNull() != null) {
-            val forgettableStep = mySteps.firstOrNull { it is ForgettableStep }
-
-            if (forgettableStep is ForgettableStep) {
+            mySteps.filterIsInstance<ForgettableStep>().firstOrNull()?.let { forgettableStep ->
                 JPanel(BorderLayout()).also {
                     val link = ActionLink(TodosaurusBundle.message("wizard.forgetMyChoice.title")) {
                         forgettableStep.forgetUserChoice()
