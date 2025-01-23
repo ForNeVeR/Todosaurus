@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-package me.fornever.todosaurus.ui.wizard
+package me.fornever.todosaurus.issues.ui
 
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBTextArea
@@ -10,6 +10,8 @@ import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import me.fornever.todosaurus.TodosaurusBundle
 import me.fornever.todosaurus.issues.ToDoService
+import me.fornever.todosaurus.ui.wizard.TodosaurusWizardContext
+import me.fornever.todosaurus.ui.wizard.TodosaurusWizardStep
 import me.fornever.todosaurus.ui.wizard.memoization.ForgettableStep
 import me.fornever.todosaurus.ui.wizard.memoization.UserChoiceStore
 import javax.swing.JComponent

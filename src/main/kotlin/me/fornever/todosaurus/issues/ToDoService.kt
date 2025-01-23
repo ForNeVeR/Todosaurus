@@ -21,8 +21,8 @@ import me.fornever.todosaurus.issueTrackers.IssueTrackerConnectionDetails
 import me.fornever.todosaurus.issueTrackers.IssueTrackerCredentialsProviderFactory
 import me.fornever.todosaurus.issueTrackers.IssueTrackerProvider
 import me.fornever.todosaurus.issueTrackers.ui.wizard.ChooseIssueTrackerStep
+import me.fornever.todosaurus.issues.ui.CreateNewIssueStep
 import me.fornever.todosaurus.ui.Notifications
-import me.fornever.todosaurus.ui.wizard.CreateNewIssueStep
 import me.fornever.todosaurus.ui.wizard.TodosaurusWizardBuilder
 import me.fornever.todosaurus.ui.wizard.TodosaurusWizardContext
 import me.fornever.todosaurus.ui.wizard.WizardResult
