@@ -1,8 +1,9 @@
 <!--
-SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
-
-SPDX-License-Identifier: MIT
--->
+  ~ SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+  ~
+  ~ SPDX-License-Identifier: MIT AND MIT
+  ~
+  -->
 
 <idea-plugin>
     <id>me.fornever.todosaurus</id>
@@ -11,26 +12,10 @@ SPDX-License-Identifier: MIT
 
     <depends>com.intellij.modules.platform</depends>
     <depends>Git4Idea</depends>
-    <depends>org.jetbrains.plugins.github</depends>
+    <depends>org.jetbrains.plugins.github</depends> <!-- TODO: Make this an optional dependency of the GitHub module after we support other issue trackers -->
 
-    <resource-bundle>messages.TodosaurusBundle</resource-bundle>
-
-    <actions>
-        <action id="CreateNewIssue" class="me.fornever.todosaurus.ui.actions.CreateNewIssueAction">
-            <add-to-group group-id="VersionControlsGroup"/> <!-- TODO[#18]: This is a temporary solution until the TODO tool window supports a proper action group -->
-        </action>
-        <action id="OpenReportedIssueInBrowser" class="me.fornever.todosaurus.ui.actions.OpenReportedIssueInBrowserAction">
-            <add-to-group group-id="VersionControlsGroup"/> <!-- TODO[#18]: This is a temporary solution until the TODO tool window supports a proper action group -->
-        </action>
-    </actions>
-
-    <extensions defaultExtensionNs="com.intellij">
-        <applicationConfigurable parentId="tools"
-                                 instance="me.fornever.todosaurus.settings.ui.TodosaurusConfigurable"
-                                 id="me.fornever.todosaurus.settings.ui.TodosaurusConfigurable"
-                                 displayName="Todosaurus"/>
-        <notificationGroup id="TodosaurusNotifications"
-                           displayType="BALLOON"
-                           key="notifications.group.name"/>
-    </extensions>
+    <content>
+        <module name="me.fornever.todosaurus.core" loading="required" />
+        <module name="me.fornever.todosaurus.github" />
+    </content>
 </idea-plugin>
