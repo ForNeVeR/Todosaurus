@@ -5,16 +5,19 @@
 
 [versions]
 ideaSdk = "2024.3"
-ideaSdkPreview = "251.17181.16-EAP-SNAPSHOT"
 kotlin = "2.0.21"
+gradleIntelliJPlatform = "2.2.1"
 
 [libraries]
+intelliJPlatformModulePlugin = { group = "org.jetbrains.intellij.platform.module", name = "org.jetbrains.intellij.platform.module.gradle.plugin", version.ref = "gradleIntelliJPlatform" }
+intelliJPlatformPlugin = { group = "org.jetbrains.intellij.platform", name = "org.jetbrains.intellij.platform.gradle.plugin", version.ref = "gradleIntelliJPlatform" }
 junit = "junit:junit:4.13.2"
+kotlinGradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 openTest4J = "org.opentest4j:opentest4j:1.3.0"
 
 [plugins]
 changelog = "org.jetbrains.changelog:2.2.1"
-gradleIntelliJPlatformPlugin = "org.jetbrains.intellij.platform:2.2.1"
+intelliJPlatform = { id = "org.jetbrains.intellij.platform", version.ref = "gradleIntelliJPlatform" }
 gradleJvmWrapper = "me.filippov.gradle.jvm.wrapper:0.14.0"
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 qodana = "org.jetbrains.qodana:2024.3.4"
