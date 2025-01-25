@@ -20,22 +20,22 @@ class IsNewTests(private val newItem: String) {
         @Parameters
         fun newItems()
             = arrayOf(
-                "TODO",
-                "todo",
-                "text Todo",
-                "ToDo",
-                "Todo:text",
-                "ToDo Text",
-                "Todo:Text",
-                "TODO    Text")
+            "TODO",
+            "todo",
+            "text Todo",
+            "ToDo",
+            "Todo:text",
+            "ToDo Text",
+            "Todo:Text",
+            "TODO    Text")
     }
 
     @Test
     fun `ToDo item should be new`() {
         // Arrange
-        val sut = ToDoItem(TodosaurusSettings.State.defaultState, FakeRangeMarker(newItem))
+        val sut = ToDoItem.fromRange(FakeRangeMarker(newItem), TodosaurusSettings.State.defaultState)
 
         // Act & Assert
-        assertTrue(sut.isNew)
+        assertTrue(sut is ToDoItem.New)
     }
 }

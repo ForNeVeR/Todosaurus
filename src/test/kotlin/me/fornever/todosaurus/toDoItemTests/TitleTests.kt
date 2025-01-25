@@ -33,7 +33,7 @@ class TitleTests(private val source: String, private val expected: String) {
     @Test
     fun `Should calculate title properly`() {
         // Arrange
-        val sut = ToDoItem(TodosaurusSettings.State.defaultState, FakeRangeMarker(source))
+        val sut = ToDoItem.fromRange(FakeRangeMarker(source), TodosaurusSettings.State.defaultState)
 
         // Act & Assert
         Assert.assertEquals(expected, sut.title)

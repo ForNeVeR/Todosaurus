@@ -7,52 +7,57 @@ package me.fornever.todosaurus.toDoItemTests
 import me.fornever.todosaurus.issues.ToDoItem
 import me.fornever.todosaurus.settings.TodosaurusSettings
 import me.fornever.todosaurus.testFramework.FakeRangeMarker
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import org.junit.runners.Parameterized.Parameters
 
 @RunWith(Parameterized::class)
-class MarkAsReportedTests(private val newItem: String) {
+class ToReportedTests(private val newItem: String) {
     companion object {
         @JvmStatic
         @Parameters
         fun newItems()
             = arrayOf(
-                "TODO",
-                "todo",
-                "text Todo",
-                "ToDo",
-                "Todo:text",
-                "ToDo Text",
-                "Todo:Text",
-                "TODO    Text")
+            "TODO",
+            "todo",
+            "text Todo",
+            "ToDo",
+            "Todo:text",
+            "ToDo Text",
+            "Todo:Text",
+            "TODO    Text")
     }
 
     @Test
     fun `Should mark ToDo item as reported`() {
         // Arrange
         val expected = "TODO[#1]:"
-        val sut = ToDoItem(TodosaurusSettings.State.defaultState, FakeRangeMarker(newItem))
+        val sut = ToDoItem.fromRange(FakeRangeMarker(newItem), TodosaurusSettings.State.defaultState)
+
+        if (sut !is ToDoItem.New)
+            return fail()
 
         // Act
-        sut.markAsReported("1")
+        sut.toReported("1")
 
         // Assert
         assertTrue(sut.toDoRange.document.text.contains(expected))
     }
 
     @Test
-    fun `ToDo item should not be new`() {
+    fun `Should provide issue number after report`() {
         // Arrange
-        val sut = ToDoItem(TodosaurusSettings.State.defaultState, FakeRangeMarker(newItem))
+        val sut = ToDoItem.fromRange(FakeRangeMarker(newItem), TodosaurusSettings.State.defaultState)
+
+        if (sut !is ToDoItem.New)
+            return fail()
 
         // Act
-        sut.markAsReported("1")
+        val actual = sut.toReported("1")
 
         // Assert
-        assertFalse(sut.isNew)
+        assertEquals("1", actual.issueNumber)
     }
 }

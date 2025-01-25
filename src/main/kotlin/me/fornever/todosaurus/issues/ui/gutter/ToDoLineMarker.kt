@@ -10,6 +10,7 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiElement
 import me.fornever.todosaurus.TodosaurusBundle
 import me.fornever.todosaurus.issues.ToDoItem
+import me.fornever.todosaurus.settings.TodosaurusSettings
 import javax.swing.Icon
 
 class ToDoLineMarker(psiElement: PsiElement)
@@ -33,7 +34,8 @@ class ToDoLineMarker(psiElement: PsiElement)
 }
 
 private fun tooltipProvider(psiElement: PsiElement): String? {
-    val toDoItems = ToDoItem.extractFrom(psiElement)
+    val todosaurusSettings = TodosaurusSettings.getInstance()
+    val toDoItems = ToDoItem.extractFrom(psiElement, todosaurusSettings.state)
     val counts = ToDoCounts.create(toDoItems)
 
     return when {

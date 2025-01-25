@@ -20,16 +20,16 @@ class IsReportedTests(private val readyItem: String) {
         @Parameters
         fun reportedItems()
             = arrayOf(
-                "TODO[#2342]:",
-                "Todo[#2123]")
+            "TODO[#2342]:",
+            "Todo[#2123]")
     }
 
     @Test
     fun `ToDo item should be reported`() {
         // Arrange
-        val sut = ToDoItem(TodosaurusSettings.State.defaultState, FakeRangeMarker(readyItem))
+        val sut = ToDoItem.fromRange(FakeRangeMarker(readyItem), TodosaurusSettings.State.defaultState)
 
         // Act & Assert
-		Assert.assertFalse(sut.isNew)
+        Assert.assertFalse(sut is ToDoItem.Reported)
     }
 }
