@@ -4,7 +4,7 @@
 
 package me.fornever.todosaurus.gitHub
 
-import me.fornever.todosaurus.issueTrackers.IssueTrackerCredentials
+import me.fornever.todosaurus.core.issueTrackers.IssueTrackerCredentials
 import org.jetbrains.plugins.github.api.GithubServerPath
 
 class GitHubCredentials(

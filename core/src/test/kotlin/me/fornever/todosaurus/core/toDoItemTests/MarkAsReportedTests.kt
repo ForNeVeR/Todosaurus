@@ -1,12 +1,12 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
 package me.fornever.todosaurus.core.toDoItemTests
 
+import me.fornever.todosaurus.core.issues.ToDoItem
+import me.fornever.todosaurus.core.settings.TodosaurusSettings
 import me.fornever.todosaurus.core.testFramework.FakeRangeMarker
-import me.fornever.todosaurus.issues.ToDoItem
-import me.fornever.todosaurus.settings.TodosaurusSettings
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test

@@ -12,4 +12,6 @@ dependencies {
         bundledPlugin("com.intellij.tasks")
         bundledPlugin("Git4Idea")
     }
+
+    testImplementation(libs.junit)
 }

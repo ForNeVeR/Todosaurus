@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -6,12 +6,12 @@ package me.fornever.todosaurus.core.wizardTests
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import me.fornever.todosaurus.core.issues.ToDoItem
+import me.fornever.todosaurus.core.settings.TodosaurusSettings
 import me.fornever.todosaurus.core.testFramework.FakeProject
 import me.fornever.todosaurus.core.testFramework.FakeRangeMarker
-import me.fornever.todosaurus.issues.ToDoItem
-import me.fornever.todosaurus.settings.TodosaurusSettings
-import me.fornever.todosaurus.ui.wizard.TodosaurusWizardBuilder
-import me.fornever.todosaurus.ui.wizard.TodosaurusWizardContext
+import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardBuilder
+import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardContext
 import org.junit.Assert
 import org.junit.Test
 

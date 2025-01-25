@@ -18,13 +18,12 @@ import kotlin.io.path.Path
 
 class UserChoiceReader(private val json: JsonObject) : UserChoiceVisitor {
     override fun visit(userChoice: UserChoice) {
-        val issueTrackerId = json[UserChoice::issueTracker.name]
+        val issueTrackerId = json[UserChoice::issueTrackerId.name]
             ?.takeIf { it !is JsonNull }
             ?.jsonPrimitive
             ?.content
 
-        userChoice.issueTracker = issueTrackerId
-            ?.let { IssueTrackerProvider.getInstance().provideByRepositoryName(it) }
+        userChoice.issueTrackerId = issueTrackerId
                 ?: error("Issue tracker type field has invalid value")
 
         userChoice.credentialsId = json[UserChoice::credentialsId.name]

@@ -8,7 +8,7 @@ import me.fornever.todosaurus.core.issueTrackers.IssueTracker
 import me.fornever.todosaurus.core.issues.IssuePlacementDetails
 
 data class UserChoice(
-    var issueTracker: IssueTracker? = null,
+    var issueTrackerId: String? = null,
     var credentialsId: String? = null,
     var placementDetails: IssuePlacementDetails? = null
 ) {

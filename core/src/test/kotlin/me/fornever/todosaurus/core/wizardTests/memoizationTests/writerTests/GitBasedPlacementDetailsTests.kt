@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -6,13 +6,12 @@ package me.fornever.todosaurus.core.wizardTests.memoizationTests.writerTests
 
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import me.fornever.todosaurus.issueTrackers.IssueTrackerType
-import me.fornever.todosaurus.issues.IssuePlacementDetails
-import me.fornever.todosaurus.issues.IssuePlacementDetailsType
-import me.fornever.todosaurus.ui.wizard.memoization.UserChoice
-import me.fornever.todosaurus.ui.wizard.memoization.UserChoiceWriter
-import me.fornever.todosaurus.vcs.git.GitBasedPlacementDetails
-import me.fornever.todosaurus.vcs.git.GitHostingRemote
+import me.fornever.todosaurus.core.git.GitBasedPlacementDetails
+import me.fornever.todosaurus.core.git.GitHostingRemote
+import me.fornever.todosaurus.core.issues.IssuePlacementDetails
+import me.fornever.todosaurus.core.issues.IssuePlacementDetailsType
+import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoice
+import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceWriter
 import org.junit.Assert
 import org.junit.Test
 import java.net.URI
@@ -31,7 +30,7 @@ class GitBasedPlacementDetailsTests {
         val placementDetails = GitBasedPlacementDetails()
         placementDetails.remote = GitHostingRemote(URI(url), Path.of(rootPath))
 
-        val actual = UserChoice(IssueTrackerType.GitHub, CREDENTIALS_IDENTIFIER, placementDetails)
+        val actual = UserChoice("GitHub", CREDENTIALS_IDENTIFIER, placementDetails)
         val sut = UserChoiceWriter()
 
         // Act

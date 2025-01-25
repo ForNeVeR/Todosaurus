@@ -286,7 +286,6 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
 
     private fun updateIssueTrackers()
         = IssueTrackerProvider
-            .getInstance()
             .provideAll()
             .forEach {
                 issueTrackerPicker.addItem(it)
@@ -315,7 +314,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
 
         scope.launch(Dispatchers.IO) {
             // TODO[#135]: Add loading spinner for "serverHostPicker"
-            val credentials = issueTracker.createCredentialsProvider().provideAll()
+            val credentials = issueTracker.createCredentialsProvider(project).provideAll()
 
             withContext(Dispatchers.EDT) {
                 cachedServerPaths = credentials.associate {
