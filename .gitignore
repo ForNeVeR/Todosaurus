@@ -6,4 +6,5 @@
 /.intellijPlatform/
 
 .gradle/
+.kotlin/
 build/
