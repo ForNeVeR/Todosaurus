@@ -10,9 +10,8 @@ import com.intellij.tasks.TaskManager
 import com.intellij.tasks.TaskRepository
 import com.intellij.tasks.impl.BaseRepository
 import com.intellij.util.containers.toArray
-import me.fornever.todosaurus.issueTrackers.IssueTrackerCredentials
-import me.fornever.todosaurus.issueTrackers.IssueTrackerCredentialsProvider
-import me.fornever.todosaurus.issueTrackers.isGitHub
+import me.fornever.todosaurus.core.issueTrackers.IssueTrackerCredentials
+import me.fornever.todosaurus.core.issueTrackers.IssueTrackerCredentialsProvider
 import org.jetbrains.plugins.github.api.GithubServerPath
 import org.jetbrains.plugins.github.authentication.GHAccountsUtil
 import org.jetbrains.plugins.github.authentication.accounts.GHAccountManager

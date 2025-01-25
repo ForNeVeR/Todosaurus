@@ -162,7 +162,7 @@ class TodosaurusWizard(
                             .getInstance(project)
                             .rememberChoice(
                                 UserChoice(
-                                    model.connectionDetails.issueTracker,
+                                    model.connectionDetails.issueTracker?.id,
                                     model.connectionDetails.credentials?.id,
                                     model.placementDetails)
                             )

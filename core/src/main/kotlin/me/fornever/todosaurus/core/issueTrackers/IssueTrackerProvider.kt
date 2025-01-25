@@ -9,11 +9,7 @@ import com.intellij.openapi.components.service
 import com.intellij.tasks.TaskRepositoryType
 import com.intellij.util.containers.toArray
 
-@Service(Service.Level.APP)
-class IssueTrackerProvider() {
-    companion object {
-        fun getInstance(): IssueTrackerProvider = service()
-    }
+object IssueTrackerProvider {
 
     fun provideAll(): Array<IssueTracker>
         = TaskRepositoryType

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -8,13 +8,12 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import me.fornever.todosaurus.issueTrackers.IssueTrackerType
-import me.fornever.todosaurus.issues.IssuePlacementDetails
-import me.fornever.todosaurus.issues.IssuePlacementDetailsType
-import me.fornever.todosaurus.ui.wizard.memoization.UserChoice
-import me.fornever.todosaurus.ui.wizard.memoization.UserChoiceReader
-import me.fornever.todosaurus.vcs.git.GitBasedPlacementDetails
-import me.fornever.todosaurus.vcs.git.GitHostingRemote
+import me.fornever.todosaurus.core.git.GitBasedPlacementDetails
+import me.fornever.todosaurus.core.git.GitHostingRemote
+import me.fornever.todosaurus.core.issues.IssuePlacementDetails
+import me.fornever.todosaurus.core.issues.IssuePlacementDetailsType
+import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoice
+import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceReader
 import org.junit.Assert
 import org.junit.Test
 
@@ -29,7 +28,7 @@ class GitBasedPlacementDetailsTests {
         val actual = UserChoice()
         val sut = UserChoiceReader(
             JsonObject(mapOf(
-                UserChoice::issueTrackerType.name to JsonPrimitive(IssueTrackerType.GitHub.name),
+                UserChoice::issueTrackerId.name to JsonPrimitive("GitHub"),
                 UserChoice::credentialsId.name to JsonPrimitive(CREDENTIALS_IDENTIFIER),
                 UserChoice::placementDetails.name to JsonArray(emptyList())
             )))
@@ -44,7 +43,7 @@ class GitBasedPlacementDetailsTests {
         val actual = UserChoice()
         val sut = UserChoiceReader(
             JsonObject(mapOf(
-                UserChoice::issueTrackerType.name to JsonPrimitive(IssueTrackerType.GitHub.name),
+                UserChoice::issueTrackerId.name to JsonPrimitive("GitHub"),
                 UserChoice::credentialsId.name to JsonPrimitive(CREDENTIALS_IDENTIFIER),
                 UserChoice::placementDetails.name to JsonObject(mapOf(
                     IssuePlacementDetails::type.name to JsonPrimitive("PlacementDetails"),
@@ -63,7 +62,7 @@ class GitBasedPlacementDetailsTests {
         val actual = UserChoice()
         val sut = UserChoiceReader(
             JsonObject(mapOf(
-                UserChoice::issueTrackerType.name to JsonPrimitive(IssueTrackerType.GitHub.name),
+                UserChoice::issueTrackerId.name to JsonPrimitive("GitHub"),
                 UserChoice::credentialsId.name to JsonPrimitive(CREDENTIALS_IDENTIFIER),
                 UserChoice::placementDetails.name to JsonObject(mapOf(
                     IssuePlacementDetails::type.name to JsonArray(emptyList()),
@@ -82,7 +81,7 @@ class GitBasedPlacementDetailsTests {
         val actual = UserChoice()
         val sut = UserChoiceReader(
             JsonObject(mapOf(
-                UserChoice::issueTrackerType.name to JsonPrimitive(IssueTrackerType.GitHub.name),
+                UserChoice::issueTrackerId.name to JsonPrimitive("GitHub"),
                 UserChoice::credentialsId.name to JsonPrimitive(CREDENTIALS_IDENTIFIER),
                 UserChoice::placementDetails.name to JsonObject(mapOf(
                     IssuePlacementDetails::type.name to JsonPrimitive(IssuePlacementDetailsType.GitBased.name),
@@ -101,7 +100,7 @@ class GitBasedPlacementDetailsTests {
         val actual = UserChoice()
         val sut = UserChoiceReader(
             JsonObject(mapOf(
-                UserChoice::issueTrackerType.name to JsonPrimitive(IssueTrackerType.GitHub.name),
+                UserChoice::issueTrackerId.name to JsonPrimitive("GitHub"),
                 UserChoice::credentialsId.name to JsonPrimitive(CREDENTIALS_IDENTIFIER),
                 UserChoice::placementDetails.name to JsonObject(mapOf(
                     IssuePlacementDetails::type.name to JsonPrimitive(IssuePlacementDetailsType.GitBased.name),
@@ -120,7 +119,7 @@ class GitBasedPlacementDetailsTests {
         val actual = UserChoice()
         val sut = UserChoiceReader(
             JsonObject(mapOf(
-                UserChoice::issueTrackerType.name to JsonPrimitive(IssueTrackerType.GitHub.name),
+                UserChoice::issueTrackerId.name to JsonPrimitive("GitHub"),
                 UserChoice::credentialsId.name to JsonPrimitive(CREDENTIALS_IDENTIFIER),
                 UserChoice::placementDetails.name to JsonObject(mapOf(
                     IssuePlacementDetails::type.name to JsonPrimitive(IssuePlacementDetailsType.GitBased.name),
@@ -139,7 +138,7 @@ class GitBasedPlacementDetailsTests {
         val actual = UserChoice()
         val sut = UserChoiceReader(
             JsonObject(mapOf(
-                UserChoice::issueTrackerType.name to JsonPrimitive(IssueTrackerType.GitHub.name),
+                UserChoice::issueTrackerId.name to JsonPrimitive("GitHub"),
                 UserChoice::credentialsId.name to JsonPrimitive(CREDENTIALS_IDENTIFIER),
                 UserChoice::placementDetails.name to JsonObject(mapOf(
                     IssuePlacementDetails::type.name to JsonPrimitive(IssuePlacementDetailsType.GitBased.name),
@@ -161,7 +160,7 @@ class GitBasedPlacementDetailsTests {
         val actual = UserChoice()
         val sut = UserChoiceReader(
             JsonObject(mapOf(
-                UserChoice::issueTrackerType.name to JsonPrimitive(IssueTrackerType.GitHub.name),
+                UserChoice::issueTrackerId.name to JsonPrimitive("GitHub"),
                 UserChoice::credentialsId.name to JsonPrimitive(CREDENTIALS_IDENTIFIER),
                 UserChoice::placementDetails.name to JsonObject(mapOf(
                     IssuePlacementDetails::type.name to JsonPrimitive(IssuePlacementDetailsType.GitBased.name),

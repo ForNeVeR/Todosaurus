@@ -18,7 +18,7 @@ class UserChoiceWriter : UserChoiceVisitor {
         get() = JsonObject(elements)
 
     override fun visit(userChoice: UserChoice) {
-        val issueTracker = userChoice.issueTracker
+        val issueTrackerId = userChoice.issueTrackerId
             ?: error("Issue tracker type must be specified")
 
         val credentialsId = userChoice.credentialsId
@@ -27,7 +27,7 @@ class UserChoiceWriter : UserChoiceVisitor {
         val placementDetails = userChoice.placementDetails
             ?: error("Placement details must be specified")
 
-        elements[UserChoice::issueTracker.name] = JsonPrimitive(issueTracker.id)
+        elements[UserChoice::issueTrackerId.name] = JsonPrimitive(issueTrackerId)
         elements[UserChoice::credentialsId.name] = JsonPrimitive(credentialsId)
 
         val placementDetailsWriter = UserChoiceWriter()

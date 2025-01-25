@@ -8,7 +8,7 @@ plugins {
 }
 
 dependencies {
-    api(project(":core"))
+    compileOnly(project(":core"))
     intellijPlatform {
         bundledPlugin("org.jetbrains.plugins.github")
     }

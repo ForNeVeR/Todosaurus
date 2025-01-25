@@ -14,12 +14,12 @@ import com.intellij.util.concurrency.annotations.RequiresReadLock
 import git4idea.repo.GitRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import me.fornever.todosaurus.issueTrackers.IssueTrackerClient
-import me.fornever.todosaurus.issueTrackers.IssueTrackerCredentials
-import me.fornever.todosaurus.issues.IssueModel
-import me.fornever.todosaurus.issues.ToDoItem
-import me.fornever.todosaurus.settings.TodosaurusSettings
-import me.fornever.todosaurus.vcs.git.GitHostingRemote
+import me.fornever.todosaurus.core.git.GitHostingRemote
+import me.fornever.todosaurus.core.issueTrackers.IssueTrackerClient
+import me.fornever.todosaurus.core.issueTrackers.IssueTrackerCredentials
+import me.fornever.todosaurus.core.issues.IssueModel
+import me.fornever.todosaurus.core.issues.ToDoItem
+import me.fornever.todosaurus.core.settings.TodosaurusSettings
 import org.jetbrains.plugins.github.api.GithubApiRequests
 import org.jetbrains.plugins.github.api.GithubServerPath
 

@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.fornever.todosaurus.core.TodosaurusCoreBundle
 import me.fornever.todosaurus.core.issueTrackers.IssueTrackerConnectionDetails
+import me.fornever.todosaurus.core.issueTrackers.IssueTrackerProvider
 import me.fornever.todosaurus.core.issueTrackers.ui.wizard.ChooseIssueTrackerStep
 import me.fornever.todosaurus.core.ui.Notifications
 import me.fornever.todosaurus.core.ui.wizard.CreateNewIssueStep
@@ -162,11 +163,14 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         val credentialsId = userChoice.credentialsId
             ?: error("Credentials identifier must be specified")
 
-        val issueTracker = userChoice.issueTracker
+        val issueTrackerId = userChoice.issueTrackerId
                 ?: error("Unable to find issue tracker")
 
-        val credentials = issueTracker.createCredentialsProvider()
-            .provide(credentialsId)
+        val issueTracker = IssueTrackerProvider.provideByRepositoryName(issueTrackerId)
+
+        val credentials = issueTracker
+            ?.createCredentialsProvider(project)
+            ?.provide(credentialsId)
                 ?: error("Unable to find credentials with \"${credentialsId}\" identifier")
 
         val connectionDetails = IssueTrackerConnectionDetails()

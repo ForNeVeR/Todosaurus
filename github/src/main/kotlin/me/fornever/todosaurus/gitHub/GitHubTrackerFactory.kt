@@ -5,11 +5,12 @@
 package me.fornever.todosaurus.gitHub
 
 import com.intellij.tasks.TaskRepositoryType
+import me.fornever.todosaurus.core.issueTrackers.IssueTrackerFactory
 
 class GitHubTrackerFactory : IssueTrackerFactory {
 
-    fun isRecognized(id: String): Boolean =
-        repository.name == "GitHub"
+    override val trackerId: String
+        get() = GITHUB_TASK_REPOSITORY_NAME
 
     override fun createTracker(tracker: TaskRepositoryType<*>) =
         GitHub(tracker.icon, tracker.name)
