@@ -9,7 +9,7 @@ plugins {
 
 dependencies {
     intellijPlatform {
-        bundledModule("intellij.platform.vcs.dvcs.impl")
+        bundledPlugin("com.intellij.tasks")
         bundledPlugin("Git4Idea")
     }
 }

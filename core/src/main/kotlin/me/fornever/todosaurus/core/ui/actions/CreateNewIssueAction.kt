@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -7,9 +7,9 @@ package me.fornever.todosaurus.core.ui.actions
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import me.fornever.todosaurus.issues.ToDoItem
-import me.fornever.todosaurus.issues.ToDoService
-import me.fornever.todosaurus.settings.TodosaurusSettings
+import me.fornever.todosaurus.core.issues.ToDoItem
+import me.fornever.todosaurus.core.issues.ToDoService
+import me.fornever.todosaurus.core.settings.TodosaurusSettings
 
 class CreateNewIssueAction: AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT

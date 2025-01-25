@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -8,21 +8,23 @@ import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import me.fornever.todosaurus.issueTrackers.IssueTrackerType
-import me.fornever.todosaurus.issues.IssuePlacementDetails
-import me.fornever.todosaurus.issues.IssuePlacementDetailsType
-import me.fornever.todosaurus.vcs.git.GitBasedPlacementDetails
-import me.fornever.todosaurus.vcs.git.GitHostingRemote
+import me.fornever.todosaurus.core.git.GitBasedPlacementDetails
+import me.fornever.todosaurus.core.git.GitHostingRemote
+import me.fornever.todosaurus.core.issueTrackers.IssueTrackerProvider
+import me.fornever.todosaurus.core.issues.IssuePlacementDetails
+import me.fornever.todosaurus.core.issues.IssuePlacementDetailsType
 import java.net.URI
 import kotlin.io.path.Path
 
 class UserChoiceReader(private val json: JsonObject) : UserChoiceVisitor {
     override fun visit(userChoice: UserChoice) {
-        userChoice.issueTrackerType = json[UserChoice::issueTrackerType.name]
+        val issueTrackerId = json[UserChoice::issueTracker.name]
             ?.takeIf { it !is JsonNull }
             ?.jsonPrimitive
             ?.content
-            ?.let { IssueTrackerType.valueOf(it) }
+
+        userChoice.issueTracker = issueTrackerId
+            ?.let { IssueTrackerProvider.getInstance().provideByRepositoryName(it) }
                 ?: error("Issue tracker type field has invalid value")
 
         userChoice.credentialsId = json[UserChoice::credentialsId.name]

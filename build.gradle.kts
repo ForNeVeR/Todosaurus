@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT AND Apache-2.0
 
@@ -44,8 +44,8 @@ changelog {
 
 dependencies {
     intellijPlatform {
-        pluginModule(project(":core"))
-        pluginModule(project(":github"))
+        pluginModule(implementation(project(":core")))
+        pluginModule(implementation(project(":github")))
     }
 }
 

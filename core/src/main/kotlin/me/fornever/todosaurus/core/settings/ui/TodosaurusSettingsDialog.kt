@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -8,8 +8,8 @@ import com.intellij.ide.impl.ProjectUtil
 import com.intellij.ui.components.JBTextArea
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
-import me.fornever.todosaurus.TodosaurusBundle
-import me.fornever.todosaurus.ui.wizard.memoization.UserChoiceStore
+import me.fornever.todosaurus.core.TodosaurusCoreBundle
+import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceStore
 import javax.swing.JButton
 import javax.swing.JComponent
 
@@ -31,12 +31,12 @@ class TodosaurusSettingsDialog {
 
     fun createPanel(): JComponent = panel {
         // TODO[#136]: Add validation
-        group(TodosaurusBundle.message("settings.common.title")) {
+        group(TodosaurusCoreBundle.message("settings.common.title")) {
             row {
                 panel {
                     row {
-                        label(TodosaurusBundle.message("settings.common.userChoice.title"))
-                            .comment(TodosaurusBundle.message("settings.common.userChoice.description"))
+                        label(TodosaurusCoreBundle.message("settings.common.userChoice.title"))
+                            .comment(TodosaurusCoreBundle.message("settings.common.userChoice.description"))
                     }
                 }
 
@@ -45,20 +45,20 @@ class TodosaurusSettingsDialog {
             }
         }
 
-        group(TodosaurusBundle.message("settings.patterns.title")) {
+        group(TodosaurusCoreBundle.message("settings.patterns.title")) {
             row {
                 textField()
                     .also { it.enabled(false) }
-                    .label(TodosaurusBundle.message("settings.patterns.issueNumber.title"), LabelPosition.TOP)
-                    .comment(TodosaurusBundle.message("settings.patterns.issueNumber.description"))
+                    .label(TodosaurusCoreBundle.message("settings.patterns.issueNumber.title"), LabelPosition.TOP)
+                    .comment(TodosaurusCoreBundle.message("settings.patterns.issueNumber.description"))
                     .align(AlignX.FILL) // TODO[#134]: Allow to customize template for issue number. This is difficult task because the "newItemPattern" is now linked to a regular [.*?] pattern
                     .let { numberPatternField = it.component }
             }
 
             row {
                 textArea()
-                    .label(TodosaurusBundle.message("settings.patterns.descriptionTemplate.title"), LabelPosition.TOP)
-                    .comment(TodosaurusBundle.message("settings.patterns.descriptionTemplate.description"))
+                    .label(TodosaurusCoreBundle.message("settings.patterns.descriptionTemplate.title"), LabelPosition.TOP)
+                    .comment(TodosaurusCoreBundle.message("settings.patterns.descriptionTemplate.description"))
                     .align(AlignX.FILL)
                     .let { descriptionTemplateField = it.component }
             }
@@ -67,14 +67,14 @@ class TodosaurusSettingsDialog {
     }
 
     private fun Row.forgetButton(): Cell<JButton> {
-        val forgetTitle = TodosaurusBundle.message("settings.common.userChoice.forget.title")
+        val forgetTitle = TodosaurusCoreBundle.message("settings.common.userChoice.forget.title")
         val activeProject = ProjectUtil.getActiveProject()
 
         if (activeProject == null || activeProject.isDefault)
             return button(forgetTitle) { }
                 .enabled(false)
                 .apply {
-                    component.toolTipText = TodosaurusBundle.message("settings.common.userChoice.forget.tooltip")
+                    component.toolTipText = TodosaurusCoreBundle.message("settings.common.userChoice.forget.tooltip")
                 }
 
         val choiceStore = UserChoiceStore.getInstance(activeProject)
