@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-package me.fornever.todosaurus.issues.ui
+package me.fornever.todosaurus.issues.ui.wizard
 
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBTextArea

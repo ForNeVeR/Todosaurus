@@ -4,6 +4,7 @@
 
 package me.fornever.todosaurus.issueTrackers.gitHub
 
+import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
 import me.fornever.todosaurus.issueTrackers.*
 import me.fornever.todosaurus.issueTrackers.anonymous.AnonymousCredentials
@@ -16,6 +17,9 @@ import org.jetbrains.plugins.github.api.executeSuspend
 import javax.swing.Icon
 
 class GitHub(override val icon: Icon, override val title: String) : IssueTracker {
+    private val fileDocumentManager: FileDocumentManager
+        = FileDocumentManager.getInstance()
+
     override val type: IssueTrackerType
         get() = IssueTrackerType.GitHub
 
@@ -37,7 +41,7 @@ class GitHub(override val icon: Icon, override val title: String) : IssueTracker
         val remote = placementDetails.remote
             ?: error("Remote must be specified")
 
-        return GitHubClient(project, this, credentials, remote)
+        return GitHubClient(project, this, credentials, remote, fileDocumentManager)
     }
 
     fun getGitHubPath(credentials: IssueTrackerCredentials): GithubServerPath

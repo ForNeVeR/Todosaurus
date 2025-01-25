@@ -18,12 +18,12 @@ class CreateNewIssueAction: AnAction() {
             return
 
         val toDoRange = actionEvent.getToDoTextRange()
-        actionEvent.presentation.isEnabled = toDoRange != null && ToDoItem(toDoRange).isNew
+        actionEvent.presentation.isEnabled = toDoRange != null && ToDoItem.fromRange(toDoRange) is ToDoItem.New
     }
 
     override fun actionPerformed(actionEvent: AnActionEvent) {
         val project = actionEvent.project ?: return
         val toDoRange = actionEvent.getToDoTextRange() ?: return
-        ToDoService.getInstance(project).createNewIssue(ToDoItem(toDoRange))
+        ToDoService.getInstance(project).createNewIssue(ToDoItem.fromRange(toDoRange))
     }
 }

@@ -27,7 +27,8 @@ class GitHubClient(
     private val project: Project,
     private val gitHub: GitHub,
     private val credentials: IssueTrackerCredentials,
-    private val remote: GitHostingRemote
+    private val remote: GitHostingRemote,
+    private val fileDocumentManager: FileDocumentManager
 ) : IssueTrackerClient {
     override suspend fun createIssue(toDoItem: ToDoItem): IssueModel {
         val serverPath = gitHub.getGitHubPath(credentials)
@@ -52,14 +53,14 @@ class GitHubClient(
     }
 
     override suspend fun getIssue(toDoItem: ToDoItem): IssueModel? {
-        val issueNumber = readAction { toDoItem.issueNumber }
-            ?: return null
+        if (toDoItem !is ToDoItem.Reported)
+            return null
 
         val request = GithubApiRequests.Repos.Issues.get(
             gitHub.getGitHubPath(credentials),
             remote.owner,
             remote.name,
-            issueNumber
+            toDoItem.issueNumber
         )
 
         val response = withContext(Dispatchers.IO) { gitHub.createRequestExecutor(credentials).execute(request) }
@@ -70,11 +71,11 @@ class GitHubClient(
 
     @RequiresReadLock
     private fun replacePatterns(serverPath: GithubServerPath, toDoItem: ToDoItem): String {
-        if (!toDoItem.description.contains(TodosaurusSettings.URL_REPLACEMENT))
+        if (toDoItem !is ToDoItem.New || !toDoItem.description.contains(TodosaurusSettings.URL_REPLACEMENT))
             return toDoItem.description
 
         val rootPath = remote.rootPath
-        val filePath = FileDocumentManager.getInstance().getFile(toDoItem.toDoRange.document)?.toNioPath()
+        val filePath = fileDocumentManager.getFile(toDoItem.toDoRange.document)?.toNioPath()
             ?: error("Cannot find file for the requested document")
 
         val path = FileUtil.getRelativePath(rootPath.toFile(), filePath.toFile())?.replace('\\', '/')
