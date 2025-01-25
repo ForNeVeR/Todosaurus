@@ -18,7 +18,7 @@ sealed class ToDoItem private constructor(val text: String, protected val todosa
         private val newItemPattern: Regex
             = Regex("\\b(?i)TODO(?-i)\\b:?(?!\\[.*?])") // https://regex101.com/r/lDDqm7/2
 
-        fun isToDo(psiElement: PsiElement): Boolean {
+        fun containsToDo(psiElement: PsiElement): Boolean {
             if (psiElement !is PsiComment)
                 return false
 
@@ -55,27 +55,30 @@ sealed class ToDoItem private constructor(val text: String, protected val todosa
                 .todoPatterns
                 .mapNotNull { it.pattern?.toRegex() }
 
-            var baseOffset = 0
+            var lineOffset = psiElement.textRange.startOffset
 
             return sequence {
                 commentaryText
                     .lineSequence()
                     .forEach { commentaryLine ->
-                        toDoPatterns
-                            .filter { it.containsMatchIn(commentaryLine) }
-                            .forEach { toDoPattern ->
-                                val toDoMatch: MatchResult? = toDoPattern.find(commentaryLine, 0)
+                        val toDoPattern = toDoPatterns.firstOrNull { it.containsMatchIn(commentaryLine) }
 
-                                if (toDoMatch != null)
-                                    yield(create(
+                        if (toDoPattern != null) {
+                            val toDoMatch: MatchResult? = toDoPattern.find(commentaryLine, 0)
+
+                            if (toDoMatch != null)
+                                yield(
+                                    create(
                                         toDoMatch.value,
                                         document,
-                                        baseOffset + psiElement.textRange.startOffset,
-                                        baseOffset + psiElement.textRange.startOffset + commentaryLine.length,
-                                        todosaurusSettings))
-                            }
+                                        lineOffset,
+                                        lineOffset + commentaryLine.length,
+                                        todosaurusSettings
+                                    )
+                                )
+                        }
 
-                        baseOffset += psiElement.textRange.startOffset + commentaryLine.length + 1
+                        lineOffset += commentaryLine.length + 1
                     }
             }
         }

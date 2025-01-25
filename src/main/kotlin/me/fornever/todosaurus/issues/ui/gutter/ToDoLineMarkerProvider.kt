@@ -18,7 +18,7 @@ class ToDoLineMarkerProvider : LineMarkerProviderDescriptor(), DumbAware {
         if (psiElement.children.isNotEmpty())
             return null
 
-        if (!ToDoItem.isToDo(psiElement))
+        if (!ToDoItem.containsToDo(psiElement))
             return null
 
         return ToDoLineMarker(psiElement)
