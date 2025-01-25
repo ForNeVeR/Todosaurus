@@ -32,5 +32,7 @@ SPDX-License-Identifier: MIT
         <notificationGroup id="TodosaurusNotifications"
                            displayType="BALLOON"
                            key="notifications.group.name"/>
+        <codeInsight.lineMarkerProvider implementationClass="me.fornever.todosaurus.issues.ui.gutter.ToDoLineMarkerProvider"
+                                        language="kotlin"/>
     </extensions>
 </idea-plugin>
