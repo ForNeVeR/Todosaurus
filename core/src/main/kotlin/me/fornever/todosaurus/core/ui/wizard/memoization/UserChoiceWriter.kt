@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -7,9 +7,9 @@ package me.fornever.todosaurus.core.ui.wizard.memoization
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
-import me.fornever.todosaurus.issues.IssuePlacementDetails
-import me.fornever.todosaurus.vcs.git.GitBasedPlacementDetails
-import me.fornever.todosaurus.vcs.git.GitHostingRemote
+import me.fornever.todosaurus.core.git.GitBasedPlacementDetails
+import me.fornever.todosaurus.core.git.GitHostingRemote
+import me.fornever.todosaurus.core.issues.IssuePlacementDetails
 
 class UserChoiceWriter : UserChoiceVisitor {
     private val elements: MutableMap<String, JsonElement> = mutableMapOf()
@@ -18,7 +18,7 @@ class UserChoiceWriter : UserChoiceVisitor {
         get() = JsonObject(elements)
 
     override fun visit(userChoice: UserChoice) {
-        val issueTrackerType = userChoice.issueTrackerType
+        val issueTracker = userChoice.issueTracker
             ?: error("Issue tracker type must be specified")
 
         val credentialsId = userChoice.credentialsId
@@ -27,7 +27,7 @@ class UserChoiceWriter : UserChoiceVisitor {
         val placementDetails = userChoice.placementDetails
             ?: error("Placement details must be specified")
 
-        elements[UserChoice::issueTrackerType.name] = JsonPrimitive(issueTrackerType.name)
+        elements[UserChoice::issueTracker.name] = JsonPrimitive(issueTracker.id)
         elements[UserChoice::credentialsId.name] = JsonPrimitive(credentialsId)
 
         val placementDetailsWriter = UserChoiceWriter()

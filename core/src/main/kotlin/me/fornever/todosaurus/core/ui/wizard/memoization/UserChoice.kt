@@ -1,14 +1,14 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
 package me.fornever.todosaurus.core.ui.wizard.memoization
 
-import me.fornever.todosaurus.issueTrackers.IssueTrackerType
-import me.fornever.todosaurus.issues.IssuePlacementDetails
+import me.fornever.todosaurus.core.issueTrackers.IssueTracker
+import me.fornever.todosaurus.core.issues.IssuePlacementDetails
 
 data class UserChoice(
-    var issueTrackerType: IssueTrackerType? = null,
+    var issueTracker: IssueTracker? = null,
     var credentialsId: String? = null,
     var placementDetails: IssuePlacementDetails? = null
 ) {

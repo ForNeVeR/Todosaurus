@@ -1,13 +1,17 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
 package me.fornever.todosaurus.gitHub
 
 import com.intellij.openapi.project.Project
+import me.fornever.todosaurus.core.issueTrackers.IssueTracker
+import me.fornever.todosaurus.core.issueTrackers.IssueTrackerClient
+import me.fornever.todosaurus.core.issueTrackers.IssueTrackerCredentials
+import me.fornever.todosaurus.core.issueTrackers.TestConnectionResult
+import me.fornever.todosaurus.core.issueTrackers.anonymous.AnonymousCredentials
+import me.fornever.todosaurus.core.issues.IssuePlacementDetails
 import me.fornever.todosaurus.issueTrackers.*
-import me.fornever.todosaurus.issueTrackers.anonymous.AnonymousCredentials
-import me.fornever.todosaurus.issues.IssuePlacementDetails
 import me.fornever.todosaurus.vcs.git.GitBasedPlacementDetails
 import org.jetbrains.plugins.github.api.GithubApiRequestExecutor
 import org.jetbrains.plugins.github.api.GithubApiRequests
@@ -55,4 +59,6 @@ class GitHub(override val icon: Icon, override val title: String) : IssueTracker
 
         error("Only ${GitHubCredentials::class.simpleName} supported")
     }
+
+    fun createChooseRemoteStep() = ChooseGitHostingRemoteStep()
 }

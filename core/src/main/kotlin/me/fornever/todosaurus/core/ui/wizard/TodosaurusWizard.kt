@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2000–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2000-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT AND Apache-2.0
 
@@ -33,12 +33,12 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.fornever.todosaurus.TodosaurusBundle
-import me.fornever.todosaurus.ui.Notifications
-import me.fornever.todosaurus.ui.wizard.memoization.ForgettableStep
-import me.fornever.todosaurus.ui.wizard.memoization.MemorableStep
-import me.fornever.todosaurus.ui.wizard.memoization.UserChoice
-import me.fornever.todosaurus.ui.wizard.memoization.UserChoiceStore
+import me.fornever.todosaurus.core.TodosaurusCoreBundle
+import me.fornever.todosaurus.core.ui.Notifications
+import me.fornever.todosaurus.core.ui.wizard.memoization.ForgettableStep
+import me.fornever.todosaurus.core.ui.wizard.memoization.MemorableStep
+import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoice
+import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceStore
 import java.awt.BorderLayout
 import java.awt.Component
 import javax.swing.*
@@ -55,7 +55,7 @@ class TodosaurusWizard(
     private val indexesToSteps: Int2ObjectMap<TodosaurusWizardStep> = Int2ObjectOpenHashMap()
     private val dynamicSteps: Int2ObjectMap<TodosaurusWizardStep> = Int2ObjectOpenHashMap()
 
-    private val rememberUserChoiceCheckBox = JBCheckBox(TodosaurusBundle.message("wizard.rememberMyChoice.title"), true)
+    private val rememberUserChoiceCheckBox = JBCheckBox(TodosaurusCoreBundle.message("wizard.rememberMyChoice.title"), true)
 
     var nextButtonName: String? = null
 
@@ -162,7 +162,7 @@ class TodosaurusWizard(
                             .getInstance(project)
                             .rememberChoice(
                                 UserChoice(
-                                    model.connectionDetails.issueTracker?.type,
+                                    model.connectionDetails.issueTracker,
                                     model.connectionDetails.credentials?.id,
                                     model.placementDetails)
                             )
@@ -235,7 +235,7 @@ class TodosaurusWizard(
         if (UserChoiceStore.getInstance(project).getChoiceOrNull() != null) {
             mySteps.filterIsInstance<ForgettableStep>().firstOrNull()?.let { forgettableStep ->
                 JPanel(BorderLayout()).also {
-                    val link = ActionLink(TodosaurusBundle.message("wizard.forgetMyChoice.title")) {
+                    val link = ActionLink(TodosaurusCoreBundle.message("wizard.forgetMyChoice.title")) {
                         forgettableStep.forgetUserChoice()
                         close(0)
                     }

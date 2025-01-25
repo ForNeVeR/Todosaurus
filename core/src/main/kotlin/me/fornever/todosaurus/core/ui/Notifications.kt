@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -7,9 +7,9 @@ package me.fornever.todosaurus.core.ui
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
-import me.fornever.todosaurus.TodosaurusBundle
-import me.fornever.todosaurus.issues.IssueModel
-import me.fornever.todosaurus.ui.actions.OpenNewIssueInBrowserAction
+import me.fornever.todosaurus.core.TodosaurusCoreBundle
+import me.fornever.todosaurus.core.issues.IssueModel
+import me.fornever.todosaurus.core.ui.actions.OpenNewIssueInBrowserAction
 
 object Notifications {
     object CreateNewIssue {
@@ -18,8 +18,8 @@ object Notifications {
                 .getInstance()
                 .getNotificationGroup("TodosaurusNotifications")
                 .createNotification(
-                    TodosaurusBundle.getMessage("notifications.createNewIssue.title"),
-                    TodosaurusBundle.getMessage("notifications.createNewIssue.success.text", issue.number),
+                    TodosaurusCoreBundle.getMessage("notifications.createNewIssue.title"),
+                    TodosaurusCoreBundle.getMessage("notifications.createNewIssue.success.text", issue.number),
                     NotificationType.INFORMATION)
                 .addAction(OpenNewIssueInBrowserAction(issue))
                 .notify(project)
@@ -29,8 +29,8 @@ object Notifications {
                 .getInstance()
                 .getNotificationGroup("TodosaurusNotifications")
                 .createNotification(
-                    TodosaurusBundle.getMessage("notifications.createNewIssue.title"),
-                    TodosaurusBundle.getMessage("notifications.createNewIssue.memoizationWarning.text", exception),
+                    TodosaurusCoreBundle.getMessage("notifications.createNewIssue.title"),
+                    TodosaurusCoreBundle.getMessage("notifications.createNewIssue.memoizationWarning.text", exception),
                     NotificationType.WARNING)
                 .notify(project)
 
@@ -39,8 +39,8 @@ object Notifications {
                 .getInstance()
                 .getNotificationGroup("TodosaurusNotifications")
                 .createNotification(
-                    TodosaurusBundle.getMessage("notifications.createNewIssue.title"),
-                    TodosaurusBundle.getMessage("notifications.createNewIssue.failed.text", exception.message),
+                    TodosaurusCoreBundle.getMessage("notifications.createNewIssue.title"),
+                    TodosaurusCoreBundle.getMessage("notifications.createNewIssue.failed.text", exception.message),
                     NotificationType.ERROR)
                 .notify(project)
     }
@@ -51,8 +51,8 @@ object Notifications {
                 .getInstance()
                 .getNotificationGroup("TodosaurusNotifications")
                 .createNotification(
-                    TodosaurusBundle.getMessage("notifications.openReportedIssueInBrowser.title"),
-                    TodosaurusBundle.getMessage("notifications.openReportedIssueInBrowser.failed.text", exception.message),
+                    TodosaurusCoreBundle.getMessage("notifications.openReportedIssueInBrowser.title"),
+                    TodosaurusCoreBundle.getMessage("notifications.openReportedIssueInBrowser.failed.text", exception.message),
                     NotificationType.ERROR)
                 .notify(project)
     }

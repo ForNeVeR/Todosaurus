@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -8,7 +8,6 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.tasks.TaskRepositoryType
 import com.intellij.util.containers.toArray
-import me.fornever.todosaurus.issueTrackers.gitHub.GitHub
 
 @Service(Service.Level.APP)
 class IssueTrackerProvider() {
@@ -22,19 +21,20 @@ class IssueTrackerProvider() {
             .mapNotNull { createTracker(it) }
             .toArray(emptyArray())
 
-    fun provide(issueTrackerType: IssueTrackerType): IssueTracker?
-        = TaskRepositoryType
+    fun provideByRepositoryName(repositoryName: String): IssueTracker? =
+        TaskRepositoryType
             .getRepositoryTypes()
-            .firstOrNull { it.name == issueTrackerType.name }
+            .firstOrNull { it.name == repositoryName }
             ?.let { createTracker(it)  }
 
-    private fun createTracker(issueTrackerType: TaskRepositoryType<*>): IssueTracker? {
-        val icon = issueTrackerType.icon
-        val title = issueTrackerType.name
-
-        return when {
-            issueTrackerType.isGitHub() -> GitHub(icon, title)
-            else -> null
+    private fun createTracker(repository: TaskRepositoryType<*>): IssueTracker? {
+        val trackerId = repository.name
+        for (factory in IssueTrackerFactory.EP_NAME.extensionList) {
+            if (factory.trackerId == trackerId) {
+                return factory.createTracker(repository)
+            }
         }
+
+        return null
     }
 }

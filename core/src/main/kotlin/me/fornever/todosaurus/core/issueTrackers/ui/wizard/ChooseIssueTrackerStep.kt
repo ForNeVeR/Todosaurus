@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -20,16 +20,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.fornever.todosaurus.TodosaurusBundle
-import me.fornever.todosaurus.issueTrackers.*
-import me.fornever.todosaurus.issueTrackers.anonymous.AnonymousCredentials
-import me.fornever.todosaurus.issueTrackers.ui.controls.IssueTrackerComboBox
-import me.fornever.todosaurus.issueTrackers.ui.controls.IssueTrackerCredentialsComboBox
-import me.fornever.todosaurus.issueTrackers.ui.controls.ServerHostComboBox
-import me.fornever.todosaurus.ui.wizard.DynamicStepProvider
-import me.fornever.todosaurus.ui.wizard.TodosaurusWizardContext
-import me.fornever.todosaurus.ui.wizard.TodosaurusWizardStep
-import me.fornever.todosaurus.ui.wizard.memoization.MemorableStep
+import me.fornever.todosaurus.core.TodosaurusCoreBundle
+import me.fornever.todosaurus.core.issueTrackers.IssueTracker
+import me.fornever.todosaurus.core.issueTrackers.IssueTrackerCredentials
+import me.fornever.todosaurus.core.issueTrackers.IssueTrackerProvider
+import me.fornever.todosaurus.core.issueTrackers.TestConnectionResult
+import me.fornever.todosaurus.core.issueTrackers.anonymous.AnonymousCredentials
+import me.fornever.todosaurus.core.issueTrackers.ui.controls.IssueTrackerComboBox
+import me.fornever.todosaurus.core.issueTrackers.ui.controls.IssueTrackerCredentialsComboBox
+import me.fornever.todosaurus.core.issueTrackers.ui.controls.ServerHostComboBox
+import me.fornever.todosaurus.core.ui.wizard.DynamicStepProvider
+import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardContext
+import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardStep
+import me.fornever.todosaurus.core.ui.wizard.memoization.MemorableStep
 import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JLabel
@@ -42,7 +45,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
     private var issueTrackerPicker: IssueTrackerComboBox = IssueTrackerComboBox()
     private var serverHostPicker: ServerHostComboBox = ServerHostComboBox()
     private var credentialsPicker: IssueTrackerCredentialsComboBox = IssueTrackerCredentialsComboBox()
-    private var connectAnonymouslyCheckBox: JBCheckBox = JBCheckBox(TodosaurusBundle.message("wizard.steps.chooseIssueTracker.account.connectAnonymously"))
+    private var connectAnonymouslyCheckBox: JBCheckBox = JBCheckBox(TodosaurusCoreBundle.message("wizard.steps.chooseIssueTracker.account.connectAnonymously"))
     private var testConnectionResultLabel: JLabel = JLabel()
     private lateinit var testConnectionButton: JButton
 
@@ -69,7 +72,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
     override fun getComponent(): JComponent = panel {
         panel {
             row {
-                label(TodosaurusBundle.message("wizard.steps.chooseIssueTracker.issueTracker.title"))
+                label(TodosaurusCoreBundle.message("wizard.steps.chooseIssueTracker.issueTracker.title"))
             }
 
             row {
@@ -89,14 +92,14 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
             }
 
             row {
-                comment(TodosaurusBundle.message("wizard.steps.chooseIssueTracker.issueTracker.description"))
+                comment(TodosaurusCoreBundle.message("wizard.steps.chooseIssueTracker.issueTracker.description"))
             }
         }
 
         // For some reason `label` cannot be hidden using `visibleIf` if they are attached to `serverHostPicker` row
         panel {
             row {
-                label(TodosaurusBundle.message("wizard.steps.chooseIssueTracker.serverHost.title"))
+                label(TodosaurusCoreBundle.message("wizard.steps.chooseIssueTracker.serverHost.title"))
             }
 
             row {
@@ -116,7 +119,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
             }
 
             row {
-                link(TodosaurusBundle.message("wizard.steps.chooseIssueTracker.serverHost.notFound.link")) {
+                link(TodosaurusCoreBundle.message("wizard.steps.chooseIssueTracker.serverHost.notFound.link")) {
                     if (tryAddServer())
                         updateServerHostsPicker(issueTrackerPicker.selectedItem as? IssueTracker)
                 }
@@ -134,7 +137,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
 
         panel {
             row {
-                label(TodosaurusBundle.message("wizard.steps.chooseIssueTracker.account.title"))
+                label(TodosaurusCoreBundle.message("wizard.steps.chooseIssueTracker.account.title"))
             }
 
             row {
@@ -182,7 +185,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
         })
 
         row {
-            testConnectionButton = button(TodosaurusBundle.message("wizard.steps.chooseIssueTracker.testConnection.title")) {
+            testConnectionButton = button(TodosaurusCoreBundle.message("wizard.steps.chooseIssueTracker.testConnection.title")) {
                 val button = it.source as? JButton ?: return@button
 
                 val defaultIcon = button.icon
@@ -198,11 +201,11 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
 
                     withContext(Dispatchers.EDT) {
                         if (result is TestConnectionResult.Failed) {
-                            testConnectionResultLabel.text = result.reason ?: TodosaurusBundle.message("wizard.steps.chooseIssueTracker.testConnection.unexpectedError")
+                            testConnectionResultLabel.text = result.reason ?: TodosaurusCoreBundle.message("wizard.steps.chooseIssueTracker.testConnection.unexpectedError")
                             testConnectionResultLabel.foreground = JBColor.RED
                         }
                         else {
-                            testConnectionResultLabel.text = TodosaurusBundle.message("wizard.steps.chooseIssueTracker.testConnection.success")
+                            testConnectionResultLabel.text = TodosaurusCoreBundle.message("wizard.steps.chooseIssueTracker.testConnection.success")
                             testConnectionResultLabel.foreground = JBColor.GREEN
                         }
 
@@ -312,10 +315,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
 
         scope.launch(Dispatchers.IO) {
             // TODO[#135]: Add loading spinner for "serverHostPicker"
-            val credentials = IssueTrackerCredentialsProviderFactory
-                .getInstance(project)
-                .create(issueTracker)
-                .provideAll()
+            val credentials = issueTracker.createCredentialsProvider().provideAll()
 
             withContext(Dispatchers.EDT) {
                 cachedServerPaths = credentials.associate {
@@ -338,8 +338,6 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
     }
 
     override fun createDynamicStep(): TodosaurusWizardStep
-        = SpecificIssueTrackerStepFactory
-            .getInstance(project)
-            .create(model)
+        = model.connectionDetails.issueTracker?.createChooseRemoteStep(project, model)
                 ?: error("Cannot create specific step for ${model.connectionDetails.issueTracker?.title}")
 }

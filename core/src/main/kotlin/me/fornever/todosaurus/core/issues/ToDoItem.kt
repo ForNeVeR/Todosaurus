@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -7,7 +7,7 @@ package me.fornever.todosaurus.core.issues
 import com.intellij.openapi.editor.RangeMarker
 import com.intellij.util.concurrency.annotations.RequiresReadLock
 import com.intellij.util.concurrency.annotations.RequiresWriteLock
-import me.fornever.todosaurus.settings.TodosaurusSettings
+import me.fornever.todosaurus.core.settings.TodosaurusSettings
 
 class ToDoItem(private val settings: TodosaurusSettings.State, val toDoRange: RangeMarker) {
     private companion object {

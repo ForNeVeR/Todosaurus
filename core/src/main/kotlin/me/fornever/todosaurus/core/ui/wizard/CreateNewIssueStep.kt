@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -8,10 +8,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBTextArea
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
-import me.fornever.todosaurus.TodosaurusBundle
-import me.fornever.todosaurus.issues.ToDoService
-import me.fornever.todosaurus.ui.wizard.memoization.ForgettableStep
-import me.fornever.todosaurus.ui.wizard.memoization.UserChoiceStore
+import me.fornever.todosaurus.core.TodosaurusCoreBundle
+import me.fornever.todosaurus.core.issues.ToDoService
+import me.fornever.todosaurus.core.ui.wizard.memoization.ForgettableStep
+import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceStore
 import javax.swing.JComponent
 
 class CreateNewIssueStep(private val project: Project, private val model: TodosaurusWizardContext) : TodosaurusWizardStep(), ForgettableStep {
@@ -24,7 +24,7 @@ class CreateNewIssueStep(private val project: Project, private val model: Todosa
     override fun getComponent(): JComponent = panel {
         row {
             titleField = textField()
-                .label(TodosaurusBundle.getMessage("wizard.steps.createNewIssue.title"), LabelPosition.TOP)
+                .label(TodosaurusCoreBundle.getMessage("wizard.steps.createNewIssue.title"), LabelPosition.TOP)
                 .align(AlignX.FILL)
                 .text(model.toDoItem.title)
                 .onChanged { // TODO[#141]: For some reason bindText({ model.toDoItem.title }, { model.toDoItem.title = it }) function is not working :(
@@ -35,7 +35,7 @@ class CreateNewIssueStep(private val project: Project, private val model: Todosa
 
         row {
             descriptionField = textArea()
-                .label(TodosaurusBundle.getMessage("wizard.steps.createNewIssue.description"), LabelPosition.TOP)
+                .label(TodosaurusCoreBundle.getMessage("wizard.steps.createNewIssue.description"), LabelPosition.TOP)
                 .align(Align.FILL)
                 .text(model.toDoItem.description)
                 .onChanged {

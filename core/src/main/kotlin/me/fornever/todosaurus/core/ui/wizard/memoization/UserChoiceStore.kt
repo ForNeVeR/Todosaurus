@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -9,7 +9,7 @@ import com.intellij.openapi.project.Project
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
-import me.fornever.todosaurus.issueTrackers.anonymous.AnonymousCredentials
+import me.fornever.todosaurus.core.issueTrackers.anonymous.AnonymousCredentials
 
 @Service(Service.Level.PROJECT)
 @State(

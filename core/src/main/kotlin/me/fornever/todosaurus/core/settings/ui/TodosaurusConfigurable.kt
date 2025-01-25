@@ -1,11 +1,11 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
 package me.fornever.todosaurus.core.settings.ui
 
 import com.intellij.openapi.options.Configurable
-import me.fornever.todosaurus.settings.TodosaurusSettings
+import me.fornever.todosaurus.core.settings.TodosaurusSettings
 import org.jetbrains.annotations.Nls
 import javax.swing.JComponent
 

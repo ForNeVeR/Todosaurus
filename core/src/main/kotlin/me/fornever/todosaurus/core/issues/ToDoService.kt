@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -16,18 +16,16 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import me.fornever.todosaurus.TodosaurusBundle
-import me.fornever.todosaurus.issueTrackers.IssueTrackerConnectionDetails
-import me.fornever.todosaurus.issueTrackers.IssueTrackerCredentialsProviderFactory
-import me.fornever.todosaurus.issueTrackers.IssueTrackerProvider
-import me.fornever.todosaurus.issueTrackers.ui.wizard.ChooseIssueTrackerStep
-import me.fornever.todosaurus.ui.Notifications
-import me.fornever.todosaurus.ui.wizard.CreateNewIssueStep
-import me.fornever.todosaurus.ui.wizard.TodosaurusWizardBuilder
-import me.fornever.todosaurus.ui.wizard.TodosaurusWizardContext
-import me.fornever.todosaurus.ui.wizard.WizardResult
-import me.fornever.todosaurus.ui.wizard.memoization.UserChoice
-import me.fornever.todosaurus.ui.wizard.memoization.UserChoiceStore
+import me.fornever.todosaurus.core.TodosaurusCoreBundle
+import me.fornever.todosaurus.core.issueTrackers.IssueTrackerConnectionDetails
+import me.fornever.todosaurus.core.issueTrackers.ui.wizard.ChooseIssueTrackerStep
+import me.fornever.todosaurus.core.ui.Notifications
+import me.fornever.todosaurus.core.ui.wizard.CreateNewIssueStep
+import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardBuilder
+import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardContext
+import me.fornever.todosaurus.core.ui.wizard.WizardResult
+import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoice
+import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceStore
 
 @Service(Service.Level.PROJECT)
 class ToDoService(private val project: Project, private val scope: CoroutineScope) {
@@ -46,7 +44,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
 
                 withContext(Dispatchers.EDT) {
                     TodosaurusWizardBuilder(project, model, scope)
-                        .setTitle(TodosaurusBundle.message("action.CreateNewIssue.text"))
+                        .setTitle(TodosaurusCoreBundle.message("action.CreateNewIssue.text"))
                         .addStep(CreateNewIssueStep(project, model))
                         .setFinalAction { createNewIssue(model) }
                         .build()
@@ -60,7 +58,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
 
             withContext(Dispatchers.EDT) {
                 TodosaurusWizardBuilder(project, model, scope)
-                    .setTitle(TodosaurusBundle.message("action.CreateNewIssue.text"))
+                    .setTitle(TodosaurusCoreBundle.message("action.CreateNewIssue.text"))
                     .addStep(ChooseIssueTrackerStep(project, scope, model))
                     .addStep(CreateNewIssueStep(project, model))
                     .setFinalAction { createNewIssue(model) }
@@ -119,8 +117,8 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
 
             withContext(Dispatchers.EDT) {
                 TodosaurusWizardBuilder(project, model, scope)
-                    .setTitle(TodosaurusBundle.message("action.OpenReportedIssueInBrowser.text"))
-                    .setFinalButtonName(TodosaurusBundle.message("wizard.steps.chooseGitHostingRemote.openReportedIssueInBrowser.primaryButton.name"))
+                    .setTitle(TodosaurusCoreBundle.message("action.OpenReportedIssueInBrowser.text"))
+                    .setFinalButtonName(TodosaurusCoreBundle.message("wizard.steps.chooseGitHostingRemote.openReportedIssueInBrowser.primaryButton.name"))
                     .addStep(ChooseIssueTrackerStep(project, scope, model))
                     .setFinalAction { openReportedIssueInBrowser(model) }
                     .build()
@@ -161,20 +159,13 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
     }
 
     private suspend fun retrieveWizardContextBasedOnUserChoice(toDoItem: ToDoItem, userChoice: UserChoice): TodosaurusWizardContext {
-        val issueTrackerType = userChoice.issueTrackerType
-            ?: error("Issue tracker type must be specified")
-
         val credentialsId = userChoice.credentialsId
             ?: error("Credentials identifier must be specified")
 
-        val issueTracker = IssueTrackerProvider
-            .getInstance()
-            .provide(issueTrackerType)
-                ?: error("Unable to find ${issueTrackerType.name} issue tracker")
+        val issueTracker = userChoice.issueTracker
+                ?: error("Unable to find issue tracker")
 
-        val credentials = IssueTrackerCredentialsProviderFactory
-            .getInstance(project)
-            .create(issueTracker)
+        val credentials = issueTracker.createCredentialsProvider()
             .provide(credentialsId)
                 ?: error("Unable to find credentials with \"${credentialsId}\" identifier")
 

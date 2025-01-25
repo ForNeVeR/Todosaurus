@@ -1,5 +1,5 @@
 <!--
-  ~ SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+  ~ SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
   ~
   ~ SPDX-License-Identifier: MIT AND MIT
   ~
@@ -27,4 +27,10 @@
                            displayType="BALLOON"
                            key="notifications.group.name"/>
     </extensions>
+
+    <extensionPoints>
+        <extensionPoint qualifiedName="me.fornever.todosaurus.issueTrackerFactory"
+                        interface="me.fornever.todosaurus.core.issueTrackers.IssueTrackerFactory"
+                        dynamic="true"/>
+    </extensionPoints>
 </idea-plugin>
