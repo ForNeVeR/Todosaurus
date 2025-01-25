@@ -9,6 +9,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import me.fornever.todosaurus.issues.ToDoItem
 import me.fornever.todosaurus.issues.ToDoService
+import me.fornever.todosaurus.settings.TodosaurusSettings
 
 class OpenReportedIssueInBrowserAction : AnAction() {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
@@ -18,13 +19,14 @@ class OpenReportedIssueInBrowserAction : AnAction() {
             return
 
         val toDoRange = actionEvent.getToDoTextRange()
-        actionEvent.presentation.isEnabled = toDoRange != null && ToDoItem.fromRange(toDoRange) is ToDoItem.Reported
+        val todosaurusSettings = TodosaurusSettings.getInstance()
+        actionEvent.presentation.isEnabled = toDoRange != null && ToDoItem.fromRange(toDoRange, todosaurusSettings.state) is ToDoItem.Reported
     }
 
     override fun actionPerformed(actionEvent: AnActionEvent) {
         val project = actionEvent.project ?: return
         val toDoRange = actionEvent.getToDoTextRange() ?: return
-
-        ToDoService.getInstance(project).openReportedIssueInBrowser(ToDoItem.fromRange(toDoRange))
+        val todosaurusSettings = TodosaurusSettings.getInstance()
+        ToDoService.getInstance(project).openReportedIssueInBrowser(ToDoItem.fromRange(toDoRange, todosaurusSettings.state))
     }
 }

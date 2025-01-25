@@ -5,6 +5,7 @@
 package me.fornever.todosaurus.toDoItemTests
 
 import me.fornever.todosaurus.issues.ToDoItem
+import me.fornever.todosaurus.settings.TodosaurusSettings
 import me.fornever.todosaurus.testFramework.FakeRangeMarker
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -32,7 +33,7 @@ class IsNewTests(private val newItem: String) {
     @Test
     fun `ToDo item should be new`() {
         // Arrange
-        val sut = ToDoItem(FakeRangeMarker(newItem))
+        val sut = ToDoItem(TodosaurusSettings.State.defaultState, FakeRangeMarker(newItem))
 
         // Act & Assert
         assertTrue(sut.isNew)

@@ -5,6 +5,7 @@
 package me.fornever.todosaurus.toDoItemTests
 
 import me.fornever.todosaurus.issues.ToDoItem
+import me.fornever.todosaurus.settings.TodosaurusSettings
 import me.fornever.todosaurus.testFramework.FakeRangeMarker
 import org.junit.Assert
 import org.junit.Test
@@ -26,7 +27,7 @@ class IsReportedTests(private val readyItem: String) {
     @Test
     fun `ToDo item should be reported`() {
         // Arrange
-        val sut = ToDoItem(FakeRangeMarker(readyItem))
+        val sut = ToDoItem(TodosaurusSettings.State.defaultState, FakeRangeMarker(readyItem))
 
         // Act & Assert
 		Assert.assertFalse(sut.isNew)

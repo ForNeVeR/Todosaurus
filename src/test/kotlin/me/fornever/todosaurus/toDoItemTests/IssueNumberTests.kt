@@ -5,6 +5,7 @@
 package me.fornever.todosaurus.toDoItemTests
 
 import me.fornever.todosaurus.issues.ToDoItem
+import me.fornever.todosaurus.settings.TodosaurusSettings
 import me.fornever.todosaurus.testFramework.FakeRangeMarker
 import org.junit.Assert
 import org.junit.Test
@@ -50,7 +51,7 @@ class IssueNumberTests(private val source: String, private val expected: String?
     @Test
     fun `Should returns issue number properly`() {
         // Arrange
-        val sut = ToDoItem(FakeRangeMarker(source))
+        val sut = ToDoItem(TodosaurusSettings.State.defaultState, FakeRangeMarker(source))
 
         // Act & Assert
         Assert.assertEquals(expected, sut.issueNumber)
