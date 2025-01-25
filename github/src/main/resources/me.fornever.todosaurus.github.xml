@@ -5,12 +5,12 @@
   ~
   -->
 
-<idea-plugin package="me.fornever.todosaurus.github">
+<idea-plugin package="me.fornever.todosaurus.gitHub">
     <dependencies>
         <module name="me.fornever.todosaurus.core"/>
     </dependencies>
 
-    <extensions>
-        <me.fornever.todosaurus.issueTrackerFactory implementation="me.fornever.todosaurus.gitHub.GitHubTrackerFactory"/>
+    <extensions defaultExtensionNs="me.fornever.todosaurus">
+        <issueTrackerFactory implementation="me.fornever.todosaurus.gitHub.GitHubTrackerFactory"/>
     </extensions>
 </idea-plugin>
