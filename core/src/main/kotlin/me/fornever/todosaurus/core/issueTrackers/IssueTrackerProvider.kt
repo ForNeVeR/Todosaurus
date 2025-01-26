@@ -4,8 +4,6 @@
 
 package me.fornever.todosaurus.core.issueTrackers
 
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.tasks.TaskRepositoryType
 import com.intellij.util.containers.toArray
 
