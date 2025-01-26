@@ -160,17 +160,18 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
     }
 
     private suspend fun retrieveWizardContextBasedOnUserChoice(toDoItem: ToDoItem, userChoice: UserChoice): TodosaurusWizardContext {
+        val issueTrackerId = userChoice.issueTrackerId
+            ?: error("Issue tracker id must be specified")
+
         val credentialsId = userChoice.credentialsId
             ?: error("Credentials identifier must be specified")
 
-        val issueTrackerId = userChoice.issueTrackerId
-                ?: error("Unable to find issue tracker")
-
         val issueTracker = IssueTrackerProvider.provideByRepositoryName(issueTrackerId)
+            ?: error("Unable to find the issue tracker $issueTrackerId.")
 
         val credentials = issueTracker
-            ?.createCredentialsProvider(project)
-            ?.provide(credentialsId)
+            .createCredentialsProvider(project)
+            .provide(credentialsId)
                 ?: error("Unable to find credentials with \"${credentialsId}\" identifier")
 
         val connectionDetails = IssueTrackerConnectionDetails()
