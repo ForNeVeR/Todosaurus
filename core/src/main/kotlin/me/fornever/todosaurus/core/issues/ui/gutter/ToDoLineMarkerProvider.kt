@@ -9,7 +9,6 @@ import com.intellij.codeInsight.daemon.LineMarkerProviderDescriptor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.psi.PsiElement
 import me.fornever.todosaurus.core.issues.ToDoItem
-import me.fornever.todosaurus.core.settings.TodosaurusSettings
 
 class ToDoLineMarkerProvider : LineMarkerProviderDescriptor(), DumbAware {
 
@@ -22,9 +21,6 @@ class ToDoLineMarkerProvider : LineMarkerProviderDescriptor(), DumbAware {
         if (!ToDoItem.containsToDo(psiElement))
             return null
 
-        val todosaurusSettings = TodosaurusSettings.getInstance()
-        val toDoItems = ToDoItem.extractFrom(psiElement, todosaurusSettings.state)
-
-        return ToDoLineMarker(psiElement, toDoItems)
+        return ToDoLineMarker(psiElement)
     }
 }

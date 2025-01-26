@@ -13,6 +13,7 @@ import com.intellij.psi.PsiElement
 import me.fornever.todosaurus.core.issues.ToDoItem
 import me.fornever.todosaurus.core.issues.ui.gutter.actions.CreateNewIssueForAction
 import me.fornever.todosaurus.core.issues.ui.gutter.actions.OpenIssueThatReportedAsAction
+import me.fornever.todosaurus.core.settings.TodosaurusSettings
 import javax.swing.Icon
 
 class ToDoGutterIconRenderer(private val lineMarker: ToDoLineMarker) : LineMarkerInfo.LineMarkerGutterIconRenderer<PsiElement>(lineMarker) {
@@ -25,12 +26,18 @@ class ToDoGutterIconRenderer(private val lineMarker: ToDoLineMarker) : LineMarke
         = AllIcons.General.TodoDefault
 
     override fun getPopupMenuActions(): ActionGroup? {
-        if (lineMarker.toDoItems.isEmpty())
+        val psiElement = lineMarker.element
+            ?: return ActionGroup.EMPTY_GROUP
+
+        val todosaurusSettings = TodosaurusSettings.getInstance()
+        val toDoItems = ToDoItem.extractFrom(psiElement, todosaurusSettings.state)
+
+        if (toDoItems.isEmpty())
             return ActionGroup.EMPTY_GROUP
 
         return object : ActionGroup() {
             override fun getChildren(actionEvent: AnActionEvent?): Array<AnAction>
-                = lineMarker.toDoItems.map { when(it) {
+                = toDoItems.map { when(it) {
                     is ToDoItem.New -> CreateNewIssueForAction(it)
                     is ToDoItem.Reported -> OpenIssueThatReportedAsAction(it)
                 } }

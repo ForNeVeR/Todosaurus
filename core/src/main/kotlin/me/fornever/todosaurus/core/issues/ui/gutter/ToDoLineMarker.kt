@@ -10,14 +10,15 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiElement
 import me.fornever.todosaurus.core.TodosaurusCoreBundle
 import me.fornever.todosaurus.core.issues.ToDoItem
+import me.fornever.todosaurus.core.settings.TodosaurusSettings
 import javax.swing.Icon
 
-class ToDoLineMarker(psiElement: PsiElement, val toDoItems: Array<ToDoItem>)
+class ToDoLineMarker(psiElement: PsiElement)
     : MergeableLineMarkerInfo<PsiElement>(
         psiElement,
         psiElement.textRange,
         AllIcons.General.TodoDefault,
-        { tooltipProvider(toDoItems) },
+        ::tooltipProvider,
         /* navHandler = */ null,
         GutterIconRenderer.Alignment.LEFT,
         TodosaurusCoreBundle.messagePointer("gutter.accessibleName")
@@ -31,7 +32,9 @@ class ToDoLineMarker(psiElement: PsiElement, val toDoItems: Array<ToDoItem>)
     override fun createGutterRenderer() = ToDoGutterIconRenderer(this)
 }
 
-private fun tooltipProvider(toDoItems: Array<ToDoItem>): String? {
+private fun tooltipProvider(psiElement: PsiElement): String? {
+    val todosaurusSettings = TodosaurusSettings.getInstance()
+    val toDoItems = ToDoItem.extractFrom(psiElement, todosaurusSettings.state)
     val counts = ToDoCounts.create(toDoItems)
 
     return when {
@@ -40,9 +43,9 @@ private fun tooltipProvider(toDoItems: Array<ToDoItem>): String? {
         counts.reported == 0 && counts.new > 1 -> TodosaurusCoreBundle.message("gutter.tooltip.newItems", counts.new)
         counts.reported == 1 && counts.new == 0 -> {
             val toDoItem = toDoItems.filterIsInstance<ToDoItem.Reported>().single()
-            TodosaurusCoreBundle.message("gutter.tooltip.linkedItem", toDoItem.issueNumber)
+            TodosaurusCoreBundle.message("gutter.tooltip.reportedItem", toDoItem.issueNumber)
         }
-        counts.reported > 1 && counts.new == 0 -> TodosaurusCoreBundle.message("gutter.tooltip.linkedItems", counts.reported)
+        counts.reported > 1 && counts.new == 0 -> TodosaurusCoreBundle.message("gutter.tooltip.reportedItems", counts.reported)
         else -> TodosaurusCoreBundle.message("gutter.tooltip.mixedItems", counts.new, counts.reported)
     }
 }

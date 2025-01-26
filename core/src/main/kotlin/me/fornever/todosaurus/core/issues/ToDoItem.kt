@@ -58,7 +58,6 @@ sealed class ToDoItem private constructor(val text: String, protected val todosa
             val toDoItems = mutableListOf<ToDoItem>()
             var lineOffset = psiElement.textRange.startOffset
 
-            // Don't use Sequence because it captures the lineOffset, which causes the lineOffset to change unexpectedly after each iteration.
             for (commentaryLine in commentaryText.lineSequence()) {
                 val toDoPattern = toDoPatterns.firstOrNull { it.containsMatchIn(commentaryLine) }
 
