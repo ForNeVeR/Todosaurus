@@ -30,6 +30,6 @@ class IsReportedTests(private val readyItem: String) {
         val sut = ToDoItem.fromRange(FakeRangeMarker(readyItem), TodosaurusSettings.State.defaultState)
 
         // Act & Assert
-        assertTrue(sut is ToDoItem.New)
+        assertTrue(sut is ToDoItem.Reported)
     }
 }
