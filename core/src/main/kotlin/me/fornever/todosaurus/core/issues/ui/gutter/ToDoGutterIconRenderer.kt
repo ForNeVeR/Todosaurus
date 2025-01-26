@@ -12,7 +12,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.psi.PsiElement
 import me.fornever.todosaurus.core.issues.ToDoItem
 import me.fornever.todosaurus.core.issues.ui.gutter.actions.CreateNewIssueForAction
-import me.fornever.todosaurus.core.issues.ui.gutter.actions.OpenReportedIssueWithNumberAction
+import me.fornever.todosaurus.core.issues.ui.gutter.actions.OpenIssueThatReportedAsAction
 import javax.swing.Icon
 
 class ToDoGutterIconRenderer(private val lineMarker: ToDoLineMarker) : LineMarkerInfo.LineMarkerGutterIconRenderer<PsiElement>(lineMarker) {
@@ -32,7 +32,7 @@ class ToDoGutterIconRenderer(private val lineMarker: ToDoLineMarker) : LineMarke
             override fun getChildren(actionEvent: AnActionEvent?): Array<AnAction>
                 = lineMarker.toDoItems.map { when(it) {
                     is ToDoItem.New -> CreateNewIssueForAction(it)
-                    is ToDoItem.Reported -> OpenReportedIssueWithNumberAction(it)
+                    is ToDoItem.Reported -> OpenIssueThatReportedAsAction(it)
                 } }
                 .toTypedArray()
         }

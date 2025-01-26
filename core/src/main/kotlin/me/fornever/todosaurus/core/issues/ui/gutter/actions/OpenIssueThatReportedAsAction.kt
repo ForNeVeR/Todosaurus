@@ -9,9 +9,9 @@ import me.fornever.todosaurus.core.TodosaurusCoreBundle
 import me.fornever.todosaurus.core.issues.ToDoItem
 import me.fornever.todosaurus.core.issues.ToDoService
 
-class OpenReportedIssueWithNumberAction(private val toDoItem: ToDoItem.Reported): AnAction(
+class OpenIssueThatReportedAsAction(private val toDoItem: ToDoItem.Reported): AnAction(
 	TodosaurusCoreBundle.message(
-		"action.OpenReportedIssueWithNumber.text",
+		"action.OpenIssueThatReportedAs.text",
 		toDoItem.issueNumber
 	) // TODO: Form issueNumber using TodosaurusSettings.ISSUE_NUMBER_REPLACEMENT
 ) {
