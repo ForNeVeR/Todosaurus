@@ -20,8 +20,8 @@ class IsReportedTests(private val readyItem: String) {
         @Parameters
         fun reportedItems()
             = arrayOf(
-            "TODO[#2342]:",
-            "Todo[#2123]")
+                "TODO[#2342]:",
+                "Todo[#2123]")
     }
 
     @Test

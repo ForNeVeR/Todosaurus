@@ -18,16 +18,16 @@ class TitleTests(private val source: String, private val expected: String) {
     companion object {
         @JvmStatic
         @Parameters
-        fun titles() = arrayOf(
-            arrayOf("TODO", ""),
-            arrayOf("ToDo", ""),
-            arrayOf("todo some text", "some text"),
-            arrayOf("Todo:text", "text"),
-            arrayOf("ToDo Text", "Text"),
-            arrayOf("Todo:Text", "Text"),
-            arrayOf("TODO    Text", "Text"),
-            arrayOf("TODO\nText", "")
-        )
+        fun titles()
+            = arrayOf(
+                arrayOf("TODO", ""),
+                arrayOf("ToDo", ""),
+                arrayOf("todo some text", "some text"),
+                arrayOf("Todo:text", "text"),
+                arrayOf("ToDo Text", "Text"),
+                arrayOf("Todo:Text", "Text"),
+                arrayOf("TODO    Text", "Text"),
+                arrayOf("TODO\nText", ""))
     }
 
     @Test

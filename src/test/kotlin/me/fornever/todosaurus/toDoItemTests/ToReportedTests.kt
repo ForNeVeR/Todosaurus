@@ -20,14 +20,14 @@ class ToReportedTests(private val newItem: String) {
         @Parameters
         fun newItems()
             = arrayOf(
-            "TODO",
-            "todo",
-            "text Todo",
-            "ToDo",
-            "Todo:text",
-            "ToDo Text",
-            "Todo:Text",
-            "TODO    Text")
+                "TODO",
+                "todo",
+                "text Todo",
+                "ToDo",
+                "Todo:text",
+                "ToDo Text",
+                "Todo:Text",
+                "TODO    Text")
     }
 
     @Test
