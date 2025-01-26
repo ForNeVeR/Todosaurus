@@ -7,11 +7,6 @@
         "versionConstraint": "latestWave",
         "order": "oldest"
     }, {
-        "file": "gradle/libs.versions.toml",
-        "field": "ideaSdkPreview",
-        "kind": "intellij-idea-community",
-        "versionFlavor": "eap"
-    }, {
         "file": "gradle.properties",
         "field": "pluginUntilBuild",
         "kind": "intellij-idea-community",

@@ -61,9 +61,9 @@ The project is distributed under the terms of [the MIT license][docs.license]
 The license indication in the project's sources is compliant with the [REUSE specification v3.3][reuse.spec].
 
 ### Additional Copyright Holders
-In addition to the people listed in the version control history, Todosaurus reuses portions of code from [IntelliJ IDEA Community Edition][intellij-community], copyrighted by JetBrains s.r.o. and contributors.
+In addition to the people listed in the version control history, Todosaurus reuses portions of code from [IntelliJ IDEA Community Edition][intellij-community] and [IntelliJ Platform Plugin Template][intellij-platform-plugin-template], copyrighted by JetBrains s.r.o. and contributors.
 
-Sections copied from that project are marked with corresponding references in the file headers.
+Major sections copied from the external projects are marked with corresponding references in the file headers.
 
 [andivionian-status-classifier]: https://andivionian.fornever.me/v1/#status-enfer-
 [badge.plugin]: https://img.shields.io/jetbrains/plugin/v/23838.svg
@@ -73,6 +73,7 @@ Sections copied from that project are marked with corresponding references in th
 [docs.license]: LICENSE.md
 [docs.maintainer-guide]: MAINTAINERSHIP.md
 [intellij-community]: https://github.com/JetBrains/intellij-community
+[intellij-platform-plugin-template]: https://github.com/JetBrains/intellij-platform-plugin-template
 [issues]: https://github.com/ForNeVeR/Todosaurus/issues
 [marketplace.plugin]: https://plugins.jetbrains.com/plugin/23838
 [reuse.spec]: https://reuse.software/spec-3.3/

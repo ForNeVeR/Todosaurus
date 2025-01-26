@@ -1,20 +1,17 @@
-// SPDX-FileCopyrightText: 2000-2021 JetBrains s.r.o.
-// SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2000-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
-// SPDX-License-Identifier: Apache-2.0
+// SPDX-License-Identifier: MIT AND Apache-2.0
 
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.exceptions.MissingVersionException
 import org.jetbrains.changelog.markdownToHTML
-import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
 fun properties(key: String) = providers.gradleProperty(key)
 fun environment(key: String) = providers.environmentVariable(key)
 
 plugins {
-    id("java")
-    alias(libs.plugins.kotlin)
-    alias(libs.plugins.gradleIntelliJPlatformPlugin)
+    id("todosaurus.kotlin-conventions")
+    id("todosaurus.plugin-conventions")
     alias(libs.plugins.changelog)
     alias(libs.plugins.qodana)
     alias(libs.plugins.gradleJvmWrapper)
@@ -31,41 +28,6 @@ jvmWrapper {
 group = properties("pluginGroup").get()
 version = properties("pluginVersion").get()
 
-// Configure project's dependencies
-repositories {
-    mavenCentral()
-    intellijPlatform {
-        defaultRepositories()
-    }
-}
-
-kotlin {
-    jvmToolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-    compilerOptions {
-        allWarningsAsErrors = true
-    }
-}
-
-dependencies {
-    intellijPlatform {
-        intellijIdeaCommunity(libs.versions.ideaSdk)
-        bundledModule("intellij.platform.vcs.dvcs.impl")
-        bundledPlugin("Git4Idea")
-        bundledPlugin("org.jetbrains.plugins.github")
-
-        instrumentationTools()
-
-        testFramework(TestFrameworkType.Bundled)
-
-        pluginVerifier()
-    }
-
-    testImplementation(libs.junit)
-    testImplementation(libs.openTest4J)
-}
-
 intellijPlatform {
     pluginConfiguration {
         name = properties("pluginName")
@@ -75,10 +37,16 @@ intellijPlatform {
     }
 }
 
-// Configure Gradle Changelog Plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
 changelog {
     groups.empty()
     repositoryUrl = properties("pluginRepositoryUrl").get()
+}
+
+dependencies {
+    intellijPlatform {
+        pluginModule(implementation(project(":core")))
+        pluginModule(implementation(project(":github")))
+    }
 }
 
 tasks {
@@ -121,14 +89,4 @@ tasks {
         // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
         channels = properties("pluginVersion").map { listOf(it.substringAfter('-', "").substringBefore('.').ifEmpty { "default" }) }
     }
-
-    val testIdeaPreview by intellijPlatformTesting.testIde.registering {
-        version = libs.versions.ideaSdkPreview
-        useInstaller = false
-        task {
-            enabled = libs.versions.ideaSdk.get() != libs.versions.ideaSdkPreview.get()
-        }
-    }
-
-    check { dependsOn(testIdeaPreview.name) }
 }
