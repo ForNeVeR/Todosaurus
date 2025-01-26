@@ -4,8 +4,6 @@
 
 package me.fornever.todosaurus.core.issueTrackers
 
-import com.intellij.openapi.components.Service
-import com.intellij.openapi.components.service
 import com.intellij.tasks.TaskRepositoryType
 import com.intellij.util.containers.toArray
 
@@ -17,20 +15,15 @@ object IssueTrackerProvider {
             .mapNotNull { createTracker(it) }
             .toArray(emptyArray())
 
-    fun provideByRepositoryName(repositoryName: String): IssueTracker? =
-        TaskRepositoryType
+    fun provideByRepositoryName(repositoryName: String): IssueTracker?
+        = TaskRepositoryType
             .getRepositoryTypes()
             .firstOrNull { it.name == repositoryName }
             ?.let { createTracker(it)  }
 
-    private fun createTracker(repository: TaskRepositoryType<*>): IssueTracker? {
-        val trackerId = repository.name
-        for (factory in IssueTrackerFactory.EP_NAME.extensionList) {
-            if (factory.trackerId == trackerId) {
-                return factory.createTracker(repository)
-            }
-        }
-
-        return null
-    }
+    private fun createTracker(repository: TaskRepositoryType<*>): IssueTracker?
+        = IssueTrackerFactory.EP_NAME
+            .extensionList
+            .firstOrNull { it.trackerId == repository.name }
+            ?.createTracker(repository)
 }
