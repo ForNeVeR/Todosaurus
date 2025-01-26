@@ -19,7 +19,7 @@ class UserChoiceWriter : UserChoiceVisitor {
 
     override fun visit(userChoice: UserChoice) {
         val issueTrackerId = userChoice.issueTrackerId
-            ?: error("Issue tracker type must be specified")
+            ?: error("Issue tracker id must be specified")
 
         val credentialsId = userChoice.credentialsId
             ?: error("Credentials identifier must be specified")
