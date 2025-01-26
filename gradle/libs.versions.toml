@@ -1,7 +1,6 @@
-# SPDX-FileCopyrightText: 2000-2021 JetBrains s.r.o.
-# SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+# SPDX-FileCopyrightText: 2000-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 #
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT AND Apache-2.0
 
 [versions]
 ideaSdk = "2024.3"
