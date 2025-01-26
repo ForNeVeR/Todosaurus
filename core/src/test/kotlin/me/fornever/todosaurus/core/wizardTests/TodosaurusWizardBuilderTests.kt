@@ -12,7 +12,7 @@ import me.fornever.todosaurus.core.testFramework.FakeProject
 import me.fornever.todosaurus.core.testFramework.FakeRangeMarker
 import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardBuilder
 import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardContext
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class TodosaurusWizardBuilderTests {
@@ -31,11 +31,11 @@ class TodosaurusWizardBuilderTests {
             .addStep(lastStep)
 
         // Assert
-        Assert.assertEquals(secondStep.id, firstStep.nextId)
-        Assert.assertEquals(null, firstStep.previousId)
-        Assert.assertEquals(lastStep.id, secondStep.nextId)
-        Assert.assertEquals(firstStep.id, secondStep.previousId)
-        Assert.assertEquals(null, lastStep.nextId)
-        Assert.assertEquals(secondStep.id, lastStep.previousId)
+        assertEquals(secondStep.id, firstStep.nextId)
+        assertEquals(null, firstStep.previousId)
+        assertEquals(lastStep.id, secondStep.nextId)
+        assertEquals(firstStep.id, secondStep.previousId)
+        assertEquals(null, lastStep.nextId)
+        assertEquals(secondStep.id, lastStep.previousId)
     }
 }

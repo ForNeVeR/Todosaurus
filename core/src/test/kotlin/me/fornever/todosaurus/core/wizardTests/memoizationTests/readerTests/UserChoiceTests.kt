@@ -13,7 +13,7 @@ import me.fornever.todosaurus.core.issues.IssuePlacementDetails
 import me.fornever.todosaurus.core.issues.IssuePlacementDetailsType
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoice
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceReader
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -109,7 +109,7 @@ class UserChoiceTests(private val issueTrackerId: String) {
         sut.visit(actual)
 
         // Assert
-		Assert.assertEquals(issueTrackerId, actual.issueTrackerId)
-		Assert.assertEquals(CREDENTIALS_IDENTIFIER, actual.credentialsId)
+		assertEquals(issueTrackerId, actual.issueTrackerId)
+		assertEquals(CREDENTIALS_IDENTIFIER, actual.credentialsId)
     }
 }

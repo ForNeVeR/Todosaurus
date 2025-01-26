@@ -9,7 +9,7 @@ import kotlinx.serialization.json.JsonPrimitive
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoice
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceWriter
 import me.fornever.todosaurus.core.wizardTests.memoizationTests.FakeIssuePlacementDetails
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
@@ -37,7 +37,7 @@ class UserChoiceTests(private val issueTrackerId: String) {
         sut.visit(actual)
 
         // Assert
-        Assert.assertEquals(sut.json, JsonObject(
+        assertEquals(sut.json, JsonObject(
             mapOf(
                 UserChoice::issueTrackerId.name to JsonPrimitive(issueTrackerId),
                 UserChoice::credentialsId.name to JsonPrimitive(CREDENTIALS_IDENTIFIER),

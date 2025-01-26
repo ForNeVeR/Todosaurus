@@ -12,7 +12,7 @@ import me.fornever.todosaurus.core.issues.IssuePlacementDetails
 import me.fornever.todosaurus.core.issues.IssuePlacementDetailsType
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoice
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceWriter
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.net.URI
 import java.nio.file.Path
@@ -37,7 +37,7 @@ class GitBasedPlacementDetailsTests {
         sut.visit(actual)
 
         // Assert
-		Assert.assertEquals(
+		assertEquals(
 			sut.json[UserChoice::placementDetails.name], JsonObject(
 				mapOf(
 					IssuePlacementDetails::type.name to JsonPrimitive(IssuePlacementDetailsType.GitBased.name),

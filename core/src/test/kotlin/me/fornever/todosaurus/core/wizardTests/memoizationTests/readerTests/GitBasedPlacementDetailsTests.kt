@@ -14,7 +14,8 @@ import me.fornever.todosaurus.core.issues.IssuePlacementDetails
 import me.fornever.todosaurus.core.issues.IssuePlacementDetailsType
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoice
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceReader
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.fail
 import org.junit.Test
 
 class GitBasedPlacementDetailsTests {
@@ -174,10 +175,10 @@ class GitBasedPlacementDetailsTests {
 
         // Assert
         val gitBasedPlacementDetails = actual.placementDetails as? GitBasedPlacementDetails
-            ?: return Assert.fail()
+            ?: return fail()
 
-        Assert.assertEquals(IssuePlacementDetailsType.GitBased, gitBasedPlacementDetails.type)
-        Assert.assertEquals(url, gitBasedPlacementDetails.remote?.url.toString())
-        Assert.assertEquals(rootPath, gitBasedPlacementDetails.remote?.rootPath.toString())
+        assertEquals(IssuePlacementDetailsType.GitBased, gitBasedPlacementDetails.type)
+        assertEquals(url, gitBasedPlacementDetails.remote?.url.toString())
+        assertEquals(rootPath, gitBasedPlacementDetails.remote?.rootPath.toString())
     }
 }
