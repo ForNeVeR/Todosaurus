@@ -35,52 +35,50 @@ sealed class ToDoItem private constructor(val text: String, protected val todosa
             return toDoPatterns.stream().anyMatch { it.containsMatchIn(commentaryText) }
         }
 
-        fun extractFrom(psiElement: PsiElement, todosaurusSettings: TodosaurusSettings.State): Sequence<ToDoItem> {
+        fun extractFrom(psiElement: PsiElement, todosaurusSettings: TodosaurusSettings.State): Array<ToDoItem> {
             if (psiElement !is PsiComment)
-                return emptySequence()
+                return emptyArray()
 
             val psiFile = psiElement.containingFile
-                ?: return emptySequence()
+                ?: return emptyArray()
 
             val document = PsiDocumentManager.getInstance(psiElement.project).getDocument(psiFile)
-                ?: return emptySequence()
+                ?: return emptyArray()
 
             val commentaryText = psiElement.text
 
             if (commentaryText.isBlank())
-                return emptySequence()
+                return emptyArray()
 
             val toDoPatterns = TodoConfiguration
                 .getInstance()
                 .todoPatterns
                 .mapNotNull { it.pattern?.toRegex() }
 
+            val toDoItems = mutableListOf<ToDoItem>()
             var lineOffset = psiElement.textRange.startOffset
 
-            return sequence {
-                commentaryText
-                    .lineSequence()
-                    .forEach { commentaryLine ->
-                        val toDoPattern = toDoPatterns.firstOrNull { it.containsMatchIn(commentaryLine) }
+            // Don't use Sequence because it captures the lineOffset, which causes the lineOffset to change unexpectedly after each iteration.
+            for (commentaryLine in commentaryText.lineSequence()) {
+                val toDoPattern = toDoPatterns.firstOrNull { it.containsMatchIn(commentaryLine) }
 
-                        if (toDoPattern != null) {
-                            val toDoMatch: MatchResult? = toDoPattern.find(commentaryLine, 0)
+                if (toDoPattern != null) {
+                    val toDoMatch: MatchResult? = toDoPattern.find(commentaryLine, 0)
 
-                            if (toDoMatch != null)
-                                yield(
-                                    create(
-                                        toDoMatch.value,
-                                        document,
-                                        lineOffset,
-                                        lineOffset + commentaryLine.length,
-                                        todosaurusSettings
-                                    )
-                                )
-                        }
+                    if (toDoMatch != null)
+                        toDoItems.add(create(
+                            toDoMatch.value,
+                            document,
+                            lineOffset,
+                            lineOffset + commentaryLine.length,
+                            todosaurusSettings
+                        ))
+                }
 
-                        lineOffset += commentaryLine.length + 1
-                    }
+                lineOffset += commentaryLine.length + 1
             }
+
+            return toDoItems.toTypedArray()
         }
 
         @RequiresReadLock
@@ -124,7 +122,7 @@ sealed class ToDoItem private constructor(val text: String, protected val todosa
         }
 
         private fun formReportedItemPattern(issueNumber: String): String
-        // TODO[#134]: Allow to customize template for issue number. This is difficult task because the "newItemPattern" is now linked to a regular [.*?] pattern
+            // TODO[#134]: Allow to customize template for issue number. This is difficult task because the "newItemPattern" is now linked to a regular [.*?] pattern
             = "TODO${todosaurusSettings.numberPattern}".replace(TodosaurusSettings.ISSUE_NUMBER_REPLACEMENT, issueNumber)
     }
 }

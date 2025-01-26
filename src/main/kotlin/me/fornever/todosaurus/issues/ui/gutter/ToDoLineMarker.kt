@@ -10,20 +10,18 @@ import com.intellij.openapi.editor.markup.GutterIconRenderer
 import com.intellij.psi.PsiElement
 import me.fornever.todosaurus.TodosaurusBundle
 import me.fornever.todosaurus.issues.ToDoItem
-import me.fornever.todosaurus.settings.TodosaurusSettings
 import javax.swing.Icon
 
-class ToDoLineMarker(psiElement: PsiElement)
+class ToDoLineMarker(psiElement: PsiElement, val toDoItems: Array<ToDoItem>)
     : MergeableLineMarkerInfo<PsiElement>(
         psiElement,
         psiElement.textRange,
         AllIcons.General.TodoDefault,
-        ::tooltipProvider,
+        { tooltipProvider(toDoItems) },
         /* navHandler = */ null,
         GutterIconRenderer.Alignment.LEFT,
         TodosaurusBundle.messagePointer("gutter.accessibleName")
 ) {
-
     override fun canMergeWith(lineMarker: MergeableLineMarkerInfo<*>): Boolean
         = lineMarker is ToDoLineMarker
 
@@ -33,9 +31,7 @@ class ToDoLineMarker(psiElement: PsiElement)
     override fun createGutterRenderer() = ToDoGutterIconRenderer(this)
 }
 
-private fun tooltipProvider(psiElement: PsiElement): String? {
-    val todosaurusSettings = TodosaurusSettings.getInstance()
-    val toDoItems = ToDoItem.extractFrom(psiElement, todosaurusSettings.state)
+private fun tooltipProvider(toDoItems: Array<ToDoItem>): String? {
     val counts = ToDoCounts.create(toDoItems)
 
     return when {
@@ -53,7 +49,7 @@ private fun tooltipProvider(psiElement: PsiElement): String? {
 
 private data class ToDoCounts(val new: Int, val reported: Int) {
     companion object {
-        fun create(items: Sequence<ToDoItem>): ToDoCounts {
+        fun create(items: Array<ToDoItem>): ToDoCounts {
             var new = 0
             var reported = 0
 
