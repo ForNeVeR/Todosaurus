@@ -3,9 +3,9 @@
 # SPDX-License-Identifier: MIT AND Apache-2.0
 
 [versions]
+gradleIntelliJPlatform = "2.2.1"
 ideaSdk = "2024.3"
 kotlin = "2.0.21"
-gradleIntelliJPlatform = "2.2.1"
 
 [libraries]
 intelliJPlatformModulePlugin = { group = "org.jetbrains.intellij.platform.module", name = "org.jetbrains.intellij.platform.module.gradle.plugin", version.ref = "gradleIntelliJPlatform" }
