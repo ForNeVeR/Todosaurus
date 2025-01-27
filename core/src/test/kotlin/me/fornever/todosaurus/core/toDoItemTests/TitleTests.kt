@@ -7,35 +7,33 @@ package me.fornever.todosaurus.core.toDoItemTests
 import me.fornever.todosaurus.core.issues.ToDoItem
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
 import me.fornever.todosaurus.core.testFramework.FakeRangeMarker
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.Parameterized
-import org.junit.runners.Parameterized.Parameters
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 
-@RunWith(Parameterized::class)
-class TitleTests(private val source: String, private val expected: String) {
+class TitleTests {
     companion object {
         @JvmStatic
-        @Parameters
         fun titles() = arrayOf(
-            arrayOf("TODO", ""),
-            arrayOf("ToDo", ""),
-            arrayOf("todo some text", "some text"),
-            arrayOf("Todo:text", "text"),
-            arrayOf("ToDo Text", "Text"),
-            arrayOf("Todo:Text", "Text"),
-            arrayOf("TODO    Text", "Text"),
-            arrayOf("TODO\nText", "")
+            Arguments.of("TODO", ""),
+            Arguments.of("ToDo", ""),
+            Arguments.of("todo some text", "some text"),
+            Arguments.of("Todo:text", "text"),
+            Arguments.of("ToDo Text", "Text"),
+            Arguments.of("Todo:Text", "Text"),
+            Arguments.of("TODO    Text", "Text"),
+            Arguments.of("TODO\nText", "")
         )
     }
 
-    @Test
-    fun `Should calculate title properly`() {
+    @ParameterizedTest
+    @MethodSource("titles")
+    fun `Should calculate title properly`(source: String, expected: String) {
         // Arrange
         val sut = ToDoItem(TodosaurusSettings.State.defaultState, FakeRangeMarker(source))
 
         // Act & Assert
-        Assert.assertEquals(expected, sut.title)
+        assertEquals(expected, sut.title)
     }
 }

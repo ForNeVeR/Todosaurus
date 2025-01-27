@@ -7,29 +7,22 @@ package me.fornever.todosaurus.core.toDoItemTests
 import me.fornever.todosaurus.core.issues.ToDoItem
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
 import me.fornever.todosaurus.core.testFramework.FakeRangeMarker
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.Parameterized
-import org.junit.runners.Parameterized.Parameters
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.ValueSource
 
-@RunWith(Parameterized::class)
-class IsReportedTests(private val readyItem: String) {
-    companion object {
-        @JvmStatic
-        @Parameters
-        fun reportedItems()
-            = arrayOf(
-                "TODO[#2342]:",
-                "Todo[#2123]")
-    }
+class IsReportedTests {
 
-    @Test
-    fun `ToDo item should be reported`() {
+    @ParameterizedTest
+    @ValueSource(strings = [
+        "TODO[#2342]:",
+        "Todo[#2123]"
+    ])
+    fun `ToDo item should be reported`(readyItem: String) {
         // Arrange
         val sut = ToDoItem(TodosaurusSettings.State.defaultState, FakeRangeMarker(readyItem))
 
         // Act & Assert
-		Assert.assertFalse(sut.isNew)
+		assertFalse(sut.isNew)
     }
 }

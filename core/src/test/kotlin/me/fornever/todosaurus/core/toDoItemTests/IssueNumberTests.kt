@@ -7,53 +7,51 @@ package me.fornever.todosaurus.core.toDoItemTests
 import me.fornever.todosaurus.core.issues.ToDoItem
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
 import me.fornever.todosaurus.core.testFramework.FakeRangeMarker
-import org.junit.Assert
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.Parameterized
-import org.junit.runners.Parameterized.Parameters
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 
-@RunWith(Parameterized::class)
-class IssueNumberTests(private val source: String, private val expected: String?) {
+class IssueNumberTests {
     companion object {
         @JvmStatic
-        @Parameters
-        fun items()
+        private fun items()
             = arrayOf(
-                arrayOf("TODO[#111]:", "111"),
-                arrayOf("todo[#112]:", "112"),
-                arrayOf("text Todo[#113]:", "113"),
-                arrayOf("ToDo[#114]:", "114"),
-                arrayOf("Todo[#115]:text", "115"),
-                arrayOf("ToDo[#116]: Text", "116"),
-                arrayOf("Todo[#117]:Text", "117"),
-                arrayOf("TODO[#118]:    Text", "118"),
-                arrayOf("TODO", null),
-                arrayOf("todo", null),
-                arrayOf("text Todo", null),
-                arrayOf("ToDo 119", null),
-                arrayOf("Todo[120]:text", "120"),
-                arrayOf("ToDo[#121]: Text", "121"),
-                arrayOf("Todo[#122]:Text", "122"),
-                arrayOf("TODO[#123]:    Text", "123"),
-                arrayOf("TODO [124]", null),
-                arrayOf("todo [125]", null),
-                arrayOf("text Todo [#126]", null),
-                arrayOf("ToDo[a127]:", "a127"),
-                arrayOf("Todo[c128b]:text", "c128b"),
-                arrayOf("ToDo[129d]: Text", "129d"),
-                arrayOf("ToDo[1a30]:", "1a30"),
-                arrayOf("Todo[13c1]:text", "13c1"),
-                arrayOf("ToDo[1b3c2]: Text", "1b3c2")
+                Arguments.of("TODO[#111]:", "111"),
+                Arguments.of("todo[#112]:", "112"),
+                Arguments.of("text Todo[#113]:", "113"),
+                Arguments.of("ToDo[#114]:", "114"),
+                Arguments.of("Todo[#115]:text", "115"),
+                Arguments.of("ToDo[#116]: Text", "116"),
+                Arguments.of("Todo[#117]:Text", "117"),
+                Arguments.of("TODO[#118]:    Text", "118"),
+                Arguments.of("TODO", null),
+                Arguments.of("todo", null),
+                Arguments.of("text Todo", null),
+                Arguments.of("ToDo 119", null),
+                Arguments.of("Todo[120]:text", "120"),
+                Arguments.of("ToDo[#121]: Text", "121"),
+                Arguments.of("Todo[#122]:Text", "122"),
+                Arguments.of("TODO[#123]:    Text", "123"),
+                Arguments.of("TODO [124]", null),
+                Arguments.of("todo [125]", null),
+                Arguments.of("text Todo [#126]", null),
+                Arguments.of("ToDo[a127]:", "a127"),
+                Arguments.of("Todo[c128b]:text", "c128b"),
+                Arguments.of("ToDo[129d]: Text", "129d"),
+                Arguments.of("ToDo[1a30]:", "1a30"),
+                Arguments.of("Todo[13c1]:text", "13c1"),
+                Arguments.of("ToDo[1b3c2]: Text", "1b3c2")
             )
     }
 
-    @Test
-    fun `Should returns issue number properly`() {
+    @ParameterizedTest
+    @MethodSource("items")
+    fun `Should returns issue number properly`(source: String, expected: String?) {
         // Arrange
         val sut = ToDoItem(TodosaurusSettings.State.defaultState, FakeRangeMarker(source))
 
         // Act & Assert
-        Assert.assertEquals(expected, sut.issueNumber)
+        assertEquals(expected, sut.issueNumber)
     }
 }
