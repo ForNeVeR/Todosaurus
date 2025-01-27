@@ -4,8 +4,8 @@
 
 package me.fornever.todosaurus.core.issues
 
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.editor.RangeMarker
-import com.intellij.util.concurrency.annotations.RequiresReadLock
 import com.intellij.util.concurrency.annotations.RequiresWriteLock
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
 
@@ -16,9 +16,11 @@ class ToDoItem(private val settings: TodosaurusSettings.State, val toDoRange: Ra
     }
 
     private val text: String
-        get() = toDoRange
-            .document
-            .getText(toDoRange.textRange)
+        get() = ReadAction.compute<String, Nothing> {
+            toDoRange
+                .document
+                .getText(toDoRange.textRange)
+        }
 
     var title: String = text
         .substringBefore('\n')
@@ -28,7 +30,6 @@ class ToDoItem(private val settings: TodosaurusSettings.State, val toDoRange: Ra
     var description: String = (if (text.contains("\n")) text.substringAfter('\n') + "\n" else "") +
         settings.descriptionTemplate
 
-    @get:RequiresReadLock
     val issueNumber: String?
         get() {
             if (isNew)
