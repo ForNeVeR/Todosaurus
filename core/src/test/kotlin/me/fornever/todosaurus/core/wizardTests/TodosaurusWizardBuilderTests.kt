@@ -12,14 +12,14 @@ import me.fornever.todosaurus.core.testFramework.FakeProject
 import me.fornever.todosaurus.core.testFramework.FakeRangeMarker
 import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardBuilder
 import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardContext
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 class TodosaurusWizardBuilderTests {
     @Test
     fun `Should link steps properly`() {
         // Arrange
-        val model = TodosaurusWizardContext(ToDoItem.fromRange(FakeRangeMarker("TODO"), TodosaurusSettings.State.defaultState))
+        val model = TodosaurusWizardContext(ToDoItem(TodosaurusSettings.State.defaultState, FakeRangeMarker("TODO")))
         val sut = TodosaurusWizardBuilder(FakeProject(), model, CoroutineScope(Dispatchers.IO))
         val firstStep = FakeWizardStep("1")
         val secondStep = FakeWizardStep("2")

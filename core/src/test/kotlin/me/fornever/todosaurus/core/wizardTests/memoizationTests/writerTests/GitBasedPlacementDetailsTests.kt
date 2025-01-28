@@ -12,10 +12,10 @@ import me.fornever.todosaurus.core.issues.IssuePlacementDetails
 import me.fornever.todosaurus.core.issues.IssuePlacementDetailsType
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoice
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceWriter
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 import java.net.URI
-import java.nio.file.Path
+import kotlin.io.path.Path
 
 class GitBasedPlacementDetailsTests {
     companion object {
@@ -28,7 +28,7 @@ class GitBasedPlacementDetailsTests {
         val url = "https://example.com"
         val rootPath = "\\home"
         val placementDetails = GitBasedPlacementDetails()
-        placementDetails.remote = GitHostingRemote(URI(url), Path.of(rootPath))
+        placementDetails.remote = GitHostingRemote(URI(url), Path(rootPath))
 
         val actual = UserChoice("GitHub", CREDENTIALS_IDENTIFIER, placementDetails)
         val sut = UserChoiceWriter()

@@ -5,7 +5,7 @@
     ],
     "packageRules": [
         {
-            "matchPackagePatterns": ["org.jetbrains.kotlin.jvm"],
+            "matchPackagePatterns": ["org.jetbrains.kotlin:kotlin-gradle-plugin"],
             "enabled": false
         }
     ]

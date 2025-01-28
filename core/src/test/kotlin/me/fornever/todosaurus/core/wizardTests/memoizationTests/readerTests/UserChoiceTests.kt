@@ -13,14 +13,11 @@ import me.fornever.todosaurus.core.issues.IssuePlacementDetails
 import me.fornever.todosaurus.core.issues.IssuePlacementDetailsType
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoice
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceReader
-import org.junit.Assert.assertEquals
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.Parameterized
-import org.junit.runners.Parameterized.Parameters
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
-@RunWith(Parameterized::class)
-class UserChoiceTests(private val issueTrackerId: String) {
+class UserChoiceTests {
     companion object {
         private const val CREDENTIALS_IDENTIFIER = "Identifier"
 
@@ -31,13 +28,10 @@ class UserChoiceTests(private val issueTrackerId: String) {
                 GitHostingRemote::rootPath.name to JsonPrimitive("\\home")
             ))
 
-        @JvmStatic
-        @Parameters
-        fun issueTrackerIds()
-            = arrayOf("GitHub")
+        private const val ISSUE_TRACKER_ID = "GitHub"
     }
 
-    @Test(expected = Exception::class)
+    @Test
     fun `Should throws error if issue tracker type is not primitive`() {
         // Arrange
         val actual = UserChoice()
@@ -52,17 +46,19 @@ class UserChoiceTests(private val issueTrackerId: String) {
         )
 
         // Act & Assert
-        sut.visit(actual)
+        assertThrows<Exception> {
+            sut.visit(actual)
+        }
     }
 
-    @Test(expected = Exception::class)
+    @Test
     fun `Should throws error if credentials identifier has invalid value`() {
         // Arrange
         val actual = UserChoice()
         val sut = UserChoiceReader(
             JsonObject(
                 mapOf(
-                    UserChoice::issueTrackerId.name to JsonPrimitive(issueTrackerId),
+                    UserChoice::issueTrackerId.name to JsonPrimitive(ISSUE_TRACKER_ID),
                     UserChoice::credentialsId.name to JsonNull,
                     placementDetails
                 )
@@ -70,17 +66,19 @@ class UserChoiceTests(private val issueTrackerId: String) {
         )
 
         // Act & Assert
-        sut.visit(actual)
+        assertThrows<Exception> {
+            sut.visit(actual)
+        }
     }
 
-    @Test(expected = Exception::class)
+    @Test
     fun `Should throws error if credentials identifier is not primitive`() {
         // Arrange
         val actual = UserChoice()
         val sut = UserChoiceReader(
             JsonObject(
                 mapOf(
-                    UserChoice::issueTrackerId.name to JsonPrimitive(issueTrackerId),
+                    UserChoice::issueTrackerId.name to JsonPrimitive(ISSUE_TRACKER_ID),
                     UserChoice::credentialsId.name to JsonObject(emptyMap()),
                     placementDetails
                 )
@@ -88,7 +86,9 @@ class UserChoiceTests(private val issueTrackerId: String) {
         )
 
         // Act & Assert
-        sut.visit(actual)
+        assertThrows<Exception> {
+            sut.visit(actual)
+        }
     }
 
     @Test
@@ -98,7 +98,7 @@ class UserChoiceTests(private val issueTrackerId: String) {
         val sut = UserChoiceReader(
 			JsonObject(
 				mapOf(
-					UserChoice::issueTrackerId.name to JsonPrimitive(issueTrackerId),
+					UserChoice::issueTrackerId.name to JsonPrimitive(ISSUE_TRACKER_ID),
 					UserChoice::credentialsId.name to JsonPrimitive(CREDENTIALS_IDENTIFIER),
 					placementDetails
 				)
@@ -109,7 +109,7 @@ class UserChoiceTests(private val issueTrackerId: String) {
         sut.visit(actual)
 
         // Assert
-		assertEquals(issueTrackerId, actual.issueTrackerId)
+		assertEquals(ISSUE_TRACKER_ID, actual.issueTrackerId)
 		assertEquals(CREDENTIALS_IDENTIFIER, actual.credentialsId)
     }
 }

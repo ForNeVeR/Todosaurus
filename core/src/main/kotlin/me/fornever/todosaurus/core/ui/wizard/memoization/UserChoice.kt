@@ -4,7 +4,6 @@
 
 package me.fornever.todosaurus.core.ui.wizard.memoization
 
-import me.fornever.todosaurus.core.issueTrackers.IssueTracker
 import me.fornever.todosaurus.core.issues.IssuePlacementDetails
 
 data class UserChoice(

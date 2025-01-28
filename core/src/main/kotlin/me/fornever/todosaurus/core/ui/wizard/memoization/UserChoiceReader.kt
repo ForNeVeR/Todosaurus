@@ -10,7 +10,6 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import me.fornever.todosaurus.core.git.GitBasedPlacementDetails
 import me.fornever.todosaurus.core.git.GitHostingRemote
-import me.fornever.todosaurus.core.issueTrackers.IssueTrackerProvider
 import me.fornever.todosaurus.core.issues.IssuePlacementDetails
 import me.fornever.todosaurus.core.issues.IssuePlacementDetailsType
 import java.net.URI

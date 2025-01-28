@@ -14,16 +14,17 @@ import me.fornever.todosaurus.core.issues.IssuePlacementDetails
 import me.fornever.todosaurus.core.issues.IssuePlacementDetailsType
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoice
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceReader
-import org.junit.Assert.assertEquals
-import org.junit.Assert.fail
-import org.junit.Test
+import org.assertj.core.api.Assertions.fail
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class GitBasedPlacementDetailsTests {
     companion object {
         private const val CREDENTIALS_IDENTIFIER = "Identifier"
     }
 
-    @Test(expected = Exception::class)
+    @Test
     fun `Should throws error if placement details has invalid value`() {
         // Arrange
         val actual = UserChoice()
@@ -35,10 +36,12 @@ class GitBasedPlacementDetailsTests {
             )))
 
         // Act & Assert
-        sut.visit(actual)
+        assertThrows<Exception> {
+            sut.visit(actual)
+        }
     }
 
-    @Test(expected = Exception::class)
+    @Test
     fun `Should throws error if placement details type has invalid value`() {
         // Arrange
         val actual = UserChoice()
@@ -54,10 +57,12 @@ class GitBasedPlacementDetailsTests {
             )))
 
         // Act & Assert
-        sut.visit(actual)
+        assertThrows<Exception> {
+            sut.visit(actual)
+        }
     }
 
-    @Test(expected = Exception::class)
+    @Test
     fun `Should throws error if placement details type is not primitive`() {
         // Arrange
         val actual = UserChoice()
@@ -73,10 +78,12 @@ class GitBasedPlacementDetailsTests {
             )))
 
         // Act & Assert
-        sut.visit(actual)
+        assertThrows<Exception> {
+            sut.visit(actual)
+        }
     }
 
-    @Test(expected = Exception::class)
+    @Test
     fun `Should throws error if url has invalid value`() {
         // Arrange
         val actual = UserChoice()
@@ -92,10 +99,12 @@ class GitBasedPlacementDetailsTests {
             )))
 
         // Act & Assert
-        sut.visit(actual)
+        assertThrows<Exception> {
+            sut.visit(actual)
+        }
     }
 
-    @Test(expected = Exception::class)
+    @Test
     fun `Should throws error if url is not primitive`() {
         // Arrange
         val actual = UserChoice()
@@ -111,10 +120,12 @@ class GitBasedPlacementDetailsTests {
             )))
 
         // Act & Assert
-        sut.visit(actual)
+        assertThrows<Exception> {
+            sut.visit(actual)
+        }
     }
 
-    @Test(expected = Exception::class)
+    @Test
     fun `Should throws error if root path has invalid value`() {
         // Arrange
         val actual = UserChoice()
@@ -130,10 +141,12 @@ class GitBasedPlacementDetailsTests {
             )))
 
         // Act & Assert
-        sut.visit(actual)
+        assertThrows<Exception> {
+            sut.visit(actual)
+        }
     }
 
-    @Test(expected = Exception::class)
+    @Test
     fun `Should throws error if root path is not primitive`() {
         // Arrange
         val actual = UserChoice()
@@ -149,7 +162,9 @@ class GitBasedPlacementDetailsTests {
             )))
 
         // Act & Assert
-        sut.visit(actual)
+        assertThrows<Exception> {
+            sut.visit(actual)
+        }
     }
 
     @Test

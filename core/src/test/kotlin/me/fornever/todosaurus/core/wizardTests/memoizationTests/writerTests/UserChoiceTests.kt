@@ -9,28 +9,21 @@ import kotlinx.serialization.json.JsonPrimitive
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoice
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceWriter
 import me.fornever.todosaurus.core.wizardTests.memoizationTests.FakeIssuePlacementDetails
-import org.junit.Assert.assertEquals
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.Parameterized
-import org.junit.runners.Parameterized.Parameters
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
-@RunWith(Parameterized::class)
-class UserChoiceTests(private val issueTrackerId: String) {
+class UserChoiceTests {
     companion object {
         private const val CREDENTIALS_IDENTIFIER = "Identifier"
 
-        @JvmStatic
-        @Parameters
-        fun issueTrackerIds()
-            = arrayOf("GitHub")
+        private const val ISSUE_TRACKER_ID = "GitHub"
     }
 
     @Test
     fun `Should write primary user choice fields properly`() {
         // Arrange
         val placementDetails = FakeIssuePlacementDetails()
-        val actual = UserChoice(issueTrackerId, CREDENTIALS_IDENTIFIER, placementDetails)
+        val actual = UserChoice(ISSUE_TRACKER_ID, CREDENTIALS_IDENTIFIER, placementDetails)
         val sut = UserChoiceWriter()
 
         // Act
@@ -39,7 +32,7 @@ class UserChoiceTests(private val issueTrackerId: String) {
         // Assert
         assertEquals(sut.json, JsonObject(
             mapOf(
-                UserChoice::issueTrackerId.name to JsonPrimitive(issueTrackerId),
+                UserChoice::issueTrackerId.name to JsonPrimitive(ISSUE_TRACKER_ID),
                 UserChoice::credentialsId.name to JsonPrimitive(CREDENTIALS_IDENTIFIER),
                 UserChoice::placementDetails.name to JsonObject(emptyMap())
             )

@@ -15,6 +15,7 @@ class ToDoPatternProvider {
         fun getInstance(): ToDoPatternProvider = service()
     }
 
+    @Suppress("unused") // TODO[#134]: This is supposed to become used.
     fun provideSuitablePattern(toDoRange: RangeMarker): Regex
         = TodoConfiguration
             .getInstance()

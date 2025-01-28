@@ -80,9 +80,8 @@ sealed class ToDoItem private constructor(val text: String, protected val todosa
             return toDoItems.toTypedArray()
         }
 
-        @RequiresReadLock
         fun fromRange(toDoRange: RangeMarker, todosaurusSettings: TodosaurusSettings.State): ToDoItem {
-            val text = toDoRange.document.getText(toDoRange.textRange)
+            val text = ReadAction.compute<String, Nothing> { toDoRange.document.getText(toDoRange.textRange) }
 
             return create(text, toDoRange.document, toDoRange.textRange.startOffset, toDoRange.textRange.endOffset, todosaurusSettings)
         }
@@ -112,7 +111,7 @@ sealed class ToDoItem private constructor(val text: String, protected val todosa
 
     class Reported(text: String, val issueNumber: String, todosaurusSettings: TodosaurusSettings.State) : ToDoItem(text, todosaurusSettings)
     class New(val toDoRange: RangeMarker, todosaurusSettings: TodosaurusSettings.State) : ToDoItem(toDoRange.document.getText(toDoRange.textRange), todosaurusSettings) {
-        @RequiresReadLock
+        @RequiresWriteLock
         fun toReported(issueNumber: String): Reported {
             val previousText = text
             val newText = previousText.replace(newItemPattern, formReportedItemPattern(issueNumber))
