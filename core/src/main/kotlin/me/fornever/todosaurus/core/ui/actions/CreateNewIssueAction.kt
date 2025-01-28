@@ -20,13 +20,13 @@ class CreateNewIssueAction: AnAction() {
 
         val toDoRange = actionEvent.getToDoTextRange()
         val todosaurusSettings = TodosaurusSettings.getInstance()
-        actionEvent.presentation.isEnabled = toDoRange != null && ToDoItem(todosaurusSettings.state, toDoRange).isNew
+        actionEvent.presentation.isEnabled = toDoRange != null && ToDoItem.fromRange(toDoRange, todosaurusSettings.state) is ToDoItem.New
     }
 
     override fun actionPerformed(actionEvent: AnActionEvent) {
         val project = actionEvent.project ?: return
         val toDoRange = actionEvent.getToDoTextRange() ?: return
         val todosaurusSettings = TodosaurusSettings.getInstance()
-        ToDoService.getInstance(project).createNewIssue(ToDoItem(todosaurusSettings.state, toDoRange))
+        ToDoService.getInstance(project).createNewIssue(ToDoItem.fromRange(toDoRange, todosaurusSettings.state))
     }
 }

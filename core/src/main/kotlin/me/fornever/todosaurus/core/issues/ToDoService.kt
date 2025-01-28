@@ -6,7 +6,6 @@ package me.fornever.todosaurus.core.issues
 
 import com.intellij.ide.BrowserUtil
 import com.intellij.openapi.application.EDT
-import com.intellij.openapi.application.readAction
 import com.intellij.openapi.application.writeAction
 import com.intellij.openapi.command.executeCommand
 import com.intellij.openapi.components.Service
@@ -20,8 +19,8 @@ import me.fornever.todosaurus.core.TodosaurusCoreBundle
 import me.fornever.todosaurus.core.issueTrackers.IssueTrackerConnectionDetails
 import me.fornever.todosaurus.core.issueTrackers.IssueTrackerProvider
 import me.fornever.todosaurus.core.issueTrackers.ui.wizard.ChooseIssueTrackerStep
+import me.fornever.todosaurus.core.issues.ui.wizard.CreateNewIssueStep
 import me.fornever.todosaurus.core.ui.Notifications
-import me.fornever.todosaurus.core.ui.wizard.CreateNewIssueStep
 import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardBuilder
 import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardContext
 import me.fornever.todosaurus.core.ui.wizard.WizardResult
@@ -70,6 +69,9 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
 
     private suspend fun createNewIssue(model: TodosaurusWizardContext): WizardResult {
         try {
+            if (model.toDoItem !is ToDoItem.New)
+                error("TODO must be new in order to create an issue")
+
             val issueTracker = model.connectionDetails.issueTracker
                 ?: error("Issue tracker must be specified")
 
@@ -86,7 +88,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
             @Suppress("UnstableApiUsage")
             writeAction {
                 executeCommand(project, "Update TODO Item") {
-                    model.toDoItem.markAsReported(newIssue.number)
+                    model.toDoItem.toReported(newIssue.number)
                 }
             }
 
@@ -129,6 +131,9 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
 
     private suspend fun openReportedIssueInBrowser(model: TodosaurusWizardContext): WizardResult {
         try {
+            if (model.toDoItem !is ToDoItem.Reported)
+                error("TODO must be reported in order to open issue in browser")
+
             val issueTracker = model.connectionDetails.issueTracker
                 ?: error("Issue tracker must be specified")
 
@@ -138,13 +143,10 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
             val placementDetails = model.placementDetails
                 ?: error("Placement details must be specified")
 
-            val issueNumber = readAction { model.toDoItem.issueNumber }
-                ?: error("Issue number must be specified")
-
             val issue = issueTracker
                 .createClient(project, credentials, placementDetails)
                 .getIssue(model.toDoItem)
-                    ?: error("Issue with number \"${issueNumber}\" not found on ${issueTracker.title}")
+                    ?: error("Issue with number \"${model.toDoItem.issueNumber}\" not found on ${issueTracker.title}")
 
             withContext(Dispatchers.IO) {
                 BrowserUtil.browse(issue.url, project)

@@ -1,8 +1,7 @@
 // SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
-
-package me.fornever.todosaurus.core.ui.wizard
+package me.fornever.todosaurus.core.issues.ui.wizard
 
 import com.intellij.openapi.project.Project
 import com.intellij.ui.components.JBTextArea
@@ -10,6 +9,8 @@ import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
 import me.fornever.todosaurus.core.TodosaurusCoreBundle
 import me.fornever.todosaurus.core.issues.ToDoService
+import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardContext
+import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardStep
 import me.fornever.todosaurus.core.ui.wizard.memoization.ForgettableStep
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceStore
 import javax.swing.JComponent
