@@ -43,8 +43,9 @@ class ToReportedTests {
         assertTrue(sut.toDoRange.document.text.contains(expected))
     }
 
-    @Test
-    fun `Should provide issue number after report`() {
+    @ParameterizedTest
+    @MethodSource("newItems")
+    fun `Should provide issue number after report`(newItem: String) {
         // Arrange
         val sut = ToDoItem.fromRange(FakeRangeMarker(newItem), TodosaurusSettings.State.defaultState)
 
