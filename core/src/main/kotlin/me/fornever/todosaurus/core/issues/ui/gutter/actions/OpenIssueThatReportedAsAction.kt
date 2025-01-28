@@ -13,7 +13,7 @@ class OpenIssueThatReportedAsAction(private val toDoItem: ToDoItem.Reported): An
 	TodosaurusCoreBundle.message(
 		"action.OpenIssueThatReportedAs.text",
 		toDoItem.issueNumber
-	) // TODO: Form issueNumber using TodosaurusSettings.ISSUE_NUMBER_REPLACEMENT
+	) // TODO[#134]: Form issueNumber using TodosaurusSettings.ISSUE_NUMBER_REPLACEMENT
 ) {
     override fun actionPerformed(actionEvent: AnActionEvent) {
         val project = actionEvent.project ?: return
