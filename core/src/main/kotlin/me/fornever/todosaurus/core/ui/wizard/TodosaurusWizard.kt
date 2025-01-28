@@ -168,7 +168,7 @@ class TodosaurusWizard(
                             )
                     }
                     catch (exception: Exception) {
-                        Notifications.CreateNewIssue.memoizationWarning(exception, project)
+                        Notifications.Memoization.warning(exception, project)
                     }
                 }
 

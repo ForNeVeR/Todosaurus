@@ -41,7 +41,12 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
                 .getChoiceOrNull()
 
             if (savedChoice != null) {
-                val model = retrieveWizardContextBasedOnUserChoice(toDoItem, savedChoice)
+                val model = try {
+                    retrieveWizardContextBasedOnUserChoice(toDoItem, savedChoice)
+                }
+                catch (exception: Exception) {
+                    return@launch Notifications.Memoization.failed(exception, toDoItem, project)
+                }
 
                 withContext(Dispatchers.EDT) {
                     TodosaurusWizardBuilder(project, model, scope)
@@ -95,7 +100,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
             return WizardResult.Success
         }
         catch (exception: Exception) {
-            Notifications.CreateNewIssue.creationFailed(exception, project)
+            Notifications.CreateNewIssue.failed(exception, project)
 
             return WizardResult.Failed
         }
@@ -108,8 +113,14 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
                 .getChoiceOrNull()
 
             if (savedChoice != null) {
-                openReportedIssueInBrowser(
-                    retrieveWizardContextBasedOnUserChoice(toDoItem, savedChoice))
+                val wizardContext = try {
+                    retrieveWizardContextBasedOnUserChoice(toDoItem, savedChoice)
+                }
+                catch (exception: Exception) {
+                    return@launch Notifications.Memoization.failed(exception, toDoItem, project)
+                }
+
+                openReportedIssueInBrowser(wizardContext)
 
                 return@launch
             }
