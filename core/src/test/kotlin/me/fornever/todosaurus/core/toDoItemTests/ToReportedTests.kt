@@ -8,8 +8,7 @@ import com.intellij.testFramework.junit5.TestApplication
 import me.fornever.todosaurus.core.issues.ToDoItem
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
 import me.fornever.todosaurus.core.testFramework.FakeRangeMarker
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 
@@ -34,10 +33,13 @@ class ToReportedTests {
     fun `Should mark ToDo item as reported`(newItem: String) {
         // Arrange
         val expected = "TODO[#1]:"
-        val sut = ToDoItem(TodosaurusSettings.State.defaultState, FakeRangeMarker(newItem))
+        val sut = ToDoItem.fromRange(FakeRangeMarker(newItem), TodosaurusSettings.State.defaultState)
+
+        if (sut !is ToDoItem.New)
+            return fail()
 
         // Act
-        sut.markAsReported("1")
+        sut.toReported("1")
 
         // Assert
         assertTrue(sut.toDoRange.document.text.contains(expected))

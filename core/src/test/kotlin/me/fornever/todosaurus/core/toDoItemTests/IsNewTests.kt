@@ -24,7 +24,11 @@ class IsNewTests {
         "Todo:text",
         "ToDo Text",
         "Todo:Text",
-        "TODO    Text"
+        "TODO    Text",
+        "ToDo 119",
+        "TODO [124]",
+        "todo [125]",
+        "text Todo [#126]"
     ])
     fun `ToDo item should be new`(newItem: String) {
         // Arrange

@@ -5,12 +5,14 @@
 package me.fornever.todosaurus.core.issues
 
 import com.intellij.ide.todo.TodoConfiguration
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.RangeMarker
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.util.concurrency.annotations.RequiresReadLock
+import com.intellij.util.concurrency.annotations.RequiresWriteLock
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
 
 sealed class ToDoItem private constructor(val text: String, protected val todosaurusSettings: TodosaurusSettings.State) {

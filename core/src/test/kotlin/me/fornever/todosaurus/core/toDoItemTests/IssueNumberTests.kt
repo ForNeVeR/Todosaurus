@@ -8,6 +8,7 @@ import me.fornever.todosaurus.core.issues.ToDoItem
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
 import me.fornever.todosaurus.core.testFramework.FakeRangeMarker
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -25,17 +26,10 @@ class IssueNumberTests {
                 Arguments.of("ToDo[#116]: Text", "116"),
                 Arguments.of("Todo[#117]:Text", "117"),
                 Arguments.of("TODO[#118]:    Text", "118"),
-                Arguments.of("TODO", null),
-                Arguments.of("todo", null),
-                Arguments.of("text Todo", null),
-                Arguments.of("ToDo 119", null),
                 Arguments.of("Todo[120]:text", "120"),
                 Arguments.of("ToDo[#121]: Text", "121"),
                 Arguments.of("Todo[#122]:Text", "122"),
                 Arguments.of("TODO[#123]:    Text", "123"),
-                Arguments.of("TODO [124]", null),
-                Arguments.of("todo [125]", null),
-                Arguments.of("text Todo [#126]", null),
                 Arguments.of("ToDo[a127]:", "a127"),
                 Arguments.of("Todo[c128b]:text", "c128b"),
                 Arguments.of("ToDo[129d]: Text", "129d"),
@@ -49,9 +43,12 @@ class IssueNumberTests {
     @MethodSource("items")
     fun `Should returns issue number properly`(source: String, expected: String?) {
         // Arrange
-        val sut = ToDoItem(TodosaurusSettings.State.defaultState, FakeRangeMarker(source))
+        val sut = ToDoItem.fromRange(FakeRangeMarker(source), TodosaurusSettings.State.defaultState)
 
         // Act & Assert
+        if (sut !is ToDoItem.Reported)
+            return fail()
+
         assertEquals(expected, sut.issueNumber)
     }
 }
