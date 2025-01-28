@@ -6,13 +6,12 @@ package me.fornever.todosaurus.core.issues
 
 import com.intellij.ide.todo.TodoConfiguration
 import com.intellij.openapi.application.ReadAction
+import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.RangeMarker
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
-import com.intellij.util.concurrency.annotations.RequiresReadLock
-import com.intellij.util.concurrency.annotations.RequiresWriteLock
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
 
 sealed class ToDoItem private constructor(val text: String, protected val todosaurusSettings: TodosaurusSettings.State) {
@@ -113,11 +112,10 @@ sealed class ToDoItem private constructor(val text: String, protected val todosa
 
     class Reported(text: String, val issueNumber: String, todosaurusSettings: TodosaurusSettings.State) : ToDoItem(text, todosaurusSettings)
     class New(val toDoRange: RangeMarker, todosaurusSettings: TodosaurusSettings.State) : ToDoItem(toDoRange.document.getText(toDoRange.textRange), todosaurusSettings) {
-        @RequiresWriteLock
         fun toReported(issueNumber: String): Reported {
             val previousText = text
             val newText = previousText.replace(newItemPattern, formReportedItemPattern(issueNumber))
-            toDoRange.document.replaceString(toDoRange.startOffset, toDoRange.endOffset, newText)
+            WriteAction.compute<Unit, Nothing> { toDoRange.document.replaceString(toDoRange.startOffset, toDoRange.endOffset, newText) }
             return Reported(newText, issueNumber, todosaurusSettings)
         }
 
