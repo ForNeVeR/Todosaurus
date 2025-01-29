@@ -1,7 +1,6 @@
-# SPDX-FileCopyrightText: 2000-2021 JetBrains s.r.o.
-# SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+# SPDX-FileCopyrightText: 2000-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 #
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: MIT AND Apache-2.0
 
 # GitHub Actions Workflow is created for testing and preparing the plugin release in the following steps:
 # - Validate Gradle Wrapper.
@@ -98,6 +97,19 @@ jobs:
       # Run tests
       - name: Run Tests
         run: ./gradlew check
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ runner.os }}.test-results
+          path: build/reports/tests
+        if: ${{ always() }}
+      - name: Upload Test Logs
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ runner.os }}.test-logs
+          path: build/idea-sandbox/*/log-test
+        if: ${{ always() }}
 
   # TODO[#156]: Disabled due to https://youtrack.jetbrains.com/issue/QD-10820
   # Run Qodana inspections and provide report
