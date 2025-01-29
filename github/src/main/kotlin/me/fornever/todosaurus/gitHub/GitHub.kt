@@ -67,7 +67,7 @@ class GitHub(override val icon: Icon, override val title: String) : IssueTracker
 
     override fun createChooseRemoteStep(
         project: Project,
-        context: TodosaurusWizardContext
+        context: TodosaurusWizardContext<*>
     ) = ChooseGitHostingRemoteStep(project, context)
 
     override fun createCredentialsProvider(project: Project) = GitHubCredentialsProvider(project)

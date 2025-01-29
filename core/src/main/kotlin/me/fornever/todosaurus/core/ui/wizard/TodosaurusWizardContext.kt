@@ -8,8 +8,8 @@ import me.fornever.todosaurus.core.issueTrackers.IssueTrackerConnectionDetails
 import me.fornever.todosaurus.core.issues.IssuePlacementDetails
 import me.fornever.todosaurus.core.issues.ToDoItem
 
-data class TodosaurusWizardContext(
-    val toDoItem: ToDoItem,
+data class TodosaurusWizardContext<TItem : ToDoItem>(
+    val toDoItem: TItem,
     val connectionDetails: IssueTrackerConnectionDetails = IssueTrackerConnectionDetails(),
     var placementDetails: IssuePlacementDetails? = null
 )
