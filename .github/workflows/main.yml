@@ -102,13 +102,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}.test-results
-          path: build/reports/tests
+          path: '*/build/reports/tests'
         if: ${{ always() }}
       - name: Upload Test Logs
         uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}.test-logs
-          path: build/idea-sandbox/*/log-test
+          path: '*/build/idea-sandbox/*/log-test'
         if: ${{ always() }}
 
   # TODO[#156]: Disabled due to https://youtrack.jetbrains.com/issue/QD-10820
