@@ -33,7 +33,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         fun getInstance(project: Project): ToDoService = project.service()
     }
 
-    fun createNewIssue(toDoItem: ToDoItem)
+    fun createNewIssue(toDoItem: ToDoItem.New)
         = scope.launch(Dispatchers.IO) {
             val savedChoice = UserChoiceStore
                 .getInstance(project)
@@ -67,11 +67,8 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
             }
         }
 
-    private suspend fun createNewIssue(model: TodosaurusWizardContext): WizardResult {
+    private suspend fun createNewIssue(model: TodosaurusWizardContext<ToDoItem.New>): WizardResult {
         try {
-            if (model.toDoItem !is ToDoItem.New)
-                error("TODO must be new in order to create an issue")
-
             val issueTracker = model.connectionDetails.issueTracker
                 ?: error("Issue tracker must be specified")
 
@@ -103,7 +100,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         }
     }
 
-    fun openReportedIssueInBrowser(toDoItem: ToDoItem)
+    fun openReportedIssueInBrowser(toDoItem: ToDoItem.Reported)
         = scope.launch(Dispatchers.IO) {
             val savedChoice = UserChoiceStore
                 .getInstance(project)
@@ -129,11 +126,8 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
             }
         }
 
-    private suspend fun openReportedIssueInBrowser(model: TodosaurusWizardContext): WizardResult {
+    private suspend fun openReportedIssueInBrowser(model: TodosaurusWizardContext<ToDoItem.Reported>): WizardResult {
         try {
-            if (model.toDoItem !is ToDoItem.Reported)
-                error("TODO must be reported in order to open issue in browser")
-
             val issueTracker = model.connectionDetails.issueTracker
                 ?: error("Issue tracker must be specified")
 
@@ -161,7 +155,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         }
     }
 
-    private suspend fun retrieveWizardContextBasedOnUserChoice(toDoItem: ToDoItem, userChoice: UserChoice): TodosaurusWizardContext {
+    private suspend fun <T : ToDoItem> retrieveWizardContextBasedOnUserChoice(toDoItem: T, userChoice: UserChoice): TodosaurusWizardContext<T> {
         val issueTrackerId = userChoice.issueTrackerId
             ?: error("Issue tracker id must be specified")
 
