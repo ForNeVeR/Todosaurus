@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 
 SPDX-License-Identifier: MIT
 -->
@@ -18,7 +18,8 @@ To publish a new release, follow these steps:
 5. Merge these changes via a PR.
 6. Push a tag named `v<VERSION>` to GitHub.
 
-The new release will be published automatically.
+   The new release will be published automatically.
+7. Update the screenshots of [the Marketplace page][marketplace], if required.
 
 Rotate the Publishing Key
 -------------------------
@@ -30,4 +31,5 @@ To rotate the key used for publication to the Marketplace, follow these steps:
 
 [github.secrets]: https://github.com/ForNeVeR/Todosaurus/settings/secrets/actions
 [marketplace.tokens]: https://plugins.jetbrains.com/author/me/tokens
+[marketplace]: https://plugins.jetbrains.com/plugin/23838
 [semver]: https://semver.org/spec/v2.0.0.html

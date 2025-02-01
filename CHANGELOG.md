@@ -1,11 +1,17 @@
 <!--
-SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 
 SPDX-License-Identifier: MIT
 -->
 
 Changelog
 =========
+
+## [1.3.0] - 2025-02-01
+### Added
+- Choose the GitHub account when reporting an issue. Thanks to @y0ung3r for the contribution!
+- Settings page, with an ability to update the issue text and forget the chosen GitHub account (to correct the choice).  Thanks to @y0ung3r for the contribution!
+- Internal refactoring to support more issue trackers in the future. Thanks to @y0ung3r for help!
 
 ## [1.2.1] - 2024-11-16
 ### Changed
