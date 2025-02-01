@@ -18,8 +18,7 @@ To publish a new release, follow these steps:
 5. Merge these changes via a PR.
 6. Push a tag named `v<VERSION>` to GitHub.
 
-   The new release will be published automatically.
-7. Update the screenshots of [the Marketplace page][marketplace], if required.
+The new release will be published automatically.
 
 Rotate the Publishing Key
 -------------------------
