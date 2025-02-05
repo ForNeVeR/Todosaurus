@@ -21,12 +21,14 @@ import me.fornever.todosaurus.core.issueTrackers.IssueTrackerConnectionDetails
 import me.fornever.todosaurus.core.issueTrackers.IssueTrackerProvider
 import me.fornever.todosaurus.core.issueTrackers.ui.wizard.ChooseIssueTrackerStep
 import me.fornever.todosaurus.core.ui.Notifications
+import me.fornever.todosaurus.core.ui.actions.ChooseAnotherAccountAction
 import me.fornever.todosaurus.core.ui.wizard.CreateNewIssueStep
 import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardBuilder
 import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardContext
 import me.fornever.todosaurus.core.ui.wizard.WizardResult
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoice
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceStore
+import java.util.concurrent.CancellationException
 
 @Service(Service.Level.PROJECT)
 class ToDoService(private val project: Project, private val scope: CoroutineScope) {
@@ -44,8 +46,12 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
                 val model = try {
                     retrieveWizardContextBasedOnUserChoice(toDoItem, savedChoice)
                 }
-                catch (exception: Exception) {
-                    return@launch Notifications.Memoization.failed(exception, toDoItem, project)
+                catch (exception: CancellationException) {
+                    throw exception
+                }
+                catch (exception: Throwable) {
+                    val actionAfterFail = ChooseAnotherAccountAction.thenTryAgainToCreateNewIssue(toDoItem)
+                    return@launch Notifications.Memoization.failed(exception, project, actionAfterFail)
                 }
 
                 withContext(Dispatchers.EDT) {
@@ -99,7 +105,10 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
 
             return WizardResult.Success
         }
-        catch (exception: Exception) {
+        catch (exception: CancellationException) {
+            throw exception
+        }
+        catch (exception: Throwable) {
             Notifications.CreateNewIssue.failed(exception, project)
 
             return WizardResult.Failed
@@ -116,8 +125,12 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
                 val wizardContext = try {
                     retrieveWizardContextBasedOnUserChoice(toDoItem, savedChoice)
                 }
-                catch (exception: Exception) {
-                    return@launch Notifications.Memoization.failed(exception, toDoItem, project)
+                catch (exception: CancellationException) {
+                    throw exception
+                }
+                catch (exception: Throwable) {
+                    val actionAfterFail = ChooseAnotherAccountAction.thenTryAgainToOpenIssueInBrowser(toDoItem)
+                    return@launch Notifications.Memoization.failed(exception, project, actionAfterFail)
                 }
 
                 openReportedIssueInBrowser(wizardContext)
@@ -163,7 +176,10 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
 
             return WizardResult.Success
         }
-        catch (exception: Exception) {
+        catch (exception: CancellationException) {
+            throw exception
+        }
+        catch (exception: Throwable) {
             Notifications.OpenReportedIssueInBrowser.failed(exception, project)
 
             return WizardResult.Failed

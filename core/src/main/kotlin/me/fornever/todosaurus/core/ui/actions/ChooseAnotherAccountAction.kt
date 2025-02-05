@@ -11,11 +11,23 @@ import me.fornever.todosaurus.core.issues.ToDoItem
 import me.fornever.todosaurus.core.issues.ToDoService
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceStore
 
-class ForgetChoiceAndTryAgainAction(private val toDoItem: ToDoItem): AnAction(TodosaurusCoreBundle.message("action.ForgetChoiceAndTryAgainAction.text")) {
+class ChooseAnotherAccountAction private constructor(private val retryAction: (toDoService: ToDoService) -> Unit): AnAction(TodosaurusCoreBundle.message("action.ChooseAnotherAccount.text")) {
+    companion object {
+        fun thenTryAgainToCreateNewIssue(toDoItem: ToDoItem): ChooseAnotherAccountAction
+            = ChooseAnotherAccountAction {
+                it.createNewIssue(toDoItem)
+            }
+
+        fun thenTryAgainToOpenIssueInBrowser(toDoItem: ToDoItem): ChooseAnotherAccountAction
+            = ChooseAnotherAccountAction {
+                it.openReportedIssueInBrowser(toDoItem)
+            }
+    }
+
     override fun actionPerformed(actionEvent: AnActionEvent) {
         val project = actionEvent.project ?: return
         UserChoiceStore.getInstance(project).forgetChoice()
-        ToDoService.getInstance(project).createNewIssue(toDoItem)
+        retryAction(ToDoService.getInstance(project))
     }
 }
 

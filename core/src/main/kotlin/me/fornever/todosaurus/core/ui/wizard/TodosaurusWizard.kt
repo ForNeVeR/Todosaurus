@@ -41,6 +41,7 @@ import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoice
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceStore
 import java.awt.BorderLayout
 import java.awt.Component
+import java.util.concurrent.CancellationException
 import javax.swing.*
 
 class TodosaurusWizard(
@@ -167,7 +168,10 @@ class TodosaurusWizard(
                                     model.placementDetails)
                             )
                     }
-                    catch (exception: Exception) {
+                    catch (exception: CancellationException) {
+                        throw exception
+                    }
+                    catch (exception: Throwable) {
                         Notifications.Memoization.warning(exception, project)
                     }
                 }
