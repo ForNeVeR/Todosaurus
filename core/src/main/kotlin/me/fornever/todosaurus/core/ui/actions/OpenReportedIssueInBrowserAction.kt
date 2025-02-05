@@ -27,6 +27,6 @@ class OpenReportedIssueInBrowserAction : AnAction() {
         val project = actionEvent.project ?: return
         val toDoRange = actionEvent.getToDoTextRange() ?: return
         val todosaurusSettings = TodosaurusSettings.getInstance()
-        ToDoService.getInstance(project).openReportedIssueInBrowser(ToDoItem.fromRange(toDoRange, todosaurusSettings.state))
+        ToDoService.getInstance(project).openReportedIssueInBrowser(ToDoItem.fromRange(toDoRange, todosaurusSettings.state) as ToDoItem.Reported)
     }
 }

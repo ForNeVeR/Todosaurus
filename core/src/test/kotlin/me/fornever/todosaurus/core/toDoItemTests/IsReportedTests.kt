@@ -4,10 +4,10 @@
 
 package me.fornever.todosaurus.core.toDoItemTests
 
+import com.intellij.testFramework.assertInstanceOf
 import me.fornever.todosaurus.core.issues.ToDoItem
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
 import me.fornever.todosaurus.core.testFramework.FakeRangeMarker
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 
@@ -23,6 +23,6 @@ class IsReportedTests {
         val sut = ToDoItem.fromRange(FakeRangeMarker(readyItem), TodosaurusSettings.State.defaultState)
 
         // Act & Assert
-        assertTrue(sut is ToDoItem.Reported)
+        assertInstanceOf<ToDoItem.Reported>(sut)
     }
 }

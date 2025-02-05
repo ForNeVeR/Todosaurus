@@ -27,6 +27,6 @@ class CreateNewIssueAction: AnAction() {
         val project = actionEvent.project ?: return
         val toDoRange = actionEvent.getToDoTextRange() ?: return
         val todosaurusSettings = TodosaurusSettings.getInstance()
-        ToDoService.getInstance(project).createNewIssue(ToDoItem.fromRange(toDoRange, todosaurusSettings.state))
+        ToDoService.getInstance(project).createNewIssue(ToDoItem.fromRange(toDoRange, todosaurusSettings.state) as ToDoItem.New)
     }
 }

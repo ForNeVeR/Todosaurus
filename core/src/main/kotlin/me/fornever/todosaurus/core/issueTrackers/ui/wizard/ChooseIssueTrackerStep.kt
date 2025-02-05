@@ -38,7 +38,7 @@ import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JLabel
 
-class ChooseIssueTrackerStep(private val project: Project, private val scope: CoroutineScope, private val model: TodosaurusWizardContext)
+class ChooseIssueTrackerStep(private val project: Project, private val scope: CoroutineScope, private val model: TodosaurusWizardContext<*>)
     : TodosaurusWizardStep(), DynamicStepProvider, MemorableStep {
 
     override val id: String = ChooseIssueTrackerStep::class.java.name

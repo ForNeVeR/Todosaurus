@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -21,7 +21,7 @@ import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardStep
 import me.fornever.todosaurus.core.ui.wizard.memoization.MemorableStep
 import javax.swing.JComponent
 
-class ChooseGitHostingRemoteStep(private val project: Project, private val model: TodosaurusWizardContext) : TodosaurusWizardStep(),
+class ChooseGitHostingRemoteStep(private val project: Project, private val model: TodosaurusWizardContext<*>) : TodosaurusWizardStep(),
     MemorableStep {
 
     override val id: String = ChooseGitHostingRemoteStep::class.java.name

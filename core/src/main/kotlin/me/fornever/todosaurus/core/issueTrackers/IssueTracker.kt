@@ -23,5 +23,5 @@ interface IssueTracker {
 
     fun createCredentialsProvider(project: Project): IssueTrackerCredentialsProvider
 
-    fun createChooseRemoteStep(project: Project, context: TodosaurusWizardContext): TodosaurusWizardStep
+    fun createChooseRemoteStep(project: Project, context: TodosaurusWizardContext<*>): TodosaurusWizardStep
 }
