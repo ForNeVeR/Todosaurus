@@ -15,5 +15,6 @@ interface IssueTrackerFactory {
      * This is supposed to be equal to a [TaskRepositoryType.name] of one of the configured [TaskRepositoryType].
      */
     val trackerId: String
+
     fun createTracker(tracker: TaskRepositoryType<*>): IssueTracker?
 }

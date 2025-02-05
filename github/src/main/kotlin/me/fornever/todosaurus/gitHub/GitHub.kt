@@ -4,6 +4,7 @@
 
 package me.fornever.todosaurus.gitHub
 
+import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
 import com.intellij.tasks.TaskRepositoryType
 import me.fornever.todosaurus.core.git.GitBasedPlacementDetails
@@ -24,6 +25,9 @@ import javax.swing.Icon
 
 class GitHub(override val icon: Icon, override val title: String) : IssueTracker {
     override val id = "GitHub"
+
+    private val fileDocumentManager: FileDocumentManager
+        = FileDocumentManager.getInstance()
 
     override suspend fun checkConnection(credentials: IssueTrackerCredentials): TestConnectionResult {
         return try {
@@ -47,7 +51,7 @@ class GitHub(override val icon: Icon, override val title: String) : IssueTracker
         val remote = placementDetails.remote
             ?: error("Remote must be specified")
 
-        return GitHubClient(project, this, credentials, remote)
+        return GitHubClient(project, this, credentials, remote, fileDocumentManager)
     }
 
     fun getGitHubPath(credentials: IssueTrackerCredentials): GithubServerPath
@@ -68,7 +72,7 @@ class GitHub(override val icon: Icon, override val title: String) : IssueTracker
 
     override fun createChooseRemoteStep(
         project: Project,
-        context: TodosaurusWizardContext
+        context: TodosaurusWizardContext<*>
     ) = ChooseGitHostingRemoteStep(project, context)
 
     override fun createCredentialsProvider(project: Project) = GitHubCredentialsProvider(project)

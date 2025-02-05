@@ -25,7 +25,7 @@ class FakeDocument(private var text: String) : Document {
     override fun isWritable() = error("Not implemented.")
     override fun getModificationStamp() = error("Not implemented.")
     override fun createRangeMarker(startOffset: Int, endOffset: Int, surviveOnExternalChange: Boolean) =
-        error("Not implemented.")
+        FakeRangeMarker(text)
 
     override fun createGuardedBlock(startOffset: Int, endOffset: Int) = error("Not implemented.")
     override fun setText(text: CharSequence)  = error("Not implemented.")

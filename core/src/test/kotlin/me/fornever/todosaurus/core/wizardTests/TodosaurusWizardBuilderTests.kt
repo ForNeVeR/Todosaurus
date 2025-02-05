@@ -19,7 +19,7 @@ class TodosaurusWizardBuilderTests {
     @Test
     fun `Should link steps properly`() {
         // Arrange
-        val model = TodosaurusWizardContext(ToDoItem(TodosaurusSettings.State.defaultState, FakeRangeMarker("TODO")))
+        val model = TodosaurusWizardContext(ToDoItem.fromRange(FakeRangeMarker("TODO"), TodosaurusSettings.State.defaultState))
         val sut = TodosaurusWizardBuilder(FakeProject(), model, CoroutineScope(Dispatchers.IO))
         val firstStep = FakeWizardStep("1")
         val secondStep = FakeWizardStep("2")

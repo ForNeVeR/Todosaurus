@@ -24,13 +24,17 @@ class IsNewTests {
         "Todo:text",
         "ToDo Text",
         "Todo:Text",
-        "TODO    Text"
+        "TODO    Text",
+        "ToDo 119",
+        "TODO [124]",
+        "todo [125]",
+        "text Todo [#126]"
     ])
     fun `ToDo item should be new`(newItem: String) {
         // Arrange
-        val sut = ToDoItem(TodosaurusSettings.State.defaultState, FakeRangeMarker(newItem))
+        val sut = ToDoItem.fromRange(FakeRangeMarker(newItem), TodosaurusSettings.State.defaultState)
 
         // Act & Assert
-        assertTrue(sut.isNew)
+        assertTrue(sut is ToDoItem.New)
     }
 }

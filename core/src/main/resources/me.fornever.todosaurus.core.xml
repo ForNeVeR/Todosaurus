@@ -25,6 +25,9 @@
         <notificationGroup id="TodosaurusNotifications"
                            displayType="BALLOON"
                            key="notifications.group.name"/>
+
+        <codeInsight.lineMarkerProvider implementationClass="me.fornever.todosaurus.core.issues.ui.gutter.ToDoLineMarkerProvider"
+                                        language=""/>
     </extensions>
 
     <extensionPoints>

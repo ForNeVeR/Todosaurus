@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 
 SPDX-License-Identifier: MIT
 -->
@@ -30,4 +30,5 @@ To rotate the key used for publication to the Marketplace, follow these steps:
 
 [github.secrets]: https://github.com/ForNeVeR/Todosaurus/settings/secrets/actions
 [marketplace.tokens]: https://plugins.jetbrains.com/author/me/tokens
+[marketplace]: https://plugins.jetbrains.com/plugin/23838
 [semver]: https://semver.org/spec/v2.0.0.html

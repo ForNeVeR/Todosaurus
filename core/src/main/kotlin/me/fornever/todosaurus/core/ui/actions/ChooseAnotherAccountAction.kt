@@ -13,12 +13,12 @@ import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceStore
 
 class ChooseAnotherAccountAction private constructor(private val retryAction: (toDoService: ToDoService) -> Unit): AnAction(TodosaurusCoreBundle.message("action.ChooseAnotherAccount.text")) {
     companion object {
-        fun thenTryAgainToCreateNewIssue(toDoItem: ToDoItem): ChooseAnotherAccountAction
+        fun thenTryAgainToCreateNewIssue(toDoItem: ToDoItem.New): ChooseAnotherAccountAction
             = ChooseAnotherAccountAction {
                 it.createNewIssue(toDoItem)
             }
 
-        fun thenTryAgainToOpenIssueInBrowser(toDoItem: ToDoItem): ChooseAnotherAccountAction
+        fun thenTryAgainToOpenIssueInBrowser(toDoItem: ToDoItem.Reported): ChooseAnotherAccountAction
             = ChooseAnotherAccountAction {
                 it.openReportedIssueInBrowser(toDoItem)
             }

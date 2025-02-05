@@ -29,20 +29,26 @@ How to Use
 ----------
 Currently, plugin only supports one TODO pattern, namely `TODO:` (case-insensitive) that will be converted to `TODO[#<issue-number>]` by the plugin action.
 
-1. Make sure you have enabled the `\btodo\b.*` pattern in the **Settings | Editor | TODO** settings page.
+### Editor
+![A screenshot of the editor window with a TODO comment in the file text. Context action list is open, and the entry "Create New Issue" is highlighted.][screenshot.editor]
 
-   _(It is enabled by default, so if you didn't touch these settings, then it's enabled for you.)_
-2. Check you have a GitHub auth token registered in the **File | Settings | Version Control | GitHub**.
-3. Open a Git repository that's available on GitHub (currently, the plugin will auto-detect any GitHub repositories linked by either SSH or HTTPS remotes in the VCS roots of the current project).
-4. Open the **TODO** tool window.
-5. Open context menu for any TODO item that isn't yet linked to GitHub (i.e., an item like `TODO: something`, with no issue number).
-6. Invoke the **Create Issue** action.
-7. The dialog will ask you for
-   - the account you want to file the issue from,
-   - the repository you want to file the issue for,
-   - the issue title,
-   - the issue text (pattern `${GITHUB_CODE_URL}` will be automatically replaced by the link to the line of code containing the TODO comment).
-8. Click the **Create Issue** button. An issue will be created, you'll receive a notification, and the code will be updated to have a link to the issue.
+When the plugin sees one of the recognized TODO patterns in the editor, it will show a gutter icon and will add a corresponding context action (triggered by `Alt+Enter` in common IntelliJ keymaps).
+
+### TODO Tool Window
+![A screenshot of the "TODO" tool window. A plugin-added item context menu item, "Create New Issue", is highlighted.][screenshot.todo]
+
+For this feature to work, make sure you have enabled the `\btodo\b.*` pattern in the **Settings | Editor | TODO** settings page. _(It is enabled by default, so if you didn't touch these settings, then it's enabled for you.)_
+
+Then, open the **TODO** tool window.
+
+Open context menu for any TODO item that isn't yet linked to GitHub (i.e., an item like `TODO: something`, with no issue number).
+
+### Configuration
+To report issues, the plugin will ask you to authenticate your account (it connects to the task tracker via the API).
+
+Currently, we automatically support GitHub accounts linked via the **Settings | Tools | Tasks | Servers** page. If no account has been added, the plugin will request you to add one.
+
+You can save the selected steps to avoid going through them again via the checkbox **Remember my choice**. If you want to readjust the saved steps in the future, use either the corresponding link in the dialog or the **Forget** button on the plugin's settings page.
 
 If you have some advanced usage scenarios, do not hesitate to leave your feedback at [the issue tracker][issues].
 
@@ -77,4 +83,6 @@ Major sections copied from the external projects are marked with corresponding r
 [issues]: https://github.com/ForNeVeR/Todosaurus/issues
 [marketplace.plugin]: https://plugins.jetbrains.com/plugin/23838
 [reuse.spec]: https://reuse.software/spec-3.3/
+[screenshot.editor]: docs/screenshot.editor.png
+[screenshot.todo]: docs/screenshot.todo.png
 [status-enfer]: https://img.shields.io/badge/status-enfer-orange.svg

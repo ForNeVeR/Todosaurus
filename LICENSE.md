@@ -1,12 +1,6 @@
-<!--
-SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
-
-SPDX-License-Identifier: MIT
--->
-
 The MIT License
 ===============
-Copyright (C) 2024 Todosaurus contributors
+Copyright (C) 2024-2025 Todosaurus contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

@@ -48,7 +48,7 @@ class TodosaurusWizard(
     title: String,
     private val project: Project,
     private val scope: CoroutineScope,
-    private val model: TodosaurusWizardContext,
+    private val model: TodosaurusWizardContext<*>,
     private val finalAction: suspend () -> WizardResult)
     : AbstractWizard<TodosaurusWizardStep>(title, project) {
 
