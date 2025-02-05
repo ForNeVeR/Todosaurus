@@ -10,3 +10,4 @@ rootProject.name = "Todosaurus"
 
 include("core")
 include("github")
+include("gitlab")

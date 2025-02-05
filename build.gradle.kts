@@ -46,6 +46,7 @@ dependencies {
     intellijPlatform {
         pluginModule(implementation(project(":core")))
         pluginModule(implementation(project(":github")))
+        pluginModule(implementation(project(":gitlab")))
     }
 }
 
