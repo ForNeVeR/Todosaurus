@@ -45,8 +45,8 @@ changelog {
 dependencies {
     intellijPlatform {
         pluginModule(implementation(project(":core")))
-        pluginModule(implementation(project(":github")))
-        pluginModule(implementation(project(":gitlab")))
+        pluginModule(implementation(project(":gitHub")))
+        pluginModule(implementation(project(":gitLab")))
     }
 }
 

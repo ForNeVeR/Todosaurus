@@ -16,7 +16,7 @@
 
     <content>
         <module name="me.fornever.todosaurus.core" loading="required" />
-        <module name="me.fornever.todosaurus.github" />
-        <module name="me.fornever.todosaurus.gitlab" />
+        <module name="me.fornever.todosaurus.gitHub" />
+        <module name="me.fornever.todosaurus.gitLab" />
     </content>
 </idea-plugin>
