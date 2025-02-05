@@ -39,7 +39,7 @@ class GitLab(override val icon: Icon, override val title: String) : IssueTracker
             TestConnectionResult.Failed(exception.message)
         }
 
-    override fun createChooseRemoteStep(project: Project, context: TodosaurusWizardContext): TodosaurusWizardStep
+    override fun createChooseRemoteStep(project: Project, context: TodosaurusWizardContext<*>): TodosaurusWizardStep
         = ChooseGitHostingRemoteStep(project, context)
 
     override fun createClient(project: Project, credentials: IssueTrackerCredentials, placementDetails: IssuePlacementDetails): IssueTrackerClient {
