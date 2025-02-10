@@ -81,7 +81,7 @@ class GitLabClient(
 
         val responseHandler = inflateAndReadWithErrorHandlingAndLogging(logger, request) { reader, _ ->
             GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabIssue::class.java)
-        } // TODO: Handle 404 Not Found status code (it requires to replace inflateAndReadWithErrorHandlingAndLogging with something else)
+        } // TODO[#172]: Handle 404 Not Found status code (it requires to replace inflateAndReadWithErrorHandlingAndLogging with something else)
 
         val gitLabIssue = restClient.sendAndAwaitCancellable(request, responseHandler).body()
             ?: error("Unable to retrieve issue with number ${toDoItem.issueNumber}")
