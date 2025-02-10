@@ -25,6 +25,7 @@ import org.jetbrains.plugins.gitlab.api.GitLabApi
 import org.jetbrains.plugins.gitlab.api.GitLabRestJsonDataDeSerializer
 import org.jetbrains.plugins.gitlab.api.GitLabServerPath
 
+@Suppress("UnstableApiUsage")
 class GitLabClient(
     private val project: Project,
     private val restClient: GitLabApi.Rest,
