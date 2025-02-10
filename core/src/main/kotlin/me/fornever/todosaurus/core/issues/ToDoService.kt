@@ -162,7 +162,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         val credentialsId = userChoice.credentialsId
             ?: error("Credentials identifier must be specified")
 
-        val issueTracker = IssueTrackerProvider.provideByRepositoryName(issueTrackerId)
+        val issueTracker = IssueTrackerProvider.provideByTrackerId(issueTrackerId)
             ?: error("Unable to find the issue tracker $issueTrackerId.")
 
         val credentials = issueTracker

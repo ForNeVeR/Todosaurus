@@ -5,25 +5,29 @@
 package me.fornever.todosaurus.core.issueTrackers
 
 import com.intellij.tasks.TaskRepositoryType
-import com.intellij.util.containers.toArray
 
 object IssueTrackerProvider {
 
-    fun provideAll(): Array<IssueTracker>
-        = TaskRepositoryType
-            .getRepositoryTypes()
+    fun provideAll(): Sequence<IssueTracker>
+        = provideUsing(TaskRepositoryType.getRepositoryTypes())
+
+    fun provideByTrackerId(trackerId: String): IssueTracker? {
+        val repositoryTypes = TaskRepositoryType.getRepositoryTypes()
+
+        return repositoryTypes
+            .firstOrNull { it.name == trackerId }
+            ?.let { createTracker(it) } // For case when TaskRepositoryType.name is equal to repositoryId
+                ?: provideUsing(repositoryTypes)
+                    .firstOrNull { it.id == trackerId }
+    }
+
+    private fun provideUsing(repositoryTypes: List<TaskRepositoryType<*>>): Sequence<IssueTracker>
+        = repositoryTypes
+            .asSequence()
             .mapNotNull { createTracker(it) }
-            .toArray(emptyArray())
 
-    fun provideByRepositoryName(repositoryName: String): IssueTracker?
-        = TaskRepositoryType
-            .getRepositoryTypes()
-            .firstOrNull { it.name == repositoryName }
-            ?.let { createTracker(it)  }
-
-    private fun createTracker(repository: TaskRepositoryType<*>): IssueTracker?
-        = IssueTrackerFactory.EP_NAME
-            .extensionList
-            .firstOrNull { it.trackerId == repository.name }
-            ?.createTracker(repository)
+    private fun createTracker(repositoryType: TaskRepositoryType<*>): IssueTracker? =
+        IssueTrackerFactory.EP_NAME
+            .extensionList.firstOrNull { it.trackerId == repositoryType.name }
+            ?.createTracker(repositoryType)
 }

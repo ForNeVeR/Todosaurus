@@ -17,5 +17,5 @@ interface IssueTrackerFactory {
      */
     val trackerId: String
 
-    fun createTracker(tracker: TaskRepositoryType<*>): IssueTracker?
+    fun createTracker(repositoryType: TaskRepositoryType<*>): IssueTracker?
 }

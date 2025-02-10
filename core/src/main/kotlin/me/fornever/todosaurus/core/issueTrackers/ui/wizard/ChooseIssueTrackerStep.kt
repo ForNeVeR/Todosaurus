@@ -33,6 +33,7 @@ import me.fornever.todosaurus.core.ui.wizard.DynamicStepProvider
 import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardContext
 import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardStep
 import me.fornever.todosaurus.core.ui.wizard.memoization.MemorableStep
+import java.awt.event.ItemEvent
 import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JLabel
@@ -54,15 +55,18 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
 
     init {
         credentialsPicker.addItemListener {
-            clearTestConnectionResult()
+            if (it.stateChange == ItemEvent.SELECTED)
+                clearTestConnectionResult()
         }
 
         serverHostPicker.addItemListener {
-            updateCredentialsPicker(it.item as? String)
+            if (it.stateChange == ItemEvent.SELECTED)
+                updateCredentialsPicker(it.item as? String)
         }
 
         issueTrackerPicker.addItemListener {
-            updateServerHostsPicker(it.item as? IssueTracker)
+            if (it.stateChange == ItemEvent.SELECTED)
+                updateServerHostsPicker(it.item as? IssueTracker)
         }
 
         updateIssueTrackers()
