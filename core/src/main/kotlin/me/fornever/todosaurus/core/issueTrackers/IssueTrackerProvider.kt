@@ -8,12 +8,6 @@ import com.intellij.tasks.TaskRepositoryType
 
 object IssueTrackerProvider {
 
-    private val trackerFactories: Map<String, IssueTrackerFactory>
-        = IssueTrackerFactory
-            .EP_NAME
-            .extensionList
-            .associateBy { it.trackerId }
-
     fun provideAll(): Sequence<IssueTracker>
         = provideUsing(TaskRepositoryType.getRepositoryTypes())
 
@@ -22,7 +16,7 @@ object IssueTrackerProvider {
 
         return repositoryTypes
             .firstOrNull { it.name == trackerId }
-            ?.let { createTracker(it) } // For case when [TaskRepositoryType.name] is equal to repositoryId
+            ?.let { createTracker(it) } // For case when TaskRepositoryType.name is equal to repositoryId
                 ?: provideUsing(repositoryTypes)
                     .firstOrNull { it.id == trackerId }
     }
@@ -32,6 +26,8 @@ object IssueTrackerProvider {
             .asSequence()
             .mapNotNull { createTracker(it) }
 
-    private fun createTracker(repositoryType: TaskRepositoryType<*>): IssueTracker?
-        = trackerFactories[repositoryType.name]?.createTracker(repositoryType)
+    private fun createTracker(repositoryType: TaskRepositoryType<*>): IssueTracker? =
+        IssueTrackerFactory.EP_NAME
+            .extensionList.firstOrNull { it.trackerId == repositoryType.name }
+            ?.createTracker(repositoryType)
 }

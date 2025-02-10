@@ -21,20 +21,20 @@ import org.jetbrains.plugins.gitlab.api.GitLabServerPath
 import org.jetbrains.plugins.gitlab.api.request.checkIsGitLabServer
 import javax.swing.Icon
 
+@Suppress("UnstableApiUsage")
 class GitLab(override val icon: Icon, override val title: String) : IssueTracker {
     override val id = "GitLab"
 
-    private val apiManager = service<GitLabApiManager>()
-    private val fileDocumentManager: FileDocumentManager
-        = FileDocumentManager.getInstance()
+    private val apiManager by lazy { service<GitLabApiManager>() }
+    private val fileDocumentManager by lazy { FileDocumentManager.getInstance() }
 
     override suspend fun checkConnection(credentials: IssueTrackerCredentials): TestConnectionResult
         = try {
-            when (createRestClient(credentials).checkIsGitLabServer()) {
-                true -> TestConnectionResult.Success
-                false -> TestConnectionResult.Failed("Bad credentials")
-            }
+        when (createRestClient(credentials).checkIsGitLabServer()) {
+            true -> TestConnectionResult.Success
+            false -> TestConnectionResult.Failed("Bad credentials")
         }
+    }
         catch (exception: Exception) {
             TestConnectionResult.Failed(exception.message)
         }
