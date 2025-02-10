@@ -7,6 +7,7 @@
 <idea-plugin package="me.fornever.todosaurus.gitLab">
     <dependencies>
         <module name="me.fornever.todosaurus.core"/>
+        <plugin id="org.jetbrains.plugins.gitlab"/>
     </dependencies>
 
     <extensions defaultExtensionNs="me.fornever.todosaurus">
