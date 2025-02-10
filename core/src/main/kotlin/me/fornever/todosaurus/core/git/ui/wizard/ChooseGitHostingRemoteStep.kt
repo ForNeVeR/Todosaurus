@@ -21,6 +21,7 @@ import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardStep
 import me.fornever.todosaurus.core.ui.wizard.memoization.MemorableStep
 import javax.swing.JComponent
 
+@Suppress("unused") // IDEA-367243: In a Gradle project, cross-module navigation doesn't work correctly
 class ChooseGitHostingRemoteStep(private val project: Project, private val model: TodosaurusWizardContext<*>) : TodosaurusWizardStep(),
     MemorableStep {
 
