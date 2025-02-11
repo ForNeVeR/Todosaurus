@@ -1,5 +1,6 @@
 <!--
-SPDX-FileCopyrightText: 2000–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+SPDX-FileCopyrightText: 2000-2021 JetBrains s.r.o.
+SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 
 SPDX-License-Identifier: MIT AND Apache-2.0
 -->
@@ -65,11 +66,6 @@ The project is distributed under the terms of [the MIT license][docs.license]
 (unless a particular file states otherwise).
 
 The license indication in the project's sources is compliant with the [REUSE specification v3.3][reuse.spec].
-
-### Additional Copyright Holders
-In addition to the people listed in the version control history, Todosaurus reuses portions of code from [IntelliJ IDEA Community Edition][intellij-community] and [IntelliJ Platform Plugin Template][intellij-platform-plugin-template], copyrighted by JetBrains s.r.o. and contributors.
-
-Major sections copied from the external projects are marked with corresponding references in the file headers.
 
 [andivionian-status-classifier]: https://andivionian.fornever.me/v1/#status-enfer-
 [badge.plugin]: https://img.shields.io/jetbrains/plugin/v/23838.svg
