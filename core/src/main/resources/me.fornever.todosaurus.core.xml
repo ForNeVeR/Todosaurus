@@ -5,6 +5,11 @@
   -->
 
 <idea-plugin package="me.fornever.todosaurus.core">
+
+    <dependencies>
+        <plugin id="com.intellij.tasks"/>
+    </dependencies>
+
     <resource-bundle>messages.TodosaurusCore</resource-bundle>
 
     <actions>

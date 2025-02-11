@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -9,13 +9,13 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.editor.RangeMarker
 
+@Suppress("unused") // TODO[#134]: This is supposed to become used.
 @Service(Service.Level.APP)
 class ToDoPatternProvider {
     companion object {
         fun getInstance(): ToDoPatternProvider = service()
     }
 
-    @Suppress("unused") // TODO[#134]: This is supposed to become used.
     fun provideSuitablePattern(toDoRange: RangeMarker): Regex
         = TodoConfiguration
             .getInstance()

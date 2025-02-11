@@ -7,6 +7,7 @@ package me.fornever.todosaurus.core.issueTrackers
 import me.fornever.todosaurus.core.TodosaurusCoreBundle
 
 sealed class TestConnectionResult {
+    @Suppress("unused") // IDEA-367243: In a Gradle project, cross-module navigation doesn't work correctly
     data object Success : TestConnectionResult()
 
     class Failed(val reason: String? = TodosaurusCoreBundle.message("wizard.steps.chooseIssueTracker.testConnection.unexpectedError")) : TestConnectionResult()

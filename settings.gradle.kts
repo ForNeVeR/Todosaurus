@@ -9,4 +9,5 @@ plugins {
 rootProject.name = "Todosaurus"
 
 include("core")
-include("github")
+include("gitHub")
+include("gitLab")

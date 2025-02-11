@@ -28,12 +28,11 @@ jvmWrapper {
 group = properties("pluginGroup").get()
 version = properties("pluginVersion").get()
 
-intellijPlatform {
-    pluginConfiguration {
-        name = properties("pluginName")
-    }
-    pluginVerification.ides {
-        recommended()
+dependencies {
+    intellijPlatform {
+        pluginModule(implementation(project(":core")))
+        pluginModule(implementation(project(":gitHub")))
+        pluginModule(implementation(project(":gitLab")))
     }
 }
 
@@ -42,24 +41,17 @@ changelog {
     repositoryUrl = properties("pluginRepositoryUrl").get()
 }
 
-dependencies {
-    intellijPlatform {
-        pluginModule(implementation(project(":core")))
-        pluginModule(implementation(project(":github")))
-    }
-}
-
-tasks {
-    patchPluginXml {
-        version = properties("pluginVersion").get()
-        untilBuild = properties("pluginUntilBuild").get()
+intellijPlatform {
+    pluginConfiguration {
+        name = properties("pluginName")
+        version = properties("pluginVersion")
 
         // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
-        pluginDescription = providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
+        description = providers.fileContents(layout.projectDirectory.file("README.md")).asText.map {
             val start = "<!-- Plugin description -->"
             val end = "<!-- Plugin description end -->"
 
-            with (it.lines()) {
+            with(it.lines()) {
                 if (!containsAll(listOf(start, end))) {
                     throw GradleException("Plugin description section not found in README.md:\n$start ... $end")
                 }
@@ -72,21 +64,32 @@ tasks {
         } catch (_: MissingVersionException) {
             changelog.getLatest()
         }
-        changeNotes.set(provider {
+        changeNotes = provider {
             changelog.renderItem(
                 latestChangelog
                     .withHeader(false)
                     .withEmptySections(false),
                 Changelog.OutputType.HTML
             )
-        })
+        }
+
+        ideaVersion {
+            untilBuild = properties("pluginUntilBuild").get()
+        }
     }
 
-    publishPlugin {
+    pluginVerification.ides {
+        recommended()
+    }
+
+    publishing {
         token = environment("PUBLISH_TOKEN")
         // The pluginVersion is based on the SemVer (https://semver.org) and supports pre-release labels, like 2.1.7-alpha.3
         // Specify pre-release label to publish the plugin in a custom Release Channel automatically. Read more:
         // https://plugins.jetbrains.com/docs/intellij/deployment.html#specifying-a-release-channel
-        channels = properties("pluginVersion").map { listOf(it.substringAfter('-', "").substringBefore('.').ifEmpty { "default" }) }
+        channels = properties("pluginVersion").map {
+            listOf(
+                it.substringAfter('-', "").substringBefore('.').ifEmpty { "default" })
+        }
     }
 }
