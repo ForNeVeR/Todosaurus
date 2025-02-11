@@ -239,7 +239,7 @@ class TodosaurusWizard(
         if (UserChoiceStore.getInstance(project).getChoiceOrNull() != null) {
             mySteps.filterIsInstance<ForgettableStep>().firstOrNull()?.let { forgettableStep ->
                 JPanel(BorderLayout()).also {
-                    val link = ActionLink(TodosaurusCoreBundle.message("wizard.forgetMyChoice.title")) {
+                    val link = ActionLink(TodosaurusCoreBundle.message("wizard.chooseAnotherTracker.title")) {
                         forgettableStep.forgetUserChoice()
                         close(0)
                     }
