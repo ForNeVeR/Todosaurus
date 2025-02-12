@@ -36,7 +36,7 @@ class ChooseGitHostingRemoteStep(private val project: Project, private val model
         updateHostingRemotePicker()
     }
 
-    override fun getComponent(): JComponent = panel {
+    override fun createComponent(): JComponent = panel {
         panel {
             row {
                 label(TodosaurusCoreBundle.message("wizard.steps.chooseGitHostingRemote.remoteUrl.title"))
