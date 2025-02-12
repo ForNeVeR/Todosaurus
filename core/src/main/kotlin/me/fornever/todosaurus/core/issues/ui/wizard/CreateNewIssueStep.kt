@@ -46,6 +46,7 @@ class CreateNewIssueStep(private val project: Project, private val model: Todosa
                 .component
                 .also {
                     it.lineWrap = true
+                    it.wrapStyleWord = true
                 }
         }
         .resizableRow()
