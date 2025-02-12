@@ -20,6 +20,7 @@ import org.jetbrains.plugins.github.api.GithubApiRequestExecutor
 import org.jetbrains.plugins.github.api.GithubApiRequests
 import org.jetbrains.plugins.github.api.GithubServerPath
 import org.jetbrains.plugins.github.api.executeSuspend
+import java.util.concurrent.CancellationException
 import javax.swing.Icon
 
 class GitHub(override val icon: Icon, override val title: String) : IssueTracker {
@@ -34,7 +35,11 @@ class GitHub(override val icon: Icon, override val title: String) : IssueTracker
             createRequestExecutor(credentials).executeSuspend(request)
 
             TestConnectionResult.Success
-        } catch (exception: Exception) {
+        }
+        catch (exception: CancellationException) {
+            throw exception
+        }
+        catch (exception: Throwable) {
             TestConnectionResult.Failed(exception.message)
         }
     }

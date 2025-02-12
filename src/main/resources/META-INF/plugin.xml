@@ -11,10 +11,10 @@
 
     <depends>com.intellij.modules.platform</depends>
     <depends>Git4Idea</depends>
-    <depends>org.jetbrains.plugins.github</depends> <!-- TODO[#152]: Make this an optional dependency of the GitHub module after we support other issue trackers -->
 
     <content>
         <module name="me.fornever.todosaurus.core" loading="required" />
-        <module name="me.fornever.todosaurus.github" />
+        <module name="me.fornever.todosaurus.gitHub" />
+        <module name="me.fornever.todosaurus.gitLab" />
     </content>
 </idea-plugin>

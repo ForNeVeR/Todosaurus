@@ -1,4 +1,5 @@
-// SPDX-FileCopyrightText: 2000-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2000-2024 JetBrains s.r.o. and contributors
+// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT AND Apache-2.0
 
@@ -41,6 +42,7 @@ import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoice
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceStore
 import java.awt.BorderLayout
 import java.awt.Component
+import java.util.concurrent.CancellationException
 import javax.swing.*
 
 class TodosaurusWizard(
@@ -167,8 +169,11 @@ class TodosaurusWizard(
                                     model.placementDetails)
                             )
                     }
-                    catch (exception: Exception) {
-                        Notifications.CreateNewIssue.memoizationWarning(exception, project)
+                    catch (exception: CancellationException) {
+                        throw exception
+                    }
+                    catch (exception: Throwable) {
+                        Notifications.Memoization.warning(exception, project)
                     }
                 }
 
@@ -235,7 +240,7 @@ class TodosaurusWizard(
         if (UserChoiceStore.getInstance(project).getChoiceOrNull() != null) {
             mySteps.filterIsInstance<ForgettableStep>().firstOrNull()?.let { forgettableStep ->
                 JPanel(BorderLayout()).also {
-                    val link = ActionLink(TodosaurusCoreBundle.message("wizard.forgetMyChoice.title")) {
+                    val link = ActionLink(TodosaurusCoreBundle.message("wizard.chooseAnotherTracker.title")) {
                         forgettableStep.forgetUserChoice()
                         close(0)
                     }

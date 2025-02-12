@@ -10,6 +10,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import me.fornever.todosaurus.core.issueTrackers.anonymous.AnonymousCredentials
+import java.util.concurrent.CancellationException
 
 @Service(Service.Level.PROJECT)
 @State(
@@ -50,7 +51,10 @@ class UserChoiceStore : SimplePersistentStateComponent<UserChoiceStore.State>(St
         try {
             userChoice.accept(choiceReader)
         }
-        catch (_: Exception) {
+        catch (exception: CancellationException) {
+            throw exception
+        }
+        catch (throwable: Throwable) {
             return null
         }
 

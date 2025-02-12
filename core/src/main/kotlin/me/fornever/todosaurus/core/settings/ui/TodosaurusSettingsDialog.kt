@@ -67,14 +67,14 @@ class TodosaurusSettingsDialog {
     }
 
     private fun Row.forgetButton(): Cell<JButton> {
-        val forgetTitle = TodosaurusCoreBundle.message("settings.common.userChoice.forget.title")
+        val forgetTitle = TodosaurusCoreBundle.message("settings.common.userChoice.clear.title")
         val activeProject = ProjectUtil.getActiveProject()
 
         if (activeProject == null || activeProject.isDefault)
             return button(forgetTitle) { }
                 .enabled(false)
                 .apply {
-                    component.toolTipText = TodosaurusCoreBundle.message("settings.common.userChoice.forget.tooltip")
+                    component.toolTipText = TodosaurusCoreBundle.message("settings.common.userChoice.clear.tooltip")
                 }
 
         val choiceStore = UserChoiceStore.getInstance(activeProject)
