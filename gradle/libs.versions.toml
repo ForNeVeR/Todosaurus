@@ -6,7 +6,7 @@
 [versions]
 gradleIntelliJPlatform = "2.2.1"
 ideaSdk = "2024.3"
-junit5 = "5.11.4"
+junit5 = "5.12.0"
 kotlin = "2.0.21"
 
 [libraries]
