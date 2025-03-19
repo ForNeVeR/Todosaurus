@@ -1,9 +1,12 @@
 // SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
+
 package me.fornever.todosaurus.core.issues.ui.wizard
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.ui.DialogPanel
+import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.components.JBTextArea
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
@@ -14,16 +17,46 @@ import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardContext
 import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardStep
 import me.fornever.todosaurus.core.ui.wizard.memoization.ForgettableStep
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceStore
+import java.awt.BorderLayout
 import javax.swing.JComponent
+import javax.swing.JPanel
+import javax.swing.border.EmptyBorder
 
-class CreateNewIssueStep(private val project: Project, private val model: TodosaurusWizardContext<ToDoItem.New>) : TodosaurusWizardStep(), ForgettableStep {
+@Suppress("UnstableApiUsage")
+class CreateNewIssueStep(
+    private val project: Project,
+    private val model: TodosaurusWizardContext<ToDoItem.New>) : TodosaurusWizardStep(), ForgettableStep {
 
     override val id: String = CreateNewIssueStep::class.java.name
 
     private lateinit var titleField: JBTextField
     private lateinit var descriptionField: JBTextArea
 
-    override fun getComponent(): JComponent = panel {
+    private var issueTrackerId: String? = null
+    private var optionsHolder: Placeholder? = null
+
+    override fun _init() {
+        super._init()
+
+        val issueTracker = model.connectionDetails.issueTracker
+            ?: return
+
+        if (issueTrackerId == issueTracker.id) {
+            model.issueOptions.map { it.refresh() }
+        }
+        else {
+            recreateIssueOptions()
+        }
+
+        issueTrackerId = issueTracker.id
+    }
+
+    private val component: DialogPanel = panel {
+        row {
+            optionsHolder = placeholder()
+                .align(Align.FILL)
+        }
+
         row {
             titleField = textField()
                 .label(TodosaurusCoreBundle.getMessage("wizard.steps.createNewIssue.title"), LabelPosition.TOP)
@@ -50,6 +83,48 @@ class CreateNewIssueStep(private val project: Project, private val model: Todosa
                 }
         }
         .resizableRow()
+    }
+
+    private fun recreateIssueOptions() {
+        val currentHolder = optionsHolder ?: return
+
+        val issueOptions = IssueOptionsProvider.provideAll(project, model)
+
+        currentHolder.component = panel {
+            if (issueOptions.isNotEmpty())
+                issueOptions.map { component -> createOptionsRow(component.createOptionsPanel()) }
+        }
+
+        model.issueOptions = issueOptions
+    }
+
+    override fun createComponent(): JComponent
+        = ScrollPaneFactory.createScrollPane(component, true)
+
+    // TODO: Add license information. Copied from https://github.com/JetBrains/intellij-community/blob/dc6fdfc676b0dcc191611482c2907be241f181ae/platform/vcs-impl/src/com/intellij/vcs/commit/CommitOptionsPanel.kt#L110
+    private fun Panel.createOptionsRow(component: JComponent): Row {
+        val meaningfulComponent = extractMeaningfulComponent(component)
+
+        return row {
+            cell(meaningfulComponent ?: component)
+                .align(Align.FILL)
+        }
+        .bottomGap(BottomGap.MEDIUM)
+    }
+
+    // TODO: Add license information. Copied from https://github.com/JetBrains/intellij-community/blob/dc6fdfc676b0dcc191611482c2907be241f181ae/platform/vcs-impl/src/com/intellij/vcs/commit/CommitOptionsPanel.kt#L118
+    private fun extractMeaningfulComponent(component: JComponent): JComponent? {
+        if (component is DialogPanel)
+            return null
+
+        if (component is JPanel) {
+            val border = component.border
+
+            if (component.layout is BorderLayout && component.components.size == 1 && (border == null || border is EmptyBorder))
+                return component.components[0] as? JComponent
+        }
+
+        return null
     }
 
     override fun getPreferredFocusedComponent(): JComponent

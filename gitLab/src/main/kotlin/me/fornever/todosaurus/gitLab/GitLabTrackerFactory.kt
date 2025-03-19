@@ -12,6 +12,6 @@ class GitLabTrackerFactory : IssueTrackerFactory {
     override val trackerId: String
         get() = GITLAB_TASK_REPOSITORY_NAME
 
-    override fun createTracker(tracker: TaskRepositoryType<*>) =
-        GitLab(tracker.icon, tracker.name)
+    override fun createTracker(repositoryType: TaskRepositoryType<*>) =
+        GitLab(repositoryType.icon, repositoryType.name)
 }
