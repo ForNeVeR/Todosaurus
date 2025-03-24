@@ -14,8 +14,8 @@ import me.fornever.todosaurus.core.issues.IssuePlacementDetails
 import me.fornever.todosaurus.core.issues.IssuePlacementDetailsType
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoice
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceReader
-import org.assertj.core.api.Assertions.fail
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.fail
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 

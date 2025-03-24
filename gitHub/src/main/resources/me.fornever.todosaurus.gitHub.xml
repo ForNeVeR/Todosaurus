@@ -7,6 +7,7 @@
 <idea-plugin package="me.fornever.todosaurus.gitHub">
     <dependencies>
         <module name="me.fornever.todosaurus.core"/>
+        <plugin id="com.intellij.tasks"/>
         <plugin id="org.jetbrains.plugins.github"/>
     </dependencies>
 
