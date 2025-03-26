@@ -12,6 +12,6 @@ class GitHubTrackerFactory : IssueTrackerFactory {
     override val trackerId: String
         get() = GITHUB_TASK_REPOSITORY_NAME
 
-    override fun createTracker(tracker: TaskRepositoryType<*>) =
-        GitHub(tracker.icon, tracker.name)
+    override fun createTracker(repositoryType: TaskRepositoryType<*>) =
+        GitHub(repositoryType.icon, repositoryType.name)
 }
