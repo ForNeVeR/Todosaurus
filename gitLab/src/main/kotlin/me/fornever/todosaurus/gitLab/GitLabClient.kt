@@ -5,6 +5,7 @@ package me.fornever.todosaurus.gitLab
 
 import ai.grazie.utils.mpp.URLEncoder
 import com.intellij.collaboration.api.httpclient.HttpClientUtil.inflateAndReadWithErrorHandlingAndLogging
+import com.intellij.collaboration.api.httpclient.InflatedStreamReadingBodyHandler
 import com.intellij.collaboration.util.resolveRelative
 import com.intellij.dvcs.repo.VcsRepositoryManager
 import com.intellij.openapi.application.readAction
@@ -20,10 +21,12 @@ import me.fornever.todosaurus.core.issueTrackers.IssueTrackerClient
 import me.fornever.todosaurus.core.issues.IssueModel
 import me.fornever.todosaurus.core.issues.ToDoItem
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
+import me.fornever.todosaurus.gitLab.api.GitLabErrorResponse
 import me.fornever.todosaurus.gitLab.api.GitLabIssue
 import org.jetbrains.plugins.gitlab.api.GitLabApi
 import org.jetbrains.plugins.gitlab.api.GitLabRestJsonDataDeSerializer
 import org.jetbrains.plugins.gitlab.api.GitLabServerPath
+import java.io.InputStreamReader
 
 @Suppress("UnstableApiUsage")
 class GitLabClient(
@@ -79,9 +82,19 @@ class GitLabClient(
             .GET()
             .build()
 
-        val responseHandler = inflateAndReadWithErrorHandlingAndLogging(logger, request) { reader, _ ->
-            GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabIssue::class.java)
-        } // TODO[#172]: Handle 404 Not Found status code (it requires to replace inflateAndReadWithErrorHandlingAndLogging with something else)
+        val responseHandler = InflatedStreamReadingBodyHandler { responseInfo, bodyStream ->
+            InputStreamReader(bodyStream, Charsets.UTF_8).use { reader ->
+                if (responseInfo.statusCode() == 200) {
+                    GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabIssue::class.java)
+                } else {
+                    val errorResponse = GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabErrorResponse::class.java)
+                    val errorMessage = errorResponse?.message
+                        ?: errorResponse?.error
+                        ?: "Unknown error occurred with ${responseInfo.statusCode()} HTTP status code."
+                    error(errorMessage)
+                }
+            }
+        }
 
         val gitLabIssue = restClient.sendAndAwaitCancellable(request, responseHandler).body()
             ?: error("Unable to retrieve issue with number ${toDoItem.issueNumber}")
