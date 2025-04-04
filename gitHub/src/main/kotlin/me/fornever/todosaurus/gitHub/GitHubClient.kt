@@ -19,9 +19,13 @@ import me.fornever.todosaurus.core.issueTrackers.IssueTrackerClient
 import me.fornever.todosaurus.core.issueTrackers.IssueTrackerCredentials
 import me.fornever.todosaurus.core.issues.IssueModel
 import me.fornever.todosaurus.core.issues.ToDoItem
+import me.fornever.todosaurus.core.issues.ui.wizard.IssueOptions
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
+import me.fornever.todosaurus.gitHub.labels.ui.wizard.LabelsOptions
 import org.jetbrains.plugins.github.api.GithubApiRequests
 import org.jetbrains.plugins.github.api.GithubServerPath
+import org.jetbrains.plugins.github.api.data.GithubIssueLabel
+import org.jetbrains.plugins.github.api.data.request.GithubRequestPagination
 
 class GitHubClient(
     private val project: Project,
@@ -30,19 +34,24 @@ class GitHubClient(
     private val remote: GitHostingRemote,
     private val fileDocumentManager: FileDocumentManager
 ) : IssueTrackerClient {
-    override suspend fun createIssue(toDoItem: ToDoItem): IssueModel {
+    override suspend fun createIssue(toDoItem: ToDoItem, issueOptions: List<IssueOptions>): IssueModel {
         val serverPath = gitHub.getGitHubPath(credentials)
 
         val issueBody = readAction {
             replacePatterns(serverPath, toDoItem)
         }
 
+        val labelsOptions = issueOptions
+            .filterIsInstance<LabelsOptions>()
+            .firstOrNull()
+
         val request = GithubApiRequests.Repos.Issues.create(
             serverPath,
             remote.owner,
             remote.name,
             toDoItem.title,
-            issueBody
+            issueBody,
+            labels = labelsOptions?.selectedLabels
         )
 
         val response = withContext(Dispatchers.IO) {
@@ -67,6 +76,40 @@ class GitHubClient(
             ?: return null
 
         return IssueModel(response.number.toString(), response.htmlUrl)
+    }
+
+    suspend fun getLabels(): Iterable<GithubIssueLabel> {
+        val requestExecutor = gitHub.createRequestExecutor(credentials)
+
+        val labels = mutableListOf<GithubIssueLabel>()
+
+        val cursorRequest = GithubApiRequests.Repos.Labels.get(
+            gitHub.getGitHubPath(credentials),
+            remote.owner,
+            remote.name,
+            GithubRequestPagination.DEFAULT
+        )
+
+        val pageCursor = withContext(Dispatchers.IO) {
+            requestExecutor.execute(cursorRequest)
+        }
+
+        labels.addAll(pageCursor.items)
+
+        var nextLink = pageCursor.nextLink
+
+        while (nextLink != null) {
+            val pageRequest = GithubApiRequests.Repos.Labels.get(nextLink)
+            val nextPage = withContext(Dispatchers.IO) {
+                requestExecutor.execute(pageRequest)
+            }
+
+            labels.addAll(nextPage.items)
+
+            nextLink = nextPage.nextLink
+        }
+
+        return labels
     }
 
     @RequiresReadLock
