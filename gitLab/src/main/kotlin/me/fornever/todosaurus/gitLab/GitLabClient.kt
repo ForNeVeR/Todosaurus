@@ -84,20 +84,28 @@ class GitLabClient(
 
         val responseHandler = InflatedStreamReadingBodyHandler { responseInfo, bodyStream ->
             InputStreamReader(bodyStream, Charsets.UTF_8).use { reader ->
-                if (responseInfo.statusCode() == 200) {
-                    GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabIssue::class.java)
-                } else {
-                    val errorResponse = GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabErrorResponse::class.java)
-                    val errorMessage = errorResponse?.message
-                        ?: errorResponse?.error
-                        ?: "Unknown error occurred with ${responseInfo.statusCode()} HTTP status code."
-                    error(errorMessage)
+                when (responseInfo.statusCode()) {
+                    200 -> {
+                        GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabIssue::class.java)
+                    }
+
+                    404 -> {
+                        null
+                    }
+
+                    else -> {
+                        val errorResponse =
+                            GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabErrorResponse::class.java)
+                        val errorMessage = errorResponse?.message
+                            ?: errorResponse?.error
+                            ?: "Unknown error occurred with ${responseInfo.statusCode()} HTTP status code."
+                        error(errorMessage)
+                    }
                 }
             }
         }
 
-        val gitLabIssue = restClient.sendAndAwaitCancellable(request, responseHandler).body()
-            ?: error("Unable to retrieve issue with number ${toDoItem.issueNumber}")
+        val gitLabIssue = restClient.sendAndAwaitCancellable(request, responseHandler).body() ?: return null
 
         return IssueModel(gitLabIssue.issueNumber.toString(), gitLabIssue.url)
     }
