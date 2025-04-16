@@ -19,6 +19,7 @@ import me.fornever.todosaurus.core.git.GitHostingRemote
 import me.fornever.todosaurus.core.issueTrackers.IssueTrackerClient
 import me.fornever.todosaurus.core.issues.IssueModel
 import me.fornever.todosaurus.core.issues.ToDoItem
+import me.fornever.todosaurus.core.issues.ui.wizard.IssueOptions
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
 import me.fornever.todosaurus.gitLab.api.GitLabIssue
 import org.jetbrains.plugins.gitlab.api.GitLabApi
@@ -34,7 +35,7 @@ class GitLabClient(
 ) : IssueTrackerClient {
     private val logger = logger<GitLabClient>()
 
-    override suspend fun createIssue(toDoItem: ToDoItem): IssueModel {
+    override suspend fun createIssue(toDoItem: ToDoItem, issueOptions: List<IssueOptions>): IssueModel {
         val issueBody = readAction {
             replacePatterns(restClient.server, toDoItem)
         }
