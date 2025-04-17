@@ -84,7 +84,7 @@ class GitLabClient(
 
         val responseHandler = InflatedStreamReadingBodyHandler { responseInfo, bodyStream ->
             InputStreamReader(bodyStream, Charsets.UTF_8).use { reader ->
-                when (responseInfo.statusCode()) {
+                when (val code = responseInfo.statusCode()) {
                     200 -> {
                         GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabIssue::class.java)
                     }
@@ -98,7 +98,7 @@ class GitLabClient(
                             GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabErrorResponse::class.java)
                         val errorMessage = errorResponse?.message
                             ?: errorResponse?.error
-                            ?: "Unknown error occurred with ${responseInfo.statusCode()} HTTP status code."
+                            ?: "Unknown error occurred with $code HTTP status code."
                         error(errorMessage)
                     }
                 }
