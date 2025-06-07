@@ -21,10 +21,11 @@ import me.fornever.todosaurus.core.issues.IssueModel
 import me.fornever.todosaurus.core.issues.ToDoItem
 import me.fornever.todosaurus.core.issues.ui.wizard.IssueOptions
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
+import me.fornever.todosaurus.gitHub.labels.api.GitHubLabel
+import me.fornever.todosaurus.gitHub.labels.api.paginate
 import me.fornever.todosaurus.gitHub.labels.ui.wizard.LabelsOptions
 import org.jetbrains.plugins.github.api.GithubApiRequests
 import org.jetbrains.plugins.github.api.GithubServerPath
-import org.jetbrains.plugins.github.api.data.GithubIssueLabel
 import org.jetbrains.plugins.github.api.data.request.GithubRequestPagination
 
 class GitHubClient(
@@ -41,9 +42,11 @@ class GitHubClient(
             replacePatterns(serverPath, toDoItem)
         }
 
-        val labelsOptions = issueOptions
+        val labels = issueOptions
             .filterIsInstance<LabelsOptions>()
             .firstOrNull()
+            ?.getSelectedLabels()
+            ?.map { it.name }
 
         val request = GithubApiRequests.Repos.Issues.create(
             serverPath,
@@ -51,7 +54,7 @@ class GitHubClient(
             remote.name,
             toDoItem.title,
             issueBody,
-            labels = labelsOptions?.selectedLabels
+            labels = labels
         )
 
         val response = withContext(Dispatchers.IO) {
@@ -78,12 +81,12 @@ class GitHubClient(
         return IssueModel(response.number.toString(), response.htmlUrl)
     }
 
-    suspend fun getLabels(): Iterable<GithubIssueLabel> {
+    suspend fun getLabels(): Iterable<GitHubLabel> {
         val requestExecutor = gitHub.createRequestExecutor(credentials)
 
-        val labels = mutableListOf<GithubIssueLabel>()
+        val labels = mutableListOf<GitHubLabel>()
 
-        val cursorRequest = GithubApiRequests.Repos.Labels.get(
+        val cursorRequest = GithubApiRequests.Repos.Labels.paginate(
             gitHub.getGitHubPath(credentials),
             remote.owner,
             remote.name,
@@ -99,7 +102,7 @@ class GitHubClient(
         var nextLink = pageCursor.nextLink
 
         while (nextLink != null) {
-            val pageRequest = GithubApiRequests.Repos.Labels.get(nextLink)
+            val pageRequest = GithubApiRequests.Repos.Labels.paginate(nextLink)
             val nextPage = withContext(Dispatchers.IO) {
                 requestExecutor.execute(pageRequest)
             }

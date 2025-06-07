@@ -15,8 +15,8 @@ import me.fornever.todosaurus.core.issues.ui.wizard.IssueOptions
 import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardContext
 import me.fornever.todosaurus.gitHub.GitHubClient
 import me.fornever.todosaurus.gitHub.TodosaurusGitHubBundle
+import me.fornever.todosaurus.gitHub.labels.api.GitHubLabel
 import me.fornever.todosaurus.gitHub.labels.ui.controls.LabelList
-import org.jetbrains.plugins.github.api.data.GithubIssueLabel
 import javax.swing.JComponent
 
 class LabelsOptions(
@@ -27,8 +27,8 @@ class LabelsOptions(
     private var hostingRemote: GitHostingRemote? = null
     private val labelList: LabelList = LabelList(scope)
 
-    val selectedLabels: List<String>
-        get() = labelList.getSelectedTags().map { it.name }
+    fun getSelectedLabels()
+        = labelList.getSelectedTags()
 
     override fun refresh() {
         val placementDetails = model.placementDetails as? GitBasedPlacementDetails
@@ -55,7 +55,7 @@ class LabelsOptions(
         return panel
     }
 
-    private suspend fun provideLabels(): Iterable<GithubIssueLabel> {
+    private suspend fun provideLabels(): Iterable<GitHubLabel> {
         val issueTracker = model.connectionDetails.issueTracker
             ?: error("Issue tracker must be specified")
 

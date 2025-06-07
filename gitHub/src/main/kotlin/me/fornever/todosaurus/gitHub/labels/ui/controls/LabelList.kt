@@ -8,16 +8,13 @@ import com.intellij.ui.ColorUtil
 import kotlinx.coroutines.CoroutineScope
 import me.fornever.todosaurus.core.ui.controls.tagList.TagList
 import me.fornever.todosaurus.core.ui.controls.tagList.TagRenderer
-import org.jetbrains.plugins.github.api.data.GithubIssueLabel
-import java.util.*
-import kotlin.math.abs
 import me.fornever.todosaurus.gitHub.TodosaurusGitHubBundle
+import me.fornever.todosaurus.gitHub.labels.api.GitHubLabel
 
 class LabelList(scope: CoroutineScope)
-    : TagList<GithubIssueLabel>(
+    : TagList<GitHubLabel>(
         scope,
-        // TODO: GithubIssueLabel contains a private field for the description and identifier. Let's ask JetBrains to make them public
-        { LabelPresentation(it, abs(UUID.randomUUID().leastSignificantBits), it.name, "A place for your advertisement", ColorUtil.fromHex(it.color)) },
+        { LabelPresentation(it, it.id, it.name, it.description, ColorUtil.fromHex(it.color)) },
         { TagRenderer(it) }) {
         init {
             searchTooltipText = TodosaurusGitHubBundle.message("wizard.steps.createNewIssue.labels.popup.search.tooltip")

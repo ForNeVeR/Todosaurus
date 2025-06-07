@@ -15,6 +15,8 @@ import com.intellij.ui.JBColor
 import com.intellij.ui.awt.RelativePoint
 import com.intellij.ui.components.ActionLink
 import com.intellij.ui.dsl.builder.Align
+import com.intellij.ui.dsl.builder.AlignX
+import com.intellij.ui.dsl.builder.AlignY
 import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
@@ -32,6 +34,7 @@ import java.awt.FlowLayout
 import java.util.concurrent.CancellationException
 import javax.swing.JLabel
 import javax.swing.JPanel
+import javax.swing.JTextArea
 
 open class TagList<T>(
     private val scope: CoroutineScope,
@@ -376,7 +379,7 @@ open class TagList<T>(
 
             val panel = panel {
                 row {
-                    label(reason)
+                    label(reason) // TODO: Add support for multiline (\n) text
                         .align(Align.CENTER)
                         .applyToComponent {
                             icon = AllIcons.General.Error

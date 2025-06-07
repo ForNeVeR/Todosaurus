@@ -5,13 +5,13 @@
 package me.fornever.todosaurus.gitHub.labels.ui.controls
 
 import me.fornever.todosaurus.core.ui.controls.tagList.TagPresentation
-import org.jetbrains.plugins.github.api.data.GithubIssueLabel
+import me.fornever.todosaurus.gitHub.labels.api.GitHubLabel
 import java.awt.Color
 
 data class LabelPresentation(
-    override val value: GithubIssueLabel,
+    override val value: GitHubLabel,
     override val id: Long,
     override val text: String,
     override val description: String?,
     override val foreground: Color
-) : TagPresentation<GithubIssueLabel>()
+) : TagPresentation<GitHubLabel>()
