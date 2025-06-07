@@ -6,6 +6,7 @@ package me.fornever.todosaurus.gitLab
 import ai.grazie.utils.mpp.URLEncoder
 import com.intellij.collaboration.api.httpclient.HttpClientUtil.inflateAndReadWithErrorHandlingAndLogging
 import com.intellij.collaboration.util.resolveRelative
+import com.intellij.collaboration.util.withQuery
 import com.intellij.dvcs.repo.VcsRepositoryManager
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.diagnostic.logger
@@ -22,6 +23,7 @@ import me.fornever.todosaurus.core.issues.ToDoItem
 import me.fornever.todosaurus.core.issues.ui.wizard.IssueOptions
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
 import me.fornever.todosaurus.gitLab.api.GitLabIssue
+import me.fornever.todosaurus.gitLab.api.GitLabLabel
 import org.jetbrains.plugins.gitlab.api.GitLabApi
 import org.jetbrains.plugins.gitlab.api.GitLabRestJsonDataDeSerializer
 import org.jetbrains.plugins.gitlab.api.GitLabServerPath
@@ -88,6 +90,48 @@ class GitLabClient(
             ?: error("Unable to retrieve issue with number ${toDoItem.issueNumber}")
 
         return IssueModel(gitLabIssue.issueNumber.toString(), gitLabIssue.url)
+    }
+
+    suspend fun getLabels(): Iterable<GitLabLabel> {
+        val projectId = URLEncoder.encode(remote.ownerAndName)
+        val perPage = 100 // Default value from GitLab Docs
+        val baseUri = restClient
+            .server
+            .restApiUri
+            .resolveRelative("projects/$projectId/labels")
+
+        var currentPage: Int? = 1
+        val labels = mutableListOf<GitLabLabel>()
+
+        while (currentPage != null && currentPage != 0) {
+            val endpointPath = baseUri.withQuery("per_page=$perPage&page=$currentPage")
+
+            val request = restClient
+                .request(endpointPath)
+                .GET()
+                .build()
+
+            var nextPage: Int? = null
+
+            val responseHandler = inflateAndReadWithErrorHandlingAndLogging(logger, request) { reader, response ->
+                nextPage = response
+                    .headers()
+                    .firstValue("X-Next-Page")
+                    .orElse(null)
+                    ?.toIntOrNull()
+
+                GitLabRestJsonDataDeSerializer.fromJson(reader, Collection::class.java, GitLabLabel::class.java)
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            labels.addAll(
+                restClient.sendAndAwaitCancellable(request, responseHandler).body() as Collection<GitLabLabel>?
+                    ?: error("Failed to fetch labels from GitLab"))
+
+            currentPage = nextPage
+        }
+
+        return labels
     }
 
     @RequiresReadLock

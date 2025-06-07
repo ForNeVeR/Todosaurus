@@ -10,7 +10,10 @@
         <plugin id="org.jetbrains.plugins.gitlab"/>
     </dependencies>
 
+    <resource-bundle>messages.TodosaurusGitLab</resource-bundle>
+
     <extensions defaultExtensionNs="me.fornever.todosaurus">
         <issueTrackerFactory implementation="me.fornever.todosaurus.gitLab.GitLabTrackerFactory"/>
+        <issueOptionsFactory implementation="me.fornever.todosaurus.gitLab.labels.ui.wizard.LabelsOptionsFactory"/>
     </extensions>
 </idea-plugin>
