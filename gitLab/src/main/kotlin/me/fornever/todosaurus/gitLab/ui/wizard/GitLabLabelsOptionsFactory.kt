@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-package me.fornever.todosaurus.gitLab.labels.ui.wizard
+package me.fornever.todosaurus.gitLab.ui.wizard
 
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
@@ -12,10 +12,10 @@ import me.fornever.todosaurus.core.issues.ui.wizard.IssueOptionsFactory
 import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardContext
 import me.fornever.todosaurus.gitLab.GITLAB_TASK_REPOSITORY_NAME
 
-class LabelsOptionsFactory(private val scope: CoroutineScope) : IssueOptionsFactory {
+class GitLabLabelsOptionsFactory(private val scope: CoroutineScope) : IssueOptionsFactory {
     override val trackerId: String
         get() = GITLAB_TASK_REPOSITORY_NAME
 
     override fun createIssueOptions(project: Project, model: TodosaurusWizardContext<ToDoItem.New>): IssueOptions
-        = LabelsOptions(scope, project, model)
+        = GitLabLabelsOptions(scope, project, model)
 }

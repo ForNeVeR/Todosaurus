@@ -15,6 +15,6 @@
 
     <extensions defaultExtensionNs="me.fornever.todosaurus">
         <issueTrackerFactory implementation="me.fornever.todosaurus.gitLab.GitLabTrackerFactory"/>
-        <issueOptionsFactory implementation="me.fornever.todosaurus.gitLab.labels.ui.wizard.LabelsOptionsFactory"/>
+        <issueOptionsFactory implementation="me.fornever.todosaurus.gitLab.ui.wizard.GitLabLabelsOptionsFactory"/>
     </extensions>
 </idea-plugin>

@@ -15,6 +15,6 @@
 
     <extensions defaultExtensionNs="me.fornever.todosaurus">
         <issueTrackerFactory implementation="me.fornever.todosaurus.gitHub.GitHubTrackerFactory"/>
-        <issueOptionsFactory implementation="me.fornever.todosaurus.gitHub.labels.ui.wizard.LabelsOptionsFactory"/>
+        <issueOptionsFactory implementation="me.fornever.todosaurus.gitHub.ui.wizard.GitHubLabelsOptionsFactory"/>
     </extensions>
 </idea-plugin>

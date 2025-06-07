@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-package me.fornever.todosaurus.gitHub.labels.api
+package me.fornever.todosaurus.gitHub.api
 
 import org.jetbrains.plugins.github.api.GithubApiRequest
 import org.jetbrains.plugins.github.api.GithubApiRequests

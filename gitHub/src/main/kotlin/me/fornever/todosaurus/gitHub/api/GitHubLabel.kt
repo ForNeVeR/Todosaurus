@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-package me.fornever.todosaurus.gitHub.labels.api
+package me.fornever.todosaurus.gitHub.api
 
 data class GitHubLabel(
     val id: Long,

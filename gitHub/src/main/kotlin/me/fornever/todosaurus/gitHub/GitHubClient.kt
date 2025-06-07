@@ -17,13 +17,14 @@ import kotlinx.coroutines.withContext
 import me.fornever.todosaurus.core.git.GitHostingRemote
 import me.fornever.todosaurus.core.issueTrackers.IssueTrackerClient
 import me.fornever.todosaurus.core.issueTrackers.IssueTrackerCredentials
+import me.fornever.todosaurus.core.issues.IssueLabel
 import me.fornever.todosaurus.core.issues.IssueModel
 import me.fornever.todosaurus.core.issues.ToDoItem
 import me.fornever.todosaurus.core.issues.ui.wizard.IssueOptions
+import me.fornever.todosaurus.core.issues.ui.wizard.LabelsOptions
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
-import me.fornever.todosaurus.gitHub.labels.api.GitHubLabel
-import me.fornever.todosaurus.gitHub.labels.api.paginate
-import me.fornever.todosaurus.gitHub.labels.ui.wizard.LabelsOptions
+import me.fornever.todosaurus.gitHub.api.GitHubLabel
+import me.fornever.todosaurus.gitHub.api.paginate
 import org.jetbrains.plugins.github.api.GithubApiRequests
 import org.jetbrains.plugins.github.api.GithubServerPath
 import org.jetbrains.plugins.github.api.data.request.GithubRequestPagination
