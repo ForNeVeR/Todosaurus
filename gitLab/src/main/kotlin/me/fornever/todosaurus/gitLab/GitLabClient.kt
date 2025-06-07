@@ -88,20 +88,15 @@ class GitLabClient(
         val responseHandler = InflatedStreamReadingBodyHandler { responseInfo, bodyStream ->
             InputStreamReader(bodyStream, Charsets.UTF_8).use { reader ->
                 when (val code = responseInfo.statusCode()) {
-                    200 -> {
-                        GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabIssue::class.java)
-                    }
-
-                    404 -> {
-                        null
-                    }
+                    200 -> GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabIssue::class.java)
+                    404 -> null
 
                     else -> {
-                        val errorResponse =
-                            GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabErrorResponse::class.java)
+                        val errorResponse = GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabErrorResponse::class.java)
                         val errorMessage = errorResponse?.message
                             ?: errorResponse?.error
-                            ?: "Unknown error occurred with $code HTTP status code."
+                                ?: "Unknown error occurred with $code HTTP status code."
+
                         error(errorMessage)
                     }
                 }
@@ -134,14 +129,29 @@ class GitLabClient(
 
             var nextPage: Int? = null
 
-            val responseHandler = inflateAndReadWithErrorHandlingAndLogging(logger, request) { reader, response ->
-                nextPage = response
-                    .headers()
-                    .firstValue("X-Next-Page")
-                    .orElse(null)
-                    ?.toIntOrNull()
+            val responseHandler = InflatedStreamReadingBodyHandler { response, bodyStream ->
+                InputStreamReader(bodyStream, Charsets.UTF_8).use { reader ->
+                    when (val code = response.statusCode()) {
+                        200 -> {
+                            nextPage = response
+                                .headers()
+                                .firstValue("X-Next-Page")
+                                .orElse(null)
+                                ?.toIntOrNull()
 
-                GitLabRestJsonDataDeSerializer.fromJson(reader, Collection::class.java, GitLabLabel::class.java)
+                            GitLabRestJsonDataDeSerializer.fromJson(reader, Collection::class.java, GitLabLabel::class.java)
+                        }
+
+                        else -> {
+                            val errorResponse = GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabErrorResponse::class.java)
+                            val errorMessage = errorResponse?.message
+                                ?: errorResponse?.error
+                                    ?: "Unknown error occurred with $code HTTP status code."
+
+                            error(errorMessage)
+                        }
+                    }
+                }
             }
 
             @Suppress("UNCHECKED_CAST")
