@@ -23,7 +23,7 @@ import me.fornever.todosaurus.core.issues.IssueModel
 import me.fornever.todosaurus.core.issues.ToDoItem
 import me.fornever.todosaurus.core.issues.ui.wizard.IssueOptions
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
-import me.fornever.todosaurus.gitLab.api.GitLabErrorResponse
+import me.fornever.todosaurus.gitLab.api.GitLabError
 import me.fornever.todosaurus.gitLab.api.GitLabIssue
 import me.fornever.todosaurus.gitLab.api.GitLabLabel
 import org.jetbrains.plugins.gitlab.api.GitLabApi
@@ -92,7 +92,7 @@ class GitLabClient(
                     404 -> null
 
                     else -> {
-                        val errorResponse = GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabErrorResponse::class.java)
+                        val errorResponse = GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabError::class.java)
                         val errorMessage = errorResponse?.message
                             ?: errorResponse?.error
                                 ?: "Unknown error occurred with $code HTTP status code."
@@ -143,7 +143,7 @@ class GitLabClient(
                         }
 
                         else -> {
-                            val errorResponse = GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabErrorResponse::class.java)
+                            val errorResponse = GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabError::class.java)
                             val errorMessage = errorResponse?.message
                                 ?: errorResponse?.error
                                     ?: "Unknown error occurred with $code HTTP status code."
