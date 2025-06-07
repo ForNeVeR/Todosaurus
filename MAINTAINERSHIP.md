@@ -12,9 +12,9 @@ Publish a Release
 To publish a new release, follow these steps:
 
 1. Update the copyright year in the `LICENSE.md`, if required.
-2. Choose the new version according to [Semantic Versioning][semver]. It should consist of three numbers (i.e. `1.0.0`).
-3. Update the version in the `gradle.properties` file.
-4. Make sure there's a properly formed version entry in the `CHANGELOG.md`.
+2. Make sure there's a properly formed version entry in the `CHANGELOG.md`.
+3. Choose the new version according to [Semantic Versioning][semver]. It should consist of three numbers (i.e. `1.0.0`).
+4. Update the version in the `gradle.properties` file.
 5. Merge these changes via a PR.
 6. Push a tag named `v<VERSION>` to GitHub.
 

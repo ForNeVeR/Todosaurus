@@ -7,6 +7,24 @@ SPDX-License-Identifier: MIT
 Changelog
 =========
 
+## [1.5.0] - 2025-04-30
+### Changed
+- **(Requirement update!)** Update the compatible IntelliJ version range to \[2025.1; 2025.2\].
+
+### Added
+- [#173](https://github.com/ForNeVeR/Todosaurus/issues/173): indicate the chosen tracker in the issue creation wizard. Thanks to @mirodilkamilov!
+
+### Fixed
+- [#172](https://github.com/ForNeVeR/Todosaurus/issues/172): 404 code from GitLab when performing issue search wasn't handled properly. Thanks to @mirodilkamilov!
+
+## [1.4.0] - 2025-02-12
+### Added
+- [#161](https://github.com/ForNeVeR/Todosaurus/issues/161): add GitLab support. Thanks to @y0ung3r for help!
+
+### Fixed
+- [#171](https://github.com/ForNeVeR/Todosaurus/issues/171): `ClassNotFoundException: git4idea.repo.GitRepository` on reporting an issue.
+- [#159](https://github.com/ForNeVeR/Todosaurus/issues/159): process exceptions during reports. Thanks to @y0ung3r for help!
+
 ## [1.3.0] - 2025-02-01
 ### Added
 - Choose the GitHub account when reporting an issue. Thanks to @y0ung3r for the contribution!
@@ -36,8 +54,10 @@ Changelog
 ## [1.0.0] - 2024-02-26
 This is the initial plugin release. At this point, it provides a context menu for the TODO items to create GitHub issues from them.
 
-[Unreleased]: https://github.com/ForNeVeR/Todosaurus/compare/v1.3.0...HEAD
-[1.2.1]: https://github.com/ForNeVeR/Todosaurus/compare/v1.2.1...v1.3.0
+[Unreleased]: https://github.com/ForNeVeR/Todosaurus/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.4.0...v1.5.0
+[1.4.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.3.0...v1.4.0
+[1.3.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.2.1...v1.3.0
 [1.2.1]: https://github.com/ForNeVeR/Todosaurus/compare/v1.2.0...v1.2.1
 [1.2.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.0.1...v1.1.0

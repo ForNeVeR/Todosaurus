@@ -4,10 +4,10 @@
 # SPDX-License-Identifier: MIT AND Apache-2.0
 
 [versions]
-gradleIntelliJPlatform = "2.2.1"
-ideaSdk = "2024.3"
-junit5 = "5.11.4"
-kotlin = "2.0.21"
+gradleIntelliJPlatform = "2.5.0"
+ideaSdk = "2025.1"
+junit5 = "5.13.1"
+kotlin = "2.1.10"
 
 [libraries]
 intelliJPlatformModulePlugin = { group = "org.jetbrains.intellij.platform.module", name = "org.jetbrains.intellij.platform.module.gradle.plugin", version.ref = "gradleIntelliJPlatform" }
@@ -21,4 +21,4 @@ kotlinGradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plu
 [plugins]
 changelog = "org.jetbrains.changelog:2.2.1"
 gradleJvmWrapper = "me.filippov.gradle.jvm.wrapper:0.14.0"
-qodana = "org.jetbrains.qodana:2024.3.4"
+qodana = "org.jetbrains.qodana:2025.1.1"

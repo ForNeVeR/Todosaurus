@@ -14,6 +14,7 @@ import com.intellij.ide.wizard.CommitStepCancelledException
 import com.intellij.ide.wizard.CommitStepException
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.EDT
+import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
@@ -35,6 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.fornever.todosaurus.core.TodosaurusCoreBundle
+import me.fornever.todosaurus.core.git.GitBasedPlacementDetails
 import me.fornever.todosaurus.core.ui.Notifications
 import me.fornever.todosaurus.core.ui.wizard.memoization.ForgettableStep
 import me.fornever.todosaurus.core.ui.wizard.memoization.MemorableStep
@@ -60,6 +62,7 @@ class TodosaurusWizard(
     private val rememberUserChoiceCheckBox = JBCheckBox(TodosaurusCoreBundle.message("wizard.rememberMyChoice.title"), true)
 
     var nextButtonName: String? = null
+    private val logger = logger<TodosaurusWizard>()
 
     init {
         isModal = false
@@ -237,20 +240,46 @@ class TodosaurusWizard(
 
         val bottomPanel = JPanel()
 
-        if (UserChoiceStore.getInstance(project).getChoiceOrNull() != null) {
-            mySteps.filterIsInstance<ForgettableStep>().firstOrNull()?.let { forgettableStep ->
-                JPanel(BorderLayout()).also {
-                    val link = ActionLink(TodosaurusCoreBundle.message("wizard.chooseAnotherTracker.title")) {
-                        forgettableStep.forgetUserChoice()
-                        close(0)
-                    }
-
-                    it.add(link, BorderLayout.CENTER)
-                    topPanel.add(it, BorderLayout.EAST)
-                }
+        val userChoice = UserChoiceStore.getInstance(project).getChoiceOrNull()
+        if (userChoice != null) {
+            val eastPanel = JPanel().apply {
+                layout = BoxLayout(this, BoxLayout.Y_AXIS)
+                alignmentX = Component.RIGHT_ALIGNMENT
             }
-        }
-        else if (mySteps.any { it is MemorableStep }) {
+            var labelText = TodosaurusCoreBundle.message(
+                "wizard.issueTrackerDetails.title",
+                userChoice.issueTrackerId ?: "unknown"
+            )
+
+            val placementDetails = userChoice.placementDetails
+            if (placementDetails is GitBasedPlacementDetails) {
+                labelText = TodosaurusCoreBundle.message(
+                    "wizard.issueTrackerDetailsWithOwner.title",
+                    userChoice.issueTrackerId ?: "unknown",
+                    placementDetails.remote?.owner ?: "unknown"
+                )
+            } else {
+                placementDetails?.let {
+                    logger.warn("Unsupported PlacementDetails type: ${placementDetails::class.qualifiedName}")
+                } ?: logger.warn("UserChoice has null placementDetails")
+            }
+
+            eastPanel.add(JLabel(labelText).apply {
+                alignmentX = Component.RIGHT_ALIGNMENT
+            })
+            eastPanel.add(Box.createVerticalStrut(4))
+
+            mySteps.filterIsInstance<ForgettableStep>().firstOrNull()?.let { forgettableStep ->
+                val link = ActionLink(TodosaurusCoreBundle.message("wizard.chooseAnotherTracker.title")) {
+                    forgettableStep.forgetUserChoice()
+                    close(0)
+                }
+                link.alignmentX = Component.RIGHT_ALIGNMENT
+                eastPanel.add(link)
+            }
+
+            topPanel.add(eastPanel, BorderLayout.EAST)
+        } else if (mySteps.any { it is MemorableStep }) {
             JPanel(BorderLayout()).also {
                 it.add(rememberUserChoiceCheckBox, BorderLayout.CENTER)
                 topPanel.add(it, BorderLayout.EAST)

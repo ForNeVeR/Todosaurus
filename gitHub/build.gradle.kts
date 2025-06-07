@@ -10,6 +10,7 @@ plugins {
 dependencies {
     compileOnly(project(":core"))
     intellijPlatform {
+        bundledPlugin("com.intellij.tasks")
         bundledPlugin("org.jetbrains.plugins.github")
     }
 }
