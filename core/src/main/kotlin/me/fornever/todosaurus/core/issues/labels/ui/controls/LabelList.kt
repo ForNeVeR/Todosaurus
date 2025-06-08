@@ -10,9 +10,8 @@ import me.fornever.todosaurus.core.TodosaurusCoreBundle
 import me.fornever.todosaurus.core.issues.labels.IssueLabel
 import me.fornever.todosaurus.core.ui.controls.tagList.TagList
 import me.fornever.todosaurus.core.ui.controls.tagList.TagRenderer
-import javax.swing.JCheckBox
 
-class LabelList(scope: CoroutineScope, rememberCheckBox: JCheckBox)
+class LabelList(scope: CoroutineScope)
     : TagList<String, IssueLabel>(
         scope,
         presentationFactory = { LabelPresentation(it, it.id, it.name, it.description, ColorUtil.fromHex(it.color)) },
@@ -22,6 +21,5 @@ class LabelList(scope: CoroutineScope, rememberCheckBox: JCheckBox)
             searchTooltipText = TodosaurusCoreBundle.message("wizard.steps.createNewIssue.labels.popup.search.tooltip")
             deselectTooltipText = TodosaurusCoreBundle.message("wizard.steps.createNewIssue.labels.deselect.tooltip")
             noTagsText = TodosaurusCoreBundle.message("wizard.steps.createNewIssue.labels.empty.text")
-            additionalComponents = arrayOf(rememberCheckBox)
         }
     }

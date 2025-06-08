@@ -7,8 +7,8 @@ package me.fornever.todosaurus.core.issues.labels
 import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.Align
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
 import me.fornever.todosaurus.core.TodosaurusCoreBundle
 import me.fornever.todosaurus.core.git.GitBasedPlacementDetails
 import me.fornever.todosaurus.core.git.GitHostingRemote
@@ -26,7 +26,7 @@ abstract class LabelsOptions(
 ): IssueOptions {
     private var hostingRemote: GitHostingRemote? = null
     private var rememberCheckBox: JCheckBox = JCheckBox(TodosaurusCoreBundle.message("wizard.steps.createNewIssue.labels.remember.text"), true)
-    private val labelList: LabelList = LabelList(scope, rememberCheckBox)
+    private val labelList: LabelList = LabelList(scope)
 
     fun getSelectedLabels()
         = labelList.getSelectedTags()
@@ -62,6 +62,12 @@ abstract class LabelsOptions(
 					cell(labelList)
 						.align(Align.FILL)
 				}
+
+                row {
+                    cell(rememberCheckBox)
+                        .align(Align.FILL)
+                        .customize(UnscaledGaps(left = 5, top = 5, right = 5))
+                }
 			}
 		}
 

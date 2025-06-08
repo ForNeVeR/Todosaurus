@@ -48,7 +48,6 @@ open class TagList<Key, Tag>(
     private val noTagsLabel: JLabel
     private val selectLink: ActionLink
     private val deselectAllLink: ActionLink
-    private val placeholder: JPanel
 
     var searchTooltipText: String = TodosaurusCoreBundle.message("tagList.popup.search.tooltip")
     var deselectTooltipText: String = TodosaurusCoreBundle.message("tagList.deselect.tooltip")
@@ -69,14 +68,6 @@ open class TagList<Key, Tag>(
         get() = deselectAllLink.text
         set(value) {
             deselectAllLink.text = value
-        }
-
-    var additionalComponents: Array<out Component>?
-        get() = placeholder.components
-        set(value) {
-            value?.forEach {
-                placeholder.add(it)
-            }
         }
 
     private val tagRenderer: TagRendererBase<Tag> by lazy {
@@ -113,12 +104,9 @@ open class TagList<Key, Tag>(
             autoHideOnDisable = false
         }
 
-        placeholder = JPanel()
-
         add(noTagsLabel)
         add(selectLink)
         add(deselectAllLink)
-        add(placeholder)
 
         setUI(Empty())
     }

@@ -17,8 +17,15 @@ abstract class TagPresentation<T> {
 
     abstract val foreground: Color
 
-    override fun equals(other: Any?): Boolean
-        = other is TagPresentation<*> && other.id == id
+    override fun equals(other: Any?): Boolean {
+        if (this === other)
+            return true
+
+        if (other !is TagPresentation<*>)
+            return false
+
+        return id == other.id
+    }
 
     override fun hashCode(): Int
         = id.hashCode()
