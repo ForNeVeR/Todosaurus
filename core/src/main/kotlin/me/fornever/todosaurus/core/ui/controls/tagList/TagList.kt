@@ -33,18 +33,22 @@ import java.util.concurrent.CancellationException
 import javax.swing.JLabel
 import javax.swing.JPanel
 
-open class TagList<T>(
+open class TagList<Key, Tag>(
     private val scope: CoroutineScope,
-    private val presentationFactory: (T) -> TagPresentation<T>,
-    private val rendererFactory: (TagList<T>) -> TagRenderer<T>): JPanel() {
+    private val presentationFactory: (Tag) -> TagPresentation<Tag>,
+    private val keySelector: (Tag) -> Key,
+    private val rendererFactory: (TagList<Key, Tag>) -> TagRenderer<Key, Tag>): JPanel() {
 
-    private var userInterface: TagList<T>.UserInterface = Regular()
-    private var tagProvider: suspend () -> Iterable<T> = { emptyList() }
-    private val tagsPool: MutableMap<T, TagPresentation<T>> = mutableMapOf()
-    private val selectedTags: HashMap<T, Component> = hashMapOf()
+    private var userInterface: TagList<Key, Tag>.UserInterface = Regular()
+    private var tagProvider: suspend () -> Iterable<Tag> = { emptyList() }
+    private var afterFetch: () -> Unit = { }
+    private val keyMap: MutableMap<Key, Tag> = mutableMapOf()
+    private val tagsPool: MutableMap<Tag, TagPresentation<Tag>> = mutableMapOf()
+    private val selectedTags: HashMap<Tag, Component> = hashMapOf()
     private val noTagsLabel: JLabel
     private val selectLink: ActionLink
     private val deselectAllLink: ActionLink
+    private val placeholder: JPanel
 
     var searchTooltipText: String = TodosaurusCoreBundle.message("tagList.popup.search.tooltip")
     var deselectTooltipText: String = TodosaurusCoreBundle.message("tagList.deselect.tooltip")
@@ -67,7 +71,15 @@ open class TagList<T>(
             deselectAllLink.text = value
         }
 
-    private val tagRenderer: TagRendererBase<T> by lazy {
+    var additionalComponents: Array<out Component>?
+        get() = placeholder.components
+        set(value) {
+            value?.forEach {
+                placeholder.add(it)
+            }
+        }
+
+    private val tagRenderer: TagRendererBase<Tag> by lazy {
         rendererFactory(this)
     }
 
@@ -101,14 +113,17 @@ open class TagList<T>(
             autoHideOnDisable = false
         }
 
+        placeholder = JPanel()
+
         add(noTagsLabel)
         add(selectLink)
         add(deselectAllLink)
+        add(placeholder)
 
         setUI(Empty())
     }
 
-    fun getSelectedTags(): List<T>
+    fun getSelectedTags(): List<Tag>
         = selectedTags.keys.toList()
 
     final override fun add(component: Component?): Component {
@@ -121,17 +136,21 @@ open class TagList<T>(
     override fun getMinimumSize(): Dimension
         = Dimension(0, super.getMinimumSize().height)
 
-    private fun setUI(userInterface: TagList<T>.UserInterface) {
+    private fun setUI(userInterface: TagList<Key, Tag>.UserInterface) {
         this.userInterface = userInterface
         this.userInterface.update()
     }
 
-    fun fetchTagsUsing(tagProvider: suspend () -> Iterable<T>) {
+    fun fetchTagsUsing(tagProvider: suspend () -> Iterable<Tag>, afterFetch: () -> Unit) {
         this.tagProvider = tagProvider
+        this.afterFetch = afterFetch
         setUI(Loading())
     }
 
-    fun selectTag(tag: T) {
+    fun extractTag(key: Key): Tag?
+        = keyMap[key]
+
+    fun selectTag(tag: Tag) {
         addSelectionFor(tag)
 
         if (userInterface !is Loading)
@@ -141,7 +160,7 @@ open class TagList<T>(
     /*
         Remarks: Updates the user interface once after all tags have been created
      */
-    fun selectTags(tags: Iterable<T>) {
+    fun selectTags(tags: Iterable<Tag>) {
         tags.forEach {
             addSelectionFor(it)
         }
@@ -150,7 +169,7 @@ open class TagList<T>(
             userInterface.update()
     }
 
-    private fun addSelectionFor(tag: T) {
+    private fun addSelectionFor(tag: Tag) {
         if (selectedTags.contains(tag))
             return
 
@@ -161,7 +180,7 @@ open class TagList<T>(
         selectedTags[tag] = add(tagComponent, selectedTags.size)
     }
 
-    fun deselectTag(tag: T) {
+    fun deselectTag(tag: Tag) {
         removeSelectionFor(tag)
 
         if (userInterface !is Loading)
@@ -171,7 +190,7 @@ open class TagList<T>(
     /*
         Remarks: Updates the user interface once after all tags have been removed
      */
-    fun deselectTags(tags: Iterable<T>) {
+    fun deselectTags(tags: Iterable<Tag>) {
         tags.forEach {
             removeSelectionFor(it)
         }
@@ -180,7 +199,7 @@ open class TagList<T>(
             userInterface.update()
     }
 
-    private fun removeSelectionFor(tag: T) {
+    private fun removeSelectionFor(tag: Tag) {
         if (!selectedTags.contains(tag))
             return
 
@@ -293,6 +312,7 @@ open class TagList<T>(
 
             deselectAllTags()
 
+            keyMap.clear()
             tagsPool.clear()
 
             noTagsLabel.isVisible = true
@@ -322,8 +342,11 @@ open class TagList<T>(
                         if (selectedBeforeLoading.contains(it))
                             addSelectionFor(it)
 
+                        keyMap[keySelector(it)] = it
                         tagsPool[it] = presentationFactory(it)
                     }
+
+                    afterFetch()
 
                     updateUiThenReopenPopup(Regular())
                 }

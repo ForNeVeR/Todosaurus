@@ -38,12 +38,12 @@ import javax.swing.ListSelectionModel
 
 @Suppress("UnstableApiUsage")
 object TagsChooserPopup {
-    suspend fun <T> showTagsChooserPopup(
-        tags: Map<T, TagPresentation<T>>,
-        popupRenderer: TagRendererBase<SelectableWrapper<T>>,
-        selectionChooser: (T) -> Boolean,
+    suspend fun <Tag> showTagsChooserPopup(
+        tags: Map<Tag, TagPresentation<Tag>>,
+        popupRenderer: TagRendererBase<SelectableWrapper<Tag>>,
+        selectionChooser: (Tag) -> Boolean,
         position: RelativePoint,
-        popupOptions: PopupConfig): List<T> {
+        popupOptions: PopupConfig): List<Tag> {
 
         val popupTags = tags.values.map { SelectableWrapper(it.value, selectionChooser(it.value)) }.toList()
 

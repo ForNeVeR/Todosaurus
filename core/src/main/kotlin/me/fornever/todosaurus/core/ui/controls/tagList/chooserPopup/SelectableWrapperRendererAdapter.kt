@@ -13,19 +13,19 @@ import javax.swing.JList
 import javax.swing.ListCellRenderer
 
 @Suppress("UnstableApiUsage")
-class SelectableWrapperRendererAdapter<T>(private val presentationFactory: (T) -> TagPresentation<T>, private val adaptee: TagRendererBase<SelectableWrapper<T>>) :
-	ListCellRenderer<SelectableWrapper<T>> {
+class SelectableWrapperRendererAdapter<Tag>(private val presentationFactory: (Tag) -> TagPresentation<Tag>, private val adaptee: TagRendererBase<SelectableWrapper<Tag>>) :
+	ListCellRenderer<SelectableWrapper<Tag>> {
     override fun getListCellRendererComponent(
-		list: JList<out SelectableWrapper<T>>,
-		selectedItem: SelectableWrapper<T>,
-		index: Int,
-		isSelected: Boolean,
-		hasFocus: Boolean
+        list: JList<out SelectableWrapper<Tag>>,
+        selectedItem: SelectableWrapper<Tag>,
+        index: Int,
+        isSelected: Boolean,
+        hasFocus: Boolean
     ): Component
         = adaptee.renderComponent(SelectableWrapperAdapter(selectedItem, presentationFactory(selectedItem.value)), isSelected, hasFocus)
 
-    private class SelectableWrapperAdapter<T>(override val value: SelectableWrapper<T>, private val presentation: TagPresentation<T>) :
-        TagPresentation<SelectableWrapper<T>>() {
+    private class SelectableWrapperAdapter<Tag>(override val value: SelectableWrapper<Tag>, private val presentation: TagPresentation<Tag>) :
+        TagPresentation<SelectableWrapper<Tag>>() {
         override val id: Long
             get() = presentation.id
 

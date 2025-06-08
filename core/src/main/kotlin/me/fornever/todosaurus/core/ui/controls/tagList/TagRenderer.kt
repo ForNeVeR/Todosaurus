@@ -16,8 +16,8 @@ import java.awt.Component
 import java.awt.event.ActionListener
 import javax.swing.JLabel
 
-class TagRenderer<T>(private val tagList: TagList<T>) : TagRendererBase<T> {
-    override fun renderComponent(tagPresentation: TagPresentation<T>, isSelected: Boolean, hasFocus: Boolean): Component
+class TagRenderer<Key, Tag>(private val tagList: TagList<Key, Tag>) : TagRendererBase<Tag> {
+    override fun renderComponent(tagPresentation: TagPresentation<Tag>, isSelected: Boolean, hasFocus: Boolean): Component
         = panel {
             customizeSpacingConfiguration(EmptySpacingConfiguration()) {
                 row {

@@ -2,9 +2,9 @@
 //
 // SPDX-License-Identifier: MIT
 
-package me.fornever.todosaurus.core.issues.ui.controls
+package me.fornever.todosaurus.core.issues.labels.ui.controls
 
-import me.fornever.todosaurus.core.issues.IssueLabel
+import me.fornever.todosaurus.core.issues.labels.IssueLabel
 import me.fornever.todosaurus.core.ui.controls.tagList.TagPresentation
 import java.awt.Color
 

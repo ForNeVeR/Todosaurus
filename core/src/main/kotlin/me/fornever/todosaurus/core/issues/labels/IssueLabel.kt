@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-package me.fornever.todosaurus.core.issues
+package me.fornever.todosaurus.core.issues.labels
 
 data class IssueLabel(
     val id: Long,

@@ -22,8 +22,8 @@ import me.fornever.todosaurus.core.ui.controls.tagList.TagRendererBase
 import java.awt.Component
 
 @Suppress("UnstableApiUsage")
-internal class PopupTagRenderer<T> : TagRendererBase<SelectableWrapper<T>> {
-    override fun renderComponent(tagPresentation: TagPresentation<SelectableWrapper<T>>, isSelected: Boolean, hasFocus: Boolean): Component {
+internal class PopupTagRenderer<Tag> : TagRendererBase<SelectableWrapper<Tag>> {
+    override fun renderComponent(tagPresentation: TagPresentation<SelectableWrapper<Tag>>, isSelected: Boolean, hasFocus: Boolean): Component {
         val content = panel {
 			customizeSpacingConfiguration(EmptySpacingConfiguration()) {
                 val checkBox = JBCheckBox()

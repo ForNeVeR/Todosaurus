@@ -9,5 +9,7 @@ import javax.swing.JComponent
 interface IssueOptions {
     fun refresh()
 
+    fun save()
+
     fun createOptionsPanel(): JComponent
 }

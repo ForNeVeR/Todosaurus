@@ -22,7 +22,7 @@ import me.fornever.todosaurus.core.issueTrackers.IssueTrackerClient
 import me.fornever.todosaurus.core.issues.IssueModel
 import me.fornever.todosaurus.core.issues.ToDoItem
 import me.fornever.todosaurus.core.issues.ui.wizard.IssueOptions
-import me.fornever.todosaurus.core.issues.ui.wizard.LabelsOptions
+import me.fornever.todosaurus.core.issues.labels.LabelsOptions
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
 import me.fornever.todosaurus.gitLab.api.GitLabError
 import me.fornever.todosaurus.gitLab.api.GitLabIssue

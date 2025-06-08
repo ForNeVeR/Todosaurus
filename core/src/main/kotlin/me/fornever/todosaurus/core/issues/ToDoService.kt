@@ -100,6 +100,10 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
                 }
             }
 
+            model.issueOptions.forEach {
+                it.save()
+            }
+
             Notifications.CreateNewIssue.success(newIssue, project)
 
             return WizardResult.Success
