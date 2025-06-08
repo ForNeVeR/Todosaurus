@@ -11,7 +11,10 @@
         <plugin id="org.jetbrains.plugins.github"/>
     </dependencies>
 
+    <resource-bundle>messages.TodosaurusGitHub</resource-bundle>
+
     <extensions defaultExtensionNs="me.fornever.todosaurus">
         <issueTrackerFactory implementation="me.fornever.todosaurus.gitHub.GitHubTrackerFactory"/>
+        <issueOptionsFactory implementation="me.fornever.todosaurus.gitHub.ui.wizard.GitHubLabelsOptionsFactory"/>
     </extensions>
 </idea-plugin>
