@@ -19,6 +19,6 @@ junit-jupiter-params = { group = "org.junit.jupiter", name = "junit-jupiter-para
 kotlinGradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 
 [plugins]
-changelog = "org.jetbrains.changelog:2.2.1"
+changelog = "org.jetbrains.changelog:2.3.0"
 gradleJvmWrapper = "me.filippov.gradle.jvm.wrapper:0.15.0"
 qodana = "org.jetbrains.qodana:2025.1.1"
