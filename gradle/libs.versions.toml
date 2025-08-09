@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MIT AND Apache-2.0
 
 [versions]
-gradleIntelliJPlatform = "2.7.0"
+gradleIntelliJPlatform = "2.7.1"
 ideaSdk = "2025.2"
 junit5 = "5.13.4"
 kotlin = "2.1.20"
