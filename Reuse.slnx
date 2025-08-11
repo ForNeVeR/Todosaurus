@@ -8,6 +8,7 @@
     <File Path=".github\workflows\main.yml" />
     <File Path=".github\workflows\main.yml.license" />
     <File Path=".github\workflows\docs.yml" />
+    <File Path=".github\workflows\release.yml" />
   </Folder>
   <Folder Name="/docs/">
     <File Path="docs\toc.yml" />
