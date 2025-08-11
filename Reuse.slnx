@@ -10,5 +10,7 @@
     <File Path=".gitignore" />
     <File Path=".editorconfig" />
     <File Path="Reuse.slnx.license" />
+    <File Path="renovate.json" />
+    <File Path="renovate.json.license" />
   </Folder>
 </Solution>
