@@ -2,5 +2,18 @@
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
         "config:recommended"
+    ],
+    "customManagers": [
+        {
+            "customType": "regex",
+            "fileMatch": [
+                "^\\.github/workflows/.+\\.yml$"
+            ],
+            "matchStrings": [
+                "Install-Module (?<depName>\\S+?) -RequiredVersion (?<currentValue>\\S+)"
+            ],
+            "datasourceTemplate": "nuget",
+            "registryUrlTemplate": "https://www.powershellgallery.com/api/v2/"
+        }
     ]
 }
