@@ -1,32 +1,38 @@
-# SPDX-FileCopyrightText: 2025 Friedrich von Never <friedrich@fornever.me>
-#
-# SPDX-License-Identifier: MIT
-
+# This file is auto-generated.
 name: Main
 on:
   push:
     branches:
-      - main
+    - main
   pull_request:
     branches:
-      - main
+    - main
   schedule:
-    - cron: 0 0 * * 6
-  workflow_dispatch:
+  - cron: 0 0 * * 6
+  workflow_dispatch: 
 jobs:
   encoding:
     runs-on: ubuntu-24.04
     steps:
-      - name: Check out the sources
-        uses: actions/checkout@v4
-      - name: Verify encoding
-        shell: pwsh
-        run: Install-Module VerifyEncoding -Repository PSGallery -RequiredVersion 2.2.1 -Force && Test-Encoding
-
+    - name: Check out the sources
+      uses: actions/checkout@v4
+    - name: Verify encoding
+      shell: pwsh
+      run: Install-Module VerifyEncoding -Repository PSGallery -RequiredVersion 2.2.1 -Force && Test-Encoding
   licenses:
     runs-on: ubuntu-24.04
     steps:
-      - name: Check out the sources
-        uses: actions/checkout@v4
-      - name: REUSE license check
-        uses: fsfe/reuse-action@v5
+    - name: Check out the sources
+      uses: actions/checkout@v4
+    - name: REUSE license check
+      uses: fsfe/reuse-action@v5
+  verify-workflows:
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_NOLOGO: 1
+      NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-dotnet@v4
+    - run: dotnet fsi ./scripts/github-actions.fsx verify

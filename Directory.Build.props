@@ -1,0 +1,38 @@
+<!--
+SPDX-FileCopyrightText: 2025 Friedrich von Never <friedrich@fornever.me>
+
+SPDX-License-Identifier: MIT
+-->
+
+<Project>
+    <PropertyGroup Label="Packaging">
+        <Version>0.0.0</Version>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Copyright>2025 Friedrich von Never &lt;friedrich@fornever.me&gt;</Copyright>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    </PropertyGroup>
+
+    <PropertyGroup Label="Build">
+        <LangVersion>latest</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$(CI) != ''">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
+
+    <ItemGroup Condition="$(IsPackable) == 'true'">
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+        <PackageReference Include="ChangelogAutomation.MSBuild" Version="3.0.3" PrivateAssets="All" />
+        <None Visible="false" Include="$(MSBuildThisFileDirectory)\LICENSES\**" Pack="true" PackagePath="\LICENSES" />
+        <None Visible="false" Include="$(MSBuildThisFileDirectory)\CHANGELOG.md" Pack="true" PackagePath="\" />
+        <None Visible="false" Include="$(MSBuildThisFileDirectory)\README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+</Project>
