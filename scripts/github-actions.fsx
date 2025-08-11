@@ -83,8 +83,7 @@ let workflows = [
                 if includeSNuPkg then $"./{projectName}/bin/{configuration}/{packageId}.{versionField}.snupkg"
             ]
             let allArtifacts = [
-                yield! artifacts "TruePath" true
-                yield! artifacts "TruePath.SystemIo" true
+                yield! artifacts "Reuse" true
             ]
             uploadArtifacts [
                 releaseNotes
@@ -92,15 +91,12 @@ let workflows = [
             ]
             yield! ifCalledOnTagPush [
                 createRelease(
-                    name = $"TruePath v{versionField}",
+                    name = $"dotnet-reuse v{versionField}",
                     releaseNotesPath = releaseNotes,
                     files = allArtifacts
                 )
-                yield! pushToNuGetOrg "NUGET_TOKEN_TRUE_PATH" (
-                    artifacts "TruePath" false
-                )
-                yield! pushToNuGetOrg "NUGET_TOKEN_TRUE_PATH_SYSTEM_IO" (
-                    artifacts "TruePath.SystemIo" false
+                yield! pushToNuGetOrg "NUGET_TOKEN" (
+                    artifacts "Reuse" false
                 )
             ]
         ]
