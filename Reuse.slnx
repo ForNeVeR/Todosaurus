@@ -1,3 +1,14 @@
 <Solution>
-  <Folder Name="/Solution Items/" />
+  <Folder Name="/.github/" />
+  <Folder Name="/.github/workflows/">
+    <File Path=".github\workflows\main.yml" />
+  </Folder>
+  <Folder Name="/LICENSES/">
+    <File Path="LICENSES\MIT.txt" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path=".editorconfig" />
+    <File Path="Reuse.slnx.license" />
+  </Folder>
 </Solution>
