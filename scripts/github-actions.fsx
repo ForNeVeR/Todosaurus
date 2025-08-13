@@ -16,7 +16,7 @@ let workflows = [
     let setUpDotnet =
         step(
             name = "Set up .NET SDK",
-            uses = "actions/setup-dotnet@v4"
+            usesSpec = Auto "actions/setup-dotnet"
         )
 
     workflow "main" [
@@ -33,12 +33,8 @@ let workflows = [
             setEnv "DOTNET_CLI_TELEMETRY_OPTOUT" "1"
             setEnv "DOTNET_NOLOGO" "1"
             setEnv "NUGET_PACKAGES" "${{ github.workspace }}/.github/nuget-packages"
-            step(
-                uses = "actions/checkout@v4"
-            )
-            step(
-                uses = "actions/setup-dotnet@v4"
-            )
+            step(usesSpec = Auto "actions/checkout")
+            step(usesSpec = Auto "actions/setup-dotnet")
             step(
                 run = "dotnet fsi ./scripts/github-actions.fsx verify"
             )
@@ -58,13 +54,11 @@ let workflows = [
             setEnv "DOTNET_CLI_TELEMETRY_OPTOUT" "1"
             setEnv "DOTNET_NOLOGO" "1"
             setEnv "NUGET_PACKAGES" "${{ github.workspace }}/.github/nuget-packages"
-            step(
-                uses = "actions/checkout@v4"
-            )
+            step(usesSpec = Auto "actions/checkout")
             setUpDotnet
             step(
                 name = "NuGet cache",
-                uses = "actions/cache@v4",
+                usesSpec = Auto "actions/cache",
                 options = Map.ofList [
                     "key", "${{ runner.os }}.nuget.${{ hashFiles('**/*.csproj') }}"
                     "path", "${{ env.NUGET_PACKAGES }}"
@@ -83,18 +77,18 @@ let workflows = [
         job "licenses" [
             runsOn "ubuntu-24.04"
             step(
-                uses = "actions/checkout@v4"
+                usesSpec = Auto "actions/checkout"
             )
             step(
                 name = "REUSE license check",
-                uses = "fsfe/reuse-action@v5"
+                usesSpec = Auto "fsfe/reuse-action"
             )
         ]
 
         job "encoding" [
             runsOn "ubuntu-24.04"
             step(
-                uses = "actions/checkout@v4"
+                usesSpec = Auto "actions/checkout"
             )
             step(
                 name = "Verify encoding",
@@ -116,7 +110,7 @@ let workflows = [
             jobPermission(PermissionKind.Contents, AccessKind.Write)
             runsOn "ubuntu-24.04"
             step(
-                uses = "actions/checkout@v4"
+                usesSpec = Auto "actions/checkout"
             )
             step(
                 id = "version",
@@ -130,14 +124,14 @@ let workflows = [
             )
             step(
                 name = "Read changelog",
-                uses = "ForNeVeR/ChangelogAutomation.action@v2",
+                usesSpec = Auto "ForNeVeR/ChangelogAutomation.action",
                 options = Map.ofList [
                     "output", "./release-notes.md"
                 ]
             )
             step(
                 name = "Upload artifacts",
-                uses = "actions/upload-artifact@v4",
+                usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
                     "path", "./release-notes.md\n./Reuse/bin/Release/Reuse.${{ steps.version.outputs.version }}.nupkg\n./Reuse/bin/Release/Reuse.${{ steps.version.outputs.version }}.snupkg"
                 ]
@@ -145,7 +139,7 @@ let workflows = [
             step(
                 condition = "startsWith(github.ref, 'refs/tags/v')",
                 name = "Create a release",
-                uses = "softprops/action-gh-release@v2",
+                usesSpec = Auto "softprops/action-gh-release",
                 options = Map.ofList [
                     "body_path", "./release-notes.md"
                     "files", "./Reuse/bin/Release/Reuse.${{ steps.version.outputs.version }}.nupkg\n./Reuse/bin/Release/Reuse.${{ steps.version.outputs.version }}.snupkg"
@@ -177,7 +171,7 @@ let workflows = [
             runsOn "ubuntu-22.04"
             step(
                 name = "Checkout",
-                uses = "actions/checkout@v4"
+                usesSpec = Auto "actions/checkout"
             )
             setUpDotnet
             step(
@@ -188,7 +182,7 @@ let workflows = [
             )
             step(
                 name = "Upload artifact",
-                uses = "actions/upload-pages-artifact@v3",
+                usesSpec = Auto "actions/upload-pages-artifact",
                 options = Map.ofList [
                     "path", "docs/_site"
                 ]
@@ -196,7 +190,7 @@ let workflows = [
             step(
                 name = "Deploy to GitHub Pages",
                 id = "deployment",
-                uses = "actions/deploy-pages@v4"
+                usesSpec = Auto "actions/deploy-pages"
             )
         ]
     ]
