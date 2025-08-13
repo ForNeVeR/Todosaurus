@@ -11,7 +11,7 @@
                 "^scripts/github-actions\\.fsx$"
             ],
             "matchStrings": [
-                "#r \"nuget: (?<depname>.+), (?<currentValue>\\S+)\""
+                "#r \"nuget: (?<depName>.+), (?<currentValue>\\S+)\""
             ],
             "datasourceTemplate": "nuget"
         },
