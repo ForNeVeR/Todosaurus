@@ -47,7 +47,7 @@ let workflows = [
                     "ubuntu-24.04"
                     "ubuntu-24.04-arm"
                     "windows-11-arm"
-                    "windows-2022"
+                    "windows-2025"
                 ]
             ])
             runsOn "${{ matrix.image }}"
