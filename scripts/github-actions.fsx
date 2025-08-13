@@ -12,6 +12,13 @@ open Generaptor.GitHubActions
 open type Generaptor.GitHubActions.Commands
 
 let workflows = [
+
+    let setUpDotnet =
+        step(
+            name = "Set up .NET SDK",
+            uses = "actions/setup-dotnet@v4"
+        )
+
     workflow "main" [
         header licenseHeader
         name "Main"
@@ -34,10 +41,7 @@ let workflows = [
             step(
                 uses = "actions/checkout@v4"
             )
-            step(
-                name = "Set up .NET SDK",
-                uses = "actions/setup-dotnet@v4"
-            )
+            setUpDotnet
             step(
                 name = "NuGet cache",
                 uses = "actions/cache@v4",
@@ -99,6 +103,7 @@ let workflows = [
                 shell = "pwsh",
                 run = "echo \"version=$(scripts/Get-Version.ps1 -RefName $env:GITHUB_REF)\" >> $env:GITHUB_OUTPUT"
             )
+            setUpDotnet
             step(
                 run = "dotnet pack --configuration Release -p:Version=${{ steps.version.outputs.version }}"
             )
@@ -153,10 +158,7 @@ let workflows = [
                 name = "Checkout",
                 uses = "actions/checkout@v4"
             )
-            step(
-                name = "Dotnet Setup",
-                uses = "actions/setup-dotnet@v4"
-            )
+            setUpDotnet
             step(
                 run = "dotnet tool restore"
             )
