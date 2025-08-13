@@ -7,8 +7,8 @@
         {
             "description": "Update the Generaptor package.",
             "customType": "regex",
-            "fileMatch": [
-                "^scripts/github-actions\\.fsx$"
+            "managerFilePatterns": [
+                "scripts/github-actions.fsx"
             ],
             "matchStrings": [
                 "#r \"nuget: (?<depName>.+), (?<currentValue>\\S+)\""
@@ -18,25 +18,25 @@
         {
             "description": "Update the GitHub Actions runners.",
             "customType": "regex",
-            "fileMatch": [
-                "^\\.github/workflows/.+\\.yml$",
-                "^scripts/github-actions\\.fsx$"
+            "managerFilePatterns": [
+                ".github/workflows/*.yml",
+                "scripts/github-actions.fsx"
             ],
             "matchStrings": [
-                "- (?<depName>macos|ubuntu|windows)-(?<currentValue>\\S+)"
+                "(?<depName>macos|ubuntu|windows)-(?<currentValue>\\S+)"
             ],
             "datasourceTemplate": "github-runners"
         },
         {
             "description": "Update the VerifyEncoding PowerShell module.",
             "customType": "regex",
-            "fileMatch": [
-                "^CONTRIBUTING.md$",
-                "^\\.github/workflows/.+\\.yml$",
-                "^scripts/github-actions\\.fsx$"
+            "managerFilePatterns": [
+                "CONTRIBUTING.md",
+                ".github/workflows/*.yml",
+                "scripts/github-actions.fsx"
             ],
             "matchStrings": [
-                "Install-Module (?<depName>\\S+?) -RequiredVersion (?<currentValue>\\S+)"
+                "Install-Module (?<depName>\\S+?) -Repository PSGallery -RequiredVersion (?<currentValue>\\S+)"
             ],
             "datasourceTemplate": "nuget",
             "registryUrlTemplate": "https://www.powershellgallery.com/api/v2/"
