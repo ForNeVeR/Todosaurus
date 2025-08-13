@@ -14,6 +14,18 @@
             ],
             "datasourceTemplate": "nuget",
             "registryUrlTemplate": "https://www.powershellgallery.com/api/v2/"
+        },
+        {
+            "description": "Update the GitHub Actions runners.",
+            "customType": "regex",
+            "fileMatch": [
+                "^\\.github/workflows/.+\\.yml$",
+                "^scripts/github-actions\\.fsx$"
+            ],
+            "matchStrings": [
+                "- (?<depName>macos|ubuntu|windows)-(?<currentValue>\\S+)"
+            ],
+            "datasourceTemplate": "github-runners"
         }
     ]
 }
