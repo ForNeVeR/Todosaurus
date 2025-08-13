@@ -31,6 +31,8 @@ let workflows = [
                 "image", [
                     "macos-14"
                     "ubuntu-24.04"
+                    "ubuntu-24.04-arm"
+                    "windows-11-arm"
                     "windows-2022"
                 ]
             ])
