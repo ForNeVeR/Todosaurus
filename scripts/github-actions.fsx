@@ -195,4 +195,4 @@ let workflows = [
         ]
     ]
 ]
-EntryPoint.Process fsi.CommandLineArgs workflows
+exit <| EntryPoint.Process fsi.CommandLineArgs workflows
