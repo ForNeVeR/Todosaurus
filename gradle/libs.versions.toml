@@ -21,4 +21,4 @@ kotlinGradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plu
 [plugins]
 changelog = "org.jetbrains.changelog:2.4.0"
 gradleJvmWrapper = "me.filippov.gradle.jvm.wrapper:0.15.0"
-qodana = "org.jetbrains.qodana:2025.1.1"
+qodana = "org.jetbrains.qodana:2025.2.1"
