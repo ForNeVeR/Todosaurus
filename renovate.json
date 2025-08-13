@@ -23,7 +23,7 @@
                 "scripts/github-actions.fsx"
             ],
             "matchStrings": [
-                "(?<depName>macos|ubuntu|windows)-(?<currentValue>\\S+)"
+                "(?<depName>macos|ubuntu|windows)-(?<currentValue>[-\\w.\\d]+)"
             ],
             "datasourceTemplate": "github-runners"
         },
