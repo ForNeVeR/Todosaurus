@@ -36,6 +36,8 @@
     <File Path="MAINTAINING.md" />
     <File Path="README.md" />
     <File Path="REUSE.toml" />
+    <File Path="global.json" />
+    <File Path="global.json.license" />
   </Folder>
   <Project Path="Reuse\Reuse.csproj" Type="Classic C#" />
 </Solution>
