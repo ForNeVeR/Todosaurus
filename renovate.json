@@ -5,18 +5,15 @@
     ],
     "customManagers": [
         {
-            "description": "Update the VerifyEncoding PowerShell module.",
+            "description": "Update the Generaptor package.",
             "customType": "regex",
             "fileMatch": [
-                "^CONTRIBUTING.md$",
-                "^\\.github/workflows/.+\\.yml$",
                 "^scripts/github-actions\\.fsx$"
             ],
             "matchStrings": [
-                "Install-Module (?<depName>\\S+?) -RequiredVersion (?<currentValue>\\S+)"
+                "#r \"nuget: (?<depname>.+), (?<currentValue>\\S+)\""
             ],
-            "datasourceTemplate": "nuget",
-            "registryUrlTemplate": "https://www.powershellgallery.com/api/v2/"
+            "datasourceTemplate": "nuget"
         },
         {
             "description": "Update the GitHub Actions runners.",
@@ -29,6 +26,20 @@
                 "- (?<depName>macos|ubuntu|windows)-(?<currentValue>\\S+)"
             ],
             "datasourceTemplate": "github-runners"
+        },
+        {
+            "description": "Update the VerifyEncoding PowerShell module.",
+            "customType": "regex",
+            "fileMatch": [
+                "^CONTRIBUTING.md$",
+                "^\\.github/workflows/.+\\.yml$",
+                "^scripts/github-actions\\.fsx$"
+            ],
+            "matchStrings": [
+                "Install-Module (?<depName>\\S+?) -RequiredVersion (?<currentValue>\\S+)"
+            ],
+            "datasourceTemplate": "nuget",
+            "registryUrlTemplate": "https://www.powershellgallery.com/api/v2/"
         }
     ]
 }
