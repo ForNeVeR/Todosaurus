@@ -70,6 +70,7 @@ let workflows = [
                 uses = "fsfe/reuse-action@v5"
             )
         ]
+
         job "encoding" [
             runsOn "ubuntu-24.04"
             step(
@@ -78,7 +79,7 @@ let workflows = [
             step(
                 name = "Verify encoding",
                 shell = "pwsh",
-                run = "scripts/Test-Encoding.ps1"
+                run = "Install-Module VerifyEncoding -Repository PSGallery -RequiredVersion 2.2.1 -Force && Test-Encoding"
             )
         ]
     ]
