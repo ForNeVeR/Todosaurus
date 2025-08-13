@@ -5,9 +5,12 @@
     ],
     "customManagers": [
         {
+            "description": "Update the VerifyEncoding PowerShell module.",
             "customType": "regex",
             "fileMatch": [
-                "^\\.github/workflows/.+\\.yml$"
+                "^CONTRIBUTING.md$",
+                "^\\.github/workflows/.+\\.yml$",
+                "^scripts/github-actions\\.fsx$"
             ],
             "matchStrings": [
                 "Install-Module (?<depName>\\S+?) -RequiredVersion (?<currentValue>\\S+)"
