@@ -26,6 +26,24 @@ let workflows = [
         onPullRequestTo "main"
         onSchedule "0 0 * * 6"
         onWorkflowDispatch
+
+        job "verify-workflows" [
+            runsOn "ubuntu-24.04"
+
+            setEnv "DOTNET_CLI_TELEMETRY_OPTOUT" "1"
+            setEnv "DOTNET_NOLOGO" "1"
+            setEnv "NUGET_PACKAGES" "${{ github.workspace }}/.github/nuget-packages"
+            step(
+                uses = "actions/checkout@v4"
+            )
+            step(
+                uses = "actions/setup-dotnet@v4"
+            )
+            step(
+                run = "dotnet fsi ./scripts/github-actions.fsx verify"
+            )
+        ]
+
         job "check" [
             strategy(failFast = false, matrix = [
                 "image", [
