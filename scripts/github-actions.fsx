@@ -13,34 +13,51 @@ open type Generaptor.GitHubActions.Commands
 
 let workflows = [
 
-    let setUpDotnet =
-        step(
-            name = "Set up .NET SDK",
-            usesSpec = Auto "actions/setup-dotnet"
-        )
+    let workflow name steps =
+        workflow name [
+            header licenseHeader
+            yield! steps
+        ]
+
+    let dotNetJob id steps =
+        job id [
+            setEnv "DOTNET_CLI_TELEMETRY_OPTOUT" "1"
+            setEnv "DOTNET_NOLOGO" "1"
+            setEnv "NUGET_PACKAGES" "${{ github.workspace }}/.github/nuget-packages"
+
+            step(
+                name = "Check out the sources",
+                usesSpec = Auto "actions/checkout"
+            )
+            step(
+                name = "Set up .NET SDK",
+                usesSpec = Auto "actions/setup-dotnet"
+            )
+            step(
+                name = "Cache NuGet packages",
+                usesSpec = Auto "actions/cache",
+                options = Map.ofList [
+                    "key", "${{ runner.os }}.nuget.${{ hashFiles('**/*.*proj', '**/*.props') }}"
+                    "path", "${{ env.NUGET_PACKAGES }}"
+                ]
+            )
+
+            yield! steps
+        ]
 
     workflow "main" [
-        header licenseHeader
         name "Main"
         onPushTo "main"
         onPullRequestTo "main"
         onSchedule "0 0 * * 6"
         onWorkflowDispatch
 
-        job "verify-workflows" [
+        dotNetJob "verify-workflows" [
             runsOn "ubuntu-24.04"
-
-            setEnv "DOTNET_CLI_TELEMETRY_OPTOUT" "1"
-            setEnv "DOTNET_NOLOGO" "1"
-            setEnv "NUGET_PACKAGES" "${{ github.workspace }}/.github/nuget-packages"
-            step(usesSpec = Auto "actions/checkout")
-            step(usesSpec = Auto "actions/setup-dotnet")
-            step(
-                run = "dotnet fsi ./scripts/github-actions.fsx verify"
-            )
+            step(run = "dotnet fsi ./scripts/github-actions.fsx verify")
         ]
 
-        job "check" [
+        dotNetJob "check" [
             strategy(failFast = false, matrix = [
                 "image", [
                     "macos-14"
@@ -51,19 +68,7 @@ let workflows = [
                 ]
             ])
             runsOn "${{ matrix.image }}"
-            setEnv "DOTNET_CLI_TELEMETRY_OPTOUT" "1"
-            setEnv "DOTNET_NOLOGO" "1"
-            setEnv "NUGET_PACKAGES" "${{ github.workspace }}/.github/nuget-packages"
-            step(usesSpec = Auto "actions/checkout")
-            setUpDotnet
-            step(
-                name = "NuGet cache",
-                usesSpec = Auto "actions/cache",
-                options = Map.ofList [
-                    "key", "${{ runner.os }}.nuget.${{ hashFiles('**/*.csproj') }}"
-                    "path", "${{ env.NUGET_PACKAGES }}"
-                ]
-            )
+
             step(
                 name = "Build",
                 run = "dotnet build"
@@ -77,6 +82,7 @@ let workflows = [
         job "licenses" [
             runsOn "ubuntu-24.04"
             step(
+                name = "Check out the sources",
                 usesSpec = Auto "actions/checkout"
             )
             step(
@@ -88,6 +94,7 @@ let workflows = [
         job "encoding" [
             runsOn "ubuntu-24.04"
             step(
+                name = "Check out the sources",
                 usesSpec = Auto "actions/checkout"
             )
             step(
@@ -99,26 +106,21 @@ let workflows = [
     ]
 
     workflow "release" [
-        header licenseHeader
         name "Release"
         onPushTo "main"
         onPushTags "v*"
         onPullRequestTo "main"
         onSchedule "0 0 * * 6"
         onWorkflowDispatch
-        job "nuget" [
+        dotNetJob "nuget" [
             jobPermission(PermissionKind.Contents, AccessKind.Write)
             runsOn "ubuntu-24.04"
-            step(
-                usesSpec = Auto "actions/checkout"
-            )
             step(
                 id = "version",
                 name = "Get version",
                 shell = "pwsh",
                 run = "echo \"version=$(scripts/Get-Version.ps1 -RefName $env:GITHUB_REF)\" >> $env:GITHUB_OUTPUT"
             )
-            setUpDotnet
             step(
                 run = "dotnet pack --configuration Release -p:Version=${{ steps.version.outputs.version }}"
             )
@@ -155,7 +157,6 @@ let workflows = [
     ]
 
     workflow "docs" [
-        header licenseHeader
         name "Docs"
         onPushTo "main"
         onWorkflowDispatch
@@ -166,18 +167,16 @@ let workflows = [
             group = "pages",
             cancelInProgress = false
         )
-        job "publish-docs" [
+        dotNetJob "publish-docs" [
             environment(name = "github-pages", url = "${{ steps.deployment.outputs.page_url }}")
             runsOn "ubuntu-24.04"
+
             step(
-                name = "Checkout",
-                usesSpec = Auto "actions/checkout"
-            )
-            setUpDotnet
-            step(
+                name = "Set up .NET tools",
                 run = "dotnet tool restore"
             )
             step(
+                name = "Build the documentation",
                 run = "dotnet docfx docs/docfx.json"
             )
             step(
