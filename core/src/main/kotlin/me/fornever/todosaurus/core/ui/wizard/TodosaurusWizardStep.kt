@@ -9,6 +9,7 @@ import com.intellij.ide.wizard.StepListener
 import com.intellij.openapi.Disposable
 import com.intellij.util.EventDispatcher
 import javax.swing.Icon
+import javax.swing.JComponent
 
 abstract class TodosaurusWizardStep : Step, Disposable {
     interface Listener : StepListener {
@@ -25,6 +26,7 @@ abstract class TodosaurusWizardStep : Step, Disposable {
 
     var nextId: String? = null
     var previousId: String? = null
+    private var cachedComponent: JComponent? = null
 
     private val eventDispatcher: EventDispatcher<Listener> = EventDispatcher.create(Listener::class.java)
 
@@ -41,6 +43,11 @@ abstract class TodosaurusWizardStep : Step, Disposable {
 
     override fun _commit(finishChosen: Boolean)
         = commit(if (finishChosen) CommitType.Finish else CommitType.Next)
+
+    final override fun getComponent(): JComponent
+        = cachedComponent ?: (createComponent().also { cachedComponent = it })
+
+    protected abstract fun createComponent(): JComponent
 
     override fun getIcon(): Icon?
         = null

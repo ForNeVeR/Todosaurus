@@ -91,13 +91,17 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
 
             val newIssue = issueTracker
                 .createClient(project, credentials, placementDetails)
-                .createIssue(model.toDoItem)
+                .createIssue(model.toDoItem, model.issueOptions)
 
             @Suppress("UnstableApiUsage")
             writeAction {
                 executeCommand(project, "Update TODO Item") {
                     model.toDoItem.toReported(newIssue.number)
                 }
+            }
+
+            model.issueOptions.forEach {
+                it.save()
             }
 
             Notifications.CreateNewIssue.success(newIssue, project)
