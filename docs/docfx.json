@@ -5,7 +5,7 @@
                 {
                     "src": "..",
                     "files": [
-                        "Reuse/Reuse.csproj"
+                        "FVNeverDotNetTemplate/FVNeverDotNetTemplate.csproj"
                     ]
                 }
             ],
@@ -36,8 +36,8 @@
             "modern"
         ],
         "globalMetadata": {
-            "_appName": "dotnet-reuse",
-            "_appTitle": "dotnet-reuse",
+            "_appName": "FVNeverDotNetTemplate",
+            "_appTitle": "FVNeverDotNetTemplate",
             "_enableSearch": true,
             "pdf": false
         }

@@ -135,7 +135,7 @@ let workflows = [
                 name = "Upload artifacts",
                 usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
-                    "path", "./release-notes.md\n./Reuse/bin/Release/FVNever.Reuse.${{ steps.version.outputs.version }}.nupkg\n./Reuse/bin/Release/FVNever.Reuse.${{ steps.version.outputs.version }}.snupkg"
+                    "path", "./release-notes.md\n./FVNeverDotNetTemplate/bin/Release/FVNeverDotNetTemplate.${{ steps.version.outputs.version }}.nupkg\n./FVNeverDotNetTemplate/bin/Release/FVNeverDotNetTemplate.${{ steps.version.outputs.version }}.snupkg"
                 ]
             )
             step(
@@ -144,14 +144,14 @@ let workflows = [
                 usesSpec = Auto "softprops/action-gh-release",
                 options = Map.ofList [
                     "body_path", "./release-notes.md"
-                    "files", "./Reuse/bin/Release/FVNever.Reuse.${{ steps.version.outputs.version }}.nupkg\n./Reuse/bin/Release/FVNever.Reuse.${{ steps.version.outputs.version }}.snupkg"
-                    "name", "dotnet-reuse v${{ steps.version.outputs.version }}"
+                    "files", "./FVNeverDotNetTemplate/bin/Release/FVNeverDotNetTemplate.${{ steps.version.outputs.version }}.nupkg\n./FVNeverDotNetTemplate/bin/Release/FVNeverDotNetTemplate.${{ steps.version.outputs.version }}.snupkg"
+                    "name", "FVNeverDotNetTemplate v${{ steps.version.outputs.version }}"
                 ]
             )
             step(
                 condition = "startsWith(github.ref, 'refs/tags/v')",
                 name = "Push artifact to NuGet",
-                run = "dotnet nuget push ./Reuse/bin/Release/FVNever.Reuse.${{ steps.version.outputs.version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}"
+                run = "dotnet nuget push ./FVNeverDotNetTemplate/bin/Release/FVNeverDotNetTemplate.${{ steps.version.outputs.version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}"
             )
         ]
     ]

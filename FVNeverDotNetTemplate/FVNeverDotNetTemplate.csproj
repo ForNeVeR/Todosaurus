@@ -7,8 +7,7 @@ SPDX-License-Identifier: MIT
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-      <PackageId>FVNever.Reuse</PackageId>
-      <PackageDescription>.NET library to interact with license information in REUSE-compliant sources.</PackageDescription>
+      <PackageDescription>FVNeverDotNetTemplate Description.</PackageDescription>
       <IsPackable>true</IsPackable>
   </PropertyGroup>
 
