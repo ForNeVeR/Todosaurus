@@ -79,6 +79,12 @@ let workflows = [
                 timeoutMin = 10
             )
         ]
+
+        dotNetJob "check-all-warnings" [ // separate check not bothering the local compilation
+            runsOn "ubuntu-24.04"
+            step(name = "Verify with full warning check", run = "dotnet build -p:NoWarn=\"\"")
+        ]
+
         job "licenses" [
             runsOn "ubuntu-24.04"
             step(
