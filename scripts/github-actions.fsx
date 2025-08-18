@@ -80,6 +80,18 @@ let workflows = [
             )
         ]
 
+        dotNetJob "check-docs" [
+            runsOn "ubuntu-24.04"
+            step(
+                name = "Restore dotnet tools",
+                run = "dotnet tool restore"
+            )
+            step(
+                name = "Validate docfx",
+                run = "dotnet docfx docs/docfx.json --warningsAsErrors"
+            )
+        ]
+
         dotNetJob "check-all-warnings" [ // separate check not bothering the local compilation
             runsOn "ubuntu-24.04"
             step(name = "Verify with full warning check", run = "dotnet build -p:NoWarn=\"\"")
