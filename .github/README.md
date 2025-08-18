@@ -20,14 +20,15 @@ Deployment
 ----------
 1. Clone the repository or just copy the repository files.
 2. Fill the package description in `FVNeverDotNetTemplate/FVNeverDotNetTemplate.csproj`.
-3. Replace the `FVNeverDotNetTemplateOwner` in the project sources with the repository owner's name on GitHub.
-4. Replace the `FVNeverDotNetTemplate` with the project name
+3. Drop the file `FVNeverDotNetTemplate/Class1.cs` (it is present to bootstrap the documentation checker).
+4. Replace the `FVNeverDotNetTemplateOwner` in the project sources with the repository owner's name on GitHub.
+5. Replace the `FVNeverDotNetTemplate` with the project name
    - in the file and folder names,
    - in the sources.
-5. Enable GitHub Pages publishing on the page `https://github.com/<owner>/<repository>/settings/pages`, choose **GitHub Actions**.
-6. Update the project summary in `README.md` and `docs/index.md`.
-7. Enable [Renovate][renovate] for your repository.
-8. Delete this file (`/.github/README.md`).
+6. Enable GitHub Pages publishing on the page `https://github.com/<owner>/<repository>/settings/pages`, choose **GitHub Actions**.
+7. Update the project summary in `README.md` and `docs/index.md`.
+8. Enable [Renovate][renovate] for your repository.
+9. Delete this file (`/.github/README.md`).
 
 License
 -------
