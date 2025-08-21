@@ -13,7 +13,7 @@ on:
     - main
   schedule:
   - cron: 0 0 * * 6
-  workflow_dispatch:
+  workflow_dispatch: 
 jobs:
   verify-workflows:
     runs-on: ubuntu-24.04
@@ -99,7 +99,7 @@ jobs:
         key: ${{ runner.os }}.nuget.${{ hashFiles('**/*.*proj', '**/*.props') }}
         path: ${{ env.NUGET_PACKAGES }}
     - name: Verify with full warning check
-      run: dotnet build -p:NoWarn=""
+      run: dotnet build -p:AllWarningsMode=true
   licenses:
     runs-on: ubuntu-24.04
     steps:

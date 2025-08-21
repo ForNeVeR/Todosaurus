@@ -20,12 +20,14 @@ SPDX-License-Identifier: MIT
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <NoWarn> <!-- Note that there's a separate CI check with empty NoWarn property. -->
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+        <!-- Note that the CI will enable the AllWarningsMode. -->
+        <NoWarn Condition="$(AllWarningsMode) != 'true' or $(MSBuildProjectName.EndsWith('Tests'))">
             CS1591; <!-- Missing XML comment for publicly visible type or member -->
             $(NoWarn)
         </NoWarn>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <EmbedUntrackedSources>true</EmbedUntrackedSources>
     </PropertyGroup>
 
     <PropertyGroup Condition="$(CI) != ''">
