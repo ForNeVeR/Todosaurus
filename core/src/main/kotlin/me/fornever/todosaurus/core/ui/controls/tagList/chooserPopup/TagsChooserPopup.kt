@@ -65,10 +65,18 @@ object TagsChooserPopup {
             .configure(popupOptions)
             .createPopup()
 
-        popup.configureSearchField(popupOptions)
+        val searchTextField = popup.configureSearchField(popupOptions)
         PopupUtil.setPopupToggleComponent(popup, position.component)
 
-        return popup.showAndAwaitSubmissions(selectableList, position, popupOptions.showDirection)
+        val selectedTags = popup.showAndAwaitSubmissions(selectableList, position, popupOptions.showDirection)
+
+        if (searchTextField == null || searchTextField.text.isEmpty())
+            return selectedTags
+
+        return popupTags
+            .filter { it.isSelected && tags[it.value]?.text?.contains(searchTextField.text) == false }
+            .map { it.value }
+            .plus(selectedTags)
     }
 
     private fun <T> CollectionListModel<SelectableWrapper<T>>.toSelectableList(renderer: ListCellRenderer<SelectableWrapper<T>>): JBList<SelectableWrapper<T>>
@@ -101,11 +109,18 @@ object TagsChooserPopup {
         repaint()
     }
 
-    private fun JBPopup.configureSearchField(popupOptions: PopupConfig) {
-        val searchTextField = UIUtil.findComponentOfType(content, SearchTextField::class.java) ?: return
+    private fun JBPopup.configureSearchField(popupOptions: PopupConfig): SearchTextField? {
+        val searchTextField = UIUtil.findComponentOfType(content, SearchTextField::class.java)
+            ?: return null
+
         AbstractPopup.customizeSearchFieldLook(searchTextField, true)
-        searchTextField.textEditor.emptyText.text = popupOptions.searchTextPlaceHolder ?: return
+
+        searchTextField.textEditor.emptyText.text = popupOptions.searchTextPlaceHolder
+            ?: return searchTextField
+
         TextComponentEmptyText.setupPlaceholderVisibility(searchTextField.textEditor)
+
+        return searchTextField
     }
 
     private fun <T> PopupChooserBuilder<T>.configure(popupOptions: PopupConfig): PopupChooserBuilder<T> {
