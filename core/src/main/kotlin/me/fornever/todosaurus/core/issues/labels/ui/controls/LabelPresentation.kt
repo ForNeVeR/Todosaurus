@@ -6,12 +6,11 @@ package me.fornever.todosaurus.core.issues.labels.ui.controls
 
 import me.fornever.todosaurus.core.issues.labels.IssueLabel
 import me.fornever.todosaurus.core.ui.controls.tagList.TagPresentation
-import java.awt.Color
 
-data class LabelPresentation(
+class LabelPresentation(
     override val value: IssueLabel,
     override val id: Long,
     override val text: String,
     override val description: String?,
-    override val foreground: Color
-) : TagPresentation<IssueLabel>()
+    colorHex: String
+) : TagPresentation<IssueLabel>(colorHex)

@@ -7,11 +7,11 @@ package me.fornever.todosaurus.core.ui.controls.tagList
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.ui.popup.IconButton
 import com.intellij.ui.InplaceButton
-import com.intellij.ui.RoundedLineBorder
 import com.intellij.ui.dsl.builder.*
 import com.intellij.ui.dsl.gridLayout.UnscaledGaps
 import com.intellij.util.ui.JBFont
 import com.intellij.util.ui.JBUI
+import me.fornever.todosaurus.core.ui.controls.RoundedBorder
 import java.awt.Component
 import java.awt.event.ActionListener
 import javax.swing.JLabel
@@ -23,7 +23,7 @@ class TagRenderer<Key, Tag>(private val tagList: TagList<Key, Tag>) : TagRendere
                 row {
                     cell(JLabel(tagPresentation.text).apply {
                         font = JBFont.medium()
-                        foreground = tagPresentation.foreground
+                        foreground = tagPresentation.colors.foregroundColor
                     })
                     .align(Align.CENTER)
                     .resizableColumn()
@@ -38,7 +38,7 @@ class TagRenderer<Key, Tag>(private val tagList: TagList<Key, Tag>) : TagRendere
         }
         .apply {
             border = JBUI.Borders.compound(
-                RoundedLineBorder(tagPresentation.foreground, 25, 1),
+                RoundedBorder(tagPresentation.colors.borderColor, tagPresentation.colors.backgroundColor, 25, 1),
                 JBUI.Borders.empty(4, 8, 3, 4)
             )
         }

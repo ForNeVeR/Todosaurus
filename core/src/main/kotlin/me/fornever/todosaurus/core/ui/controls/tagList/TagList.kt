@@ -280,7 +280,7 @@ open class TagList<Key, Tag>(
                 searchTextPlaceHolder = searchTooltipText,
                 isResizable = true)
 
-            val popupTags =  TagsChooserPopup.showTagsChooserPopup(
+            val popupTags = TagsChooserPopup.showTagsChooserPopup(
                 tagsPool,
                 PopupTagRenderer(),
                 { selectedTags.contains(it) },

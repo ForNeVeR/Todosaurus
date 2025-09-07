@@ -27,7 +27,7 @@ internal class PopupTagRenderer<Tag> : TagRendererBase<SelectableWrapper<Tag>> {
         val content = panel {
 			customizeSpacingConfiguration(EmptySpacingConfiguration()) {
                 val checkBox = JBCheckBox()
-				val coloredCircle = ColoredCircle(diameter = 12, tagPresentation.foreground)
+				val coloredCircle = ColoredCircle(diameter = 12, tagPresentation.colors.baseColor)
 
 				row {
 					cell(checkBox)

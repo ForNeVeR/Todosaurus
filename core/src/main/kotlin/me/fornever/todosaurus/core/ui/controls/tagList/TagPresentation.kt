@@ -4,9 +4,9 @@
 
 package me.fornever.todosaurus.core.ui.controls.tagList
 
-import java.awt.Color
+import com.intellij.ui.ColorUtil
 
-abstract class TagPresentation<T> {
+abstract class TagPresentation<T>(val colorHex: String) {
     abstract val value: T
 
     abstract val id: Long
@@ -15,7 +15,8 @@ abstract class TagPresentation<T> {
 
     abstract val description: String?
 
-    abstract val foreground: Color
+    val colors: TagColors
+        = TagColors.adjustColors(ColorUtil.fromHex(colorHex))
 
     override fun equals(other: Any?): Boolean {
         if (this === other)

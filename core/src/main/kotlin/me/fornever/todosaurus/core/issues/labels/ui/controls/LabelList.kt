@@ -14,7 +14,7 @@ import me.fornever.todosaurus.core.ui.controls.tagList.TagRenderer
 class LabelList(scope: CoroutineScope)
     : TagList<String, IssueLabel>(
         scope,
-        presentationFactory = { LabelPresentation(it, it.id, it.name, it.description, ColorUtil.fromHex(it.color)) },
+        presentationFactory = { LabelPresentation(it, it.id, it.name, it.description, it.color) },
         keySelector = { it.name },
         rendererFactory = { TagRenderer(it) }) {
         init {
