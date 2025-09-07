@@ -119,7 +119,7 @@ class GitLabClient(
     }
 
     suspend fun getLabels(): Iterable<GitLabLabel> {
-        val projectId = URLEncoder.encode(remote.ownerAndName)
+        val projectId = URLEncoder.encode(remote.ownerAndName, StandardCharsets.UTF_8)
         val perPage = 100 // Default value from GitLab Docs
         val baseUri = restClient
             .server

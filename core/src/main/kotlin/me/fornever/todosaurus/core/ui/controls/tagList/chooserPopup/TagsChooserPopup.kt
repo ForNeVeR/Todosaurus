@@ -68,7 +68,7 @@ object TagsChooserPopup {
         val searchTextField = popup.configureSearchField(popupOptions)
         PopupUtil.setPopupToggleComponent(popup, position.component)
 
-        val selectedTags = popup.showAndAwaitSubmissions(selectableList, position, popupOptions.showDirection)
+        val selectedTags = popup.showAndAwaitSubmissions(listModel, position, popupOptions.showDirection)
 
         if (searchTextField == null || searchTextField.text.isEmpty())
             return selectedTags
