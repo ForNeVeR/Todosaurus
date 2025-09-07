@@ -6,6 +6,6 @@ package me.fornever.todosaurus.gitLab.api
 import com.fasterxml.jackson.annotation.JsonProperty
 
 data class GitLabIssue(
-	@JsonProperty("iid") val issueNumber: Long,
-	@JsonProperty("web_url") val url: String
+	@param:JsonProperty("iid") val issueNumber: Long,
+	@param:JsonProperty("web_url") val url: String
 )

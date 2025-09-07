@@ -14,7 +14,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.util.concurrency.annotations.RequiresWriteLock
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
 
-sealed class ToDoItem private constructor(val text: String, protected val todosaurusSettings: TodosaurusSettings.State) {
+sealed class ToDoItem(val text: String, protected val todosaurusSettings: TodosaurusSettings.State) {
     companion object {
         private val newItemPattern: Regex
             = Regex("\\b(?i)TODO(?-i)\\b:?(?!\\[.*?])") // https://regex101.com/r/lDDqm7/2

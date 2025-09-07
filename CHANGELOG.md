@@ -7,6 +7,10 @@ SPDX-License-Identifier: MIT
 Changelog
 =========
 
+## [1.6.0] - 2025-08-07
+### Changed
+- **(Requirement update!)** Update the compatible IntelliJ version range to \[2025.2; 2025.3\].
+
 ## [1.5.0] - 2025-04-30
 ### Changed
 - **(Requirement update!)** Update the compatible IntelliJ version range to \[2025.1; 2025.2\].
@@ -54,7 +58,8 @@ Changelog
 ## [1.0.0] - 2024-02-26
 This is the initial plugin release. At this point, it provides a context menu for the TODO items to create GitHub issues from them.
 
-[Unreleased]: https://github.com/ForNeVeR/Todosaurus/compare/v1.5.0...HEAD
+[Unreleased]: https://github.com/ForNeVeR/Todosaurus/compare/v1.6.0...HEAD
+[1.6.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.2.1...v1.3.0

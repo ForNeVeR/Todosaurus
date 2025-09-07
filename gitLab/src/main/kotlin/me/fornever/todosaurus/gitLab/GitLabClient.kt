@@ -3,7 +3,6 @@
 // SPDX-License-Identifier: MIT
 package me.fornever.todosaurus.gitLab
 
-import ai.grazie.utils.mpp.URLEncoder
 import com.intellij.collaboration.api.httpclient.HttpClientUtil.inflateAndReadWithErrorHandlingAndLogging
 import com.intellij.collaboration.api.httpclient.InflatedStreamReadingBodyHandler
 import com.intellij.collaboration.util.resolveRelative
@@ -31,6 +30,8 @@ import org.jetbrains.plugins.gitlab.api.GitLabApi
 import org.jetbrains.plugins.gitlab.api.GitLabRestJsonDataDeSerializer
 import org.jetbrains.plugins.gitlab.api.GitLabServerPath
 import java.io.InputStreamReader
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Suppress("UnstableApiUsage")
 class GitLabClient(
@@ -46,7 +47,7 @@ class GitLabClient(
             replacePatterns(restClient.server, toDoItem)
         }
 
-        val projectId = URLEncoder.encode(remote.ownerAndName)
+        val projectId = URLEncoder.encode(remote.ownerAndName, StandardCharsets.UTF_8)
         val endpointPath = restClient
             .server
             .restApiUri
@@ -83,7 +84,7 @@ class GitLabClient(
         if (toDoItem !is ToDoItem.Reported)
             return null
 
-        val projectId = URLEncoder.encode(remote.ownerAndName)
+        val projectId = URLEncoder.encode(remote.ownerAndName, StandardCharsets.UTF_8)
         val endpointPath = restClient
             .server
             .restApiUri
