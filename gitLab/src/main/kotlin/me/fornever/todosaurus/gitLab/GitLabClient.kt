@@ -6,6 +6,7 @@ package me.fornever.todosaurus.gitLab
 import com.intellij.collaboration.api.httpclient.HttpClientUtil.inflateAndReadWithErrorHandlingAndLogging
 import com.intellij.collaboration.api.httpclient.InflatedStreamReadingBodyHandler
 import com.intellij.collaboration.util.resolveRelative
+import com.intellij.collaboration.util.withQuery
 import com.intellij.dvcs.repo.VcsRepositoryManager
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.diagnostic.logger
@@ -19,9 +20,12 @@ import me.fornever.todosaurus.core.git.GitHostingRemote
 import me.fornever.todosaurus.core.issueTrackers.IssueTrackerClient
 import me.fornever.todosaurus.core.issues.IssueModel
 import me.fornever.todosaurus.core.issues.ToDoItem
+import me.fornever.todosaurus.core.issues.ui.wizard.IssueOptions
+import me.fornever.todosaurus.core.issues.labels.LabelsOptions
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
-import me.fornever.todosaurus.gitLab.api.GitLabErrorResponse
+import me.fornever.todosaurus.gitLab.api.GitLabError
 import me.fornever.todosaurus.gitLab.api.GitLabIssue
+import me.fornever.todosaurus.gitLab.api.GitLabLabel
 import org.jetbrains.plugins.gitlab.api.GitLabApi
 import org.jetbrains.plugins.gitlab.api.GitLabRestJsonDataDeSerializer
 import org.jetbrains.plugins.gitlab.api.GitLabServerPath
@@ -38,7 +42,7 @@ class GitLabClient(
 ) : IssueTrackerClient {
     private val logger = logger<GitLabClient>()
 
-    override suspend fun createIssue(toDoItem: ToDoItem): IssueModel {
+    override suspend fun createIssue(toDoItem: ToDoItem, issueOptions: List<IssueOptions>): IssueModel {
         val issueBody = readAction {
             replacePatterns(restClient.server, toDoItem)
         }
@@ -49,11 +53,19 @@ class GitLabClient(
             .restApiUri
             .resolveRelative("projects/$projectId/issues")
 
+        val labels = issueOptions
+            .filterIsInstance<LabelsOptions>()
+            .firstOrNull()
+            ?.getSelectedLabels()
+            ?.map { it.name }
+            ?.joinToString(",")
+
         val request = restClient
             .request(endpointPath)
             .POST(restClient.jsonBodyPublisher(endpointPath, object {
                 @Suppress("UNUSED") val title = toDoItem.title
                 @Suppress("UNUSED") val description = issueBody
+                @Suppress("UNUSED") val labels = labels
             }))
             .header("Content-Type", "application/json")
             .build()
@@ -86,20 +98,15 @@ class GitLabClient(
         val responseHandler = InflatedStreamReadingBodyHandler { responseInfo, bodyStream ->
             InputStreamReader(bodyStream, Charsets.UTF_8).use { reader ->
                 when (val code = responseInfo.statusCode()) {
-                    200 -> {
-                        GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabIssue::class.java)
-                    }
-
-                    404 -> {
-                        null
-                    }
+                    200 -> GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabIssue::class.java)
+                    404 -> null
 
                     else -> {
-                        val errorResponse =
-                            GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabErrorResponse::class.java)
+                        val errorResponse = GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabError::class.java)
                         val errorMessage = errorResponse?.message
                             ?: errorResponse?.error
-                            ?: "Unknown error occurred with $code HTTP status code."
+                                ?: "Unknown error occurred with $code HTTP status code."
+
                         error(errorMessage)
                     }
                 }
@@ -109,6 +116,63 @@ class GitLabClient(
         val gitLabIssue = restClient.sendAndAwaitCancellable(request, responseHandler).body() ?: return null
 
         return IssueModel(gitLabIssue.issueNumber.toString(), gitLabIssue.url)
+    }
+
+    suspend fun getLabels(): Iterable<GitLabLabel> {
+        val projectId = URLEncoder.encode(remote.ownerAndName, StandardCharsets.UTF_8)
+        val perPage = 100 // Default value from GitLab Docs
+        val baseUri = restClient
+            .server
+            .restApiUri
+            .resolveRelative("projects/$projectId/labels")
+
+        var currentPage: Int? = 1
+        val labels = mutableListOf<GitLabLabel>()
+
+        while (currentPage != null && currentPage != 0) {
+            val endpointPath = baseUri.withQuery("per_page=$perPage&page=$currentPage")
+
+            val request = restClient
+                .request(endpointPath)
+                .GET()
+                .build()
+
+            var nextPage: Int? = null
+
+            val responseHandler = InflatedStreamReadingBodyHandler { response, bodyStream ->
+                InputStreamReader(bodyStream, Charsets.UTF_8).use { reader ->
+                    when (val code = response.statusCode()) {
+                        200 -> {
+                            nextPage = response
+                                .headers()
+                                .firstValue("X-Next-Page")
+                                .orElse(null)
+                                ?.toIntOrNull()
+
+                            GitLabRestJsonDataDeSerializer.fromJson(reader, Collection::class.java, GitLabLabel::class.java)
+                        }
+
+                        else -> {
+                            val errorResponse = GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabError::class.java)
+                            val errorMessage = errorResponse?.message
+                                ?: errorResponse?.error
+                                    ?: "Unknown error occurred with $code HTTP status code."
+
+                            error(errorMessage)
+                        }
+                    }
+                }
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            labels.addAll(
+                restClient.sendAndAwaitCancellable(request, responseHandler).body() as Collection<GitLabLabel>?
+                    ?: error("Failed to fetch labels from GitLab"))
+
+            currentPage = nextPage
+        }
+
+        return labels
     }
 
     @RequiresReadLock

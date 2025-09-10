@@ -40,5 +40,8 @@
         <extensionPoint qualifiedName="me.fornever.todosaurus.issueTrackerFactory"
                         interface="me.fornever.todosaurus.core.issueTrackers.IssueTrackerFactory"
                         dynamic="true"/>
+        <extensionPoint qualifiedName="me.fornever.todosaurus.issueOptionsFactory"
+                        interface="me.fornever.todosaurus.core.issues.ui.wizard.IssueOptionsFactory"
+                        dynamic="false"/>
     </extensionPoints>
 </idea-plugin>

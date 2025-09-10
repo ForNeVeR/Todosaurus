@@ -73,7 +73,7 @@ class ChooseIssueTrackerStep(private val project: Project, private val scope: Co
         updateConnectionDetails()
     }
 
-    override fun getComponent(): JComponent = panel {
+    override fun createComponent(): JComponent = panel {
         panel {
             row {
                 label(TodosaurusCoreBundle.message("wizard.steps.chooseIssueTracker.issueTracker.title"))
