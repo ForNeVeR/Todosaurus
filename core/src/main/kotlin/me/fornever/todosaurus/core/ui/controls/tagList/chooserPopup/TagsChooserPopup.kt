@@ -1,6 +1,7 @@
+// SPDX-FileCopyrightText: 2000-2024 JetBrains s.r.o. and contributors.
 // SPDX-FileCopyrightText: 2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT AND Apache-2.0 AND MIT
 
 package me.fornever.todosaurus.core.ui.controls.tagList.chooserPopup
 
@@ -33,7 +34,6 @@ import javax.swing.ListSelectionModel
     Copied from:
     1. https://github.com/JetBrains/intellij-community/blob/b8e56e1013054034fcd7d5d8aab96bba355b429a/platform/collaboration-tools/src/com/intellij/collaboration/ui/codereview/list/search/ChooserPopupUtil.kt#L35
     2. https://github.com/JetBrains/intellij-community/blob/ce3350428547b29fc91584a082389769540623fd/platform/collaboration-tools/src/com/intellij/collaboration/ui/util/popup/CollaborationToolsPopupUtil.kt#L23
-    TODO: Add license information
  */
 
 @Suppress("UnstableApiUsage")
