@@ -22,7 +22,6 @@ import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.border.EmptyBorder
 
-@Suppress("UnstableApiUsage")
 class CreateNewIssueStep(
     private val project: Project,
     private val model: TodosaurusWizardContext<ToDoItem.New>) : TodosaurusWizardStep(), ForgettableStep {
@@ -33,6 +32,7 @@ class CreateNewIssueStep(
     private lateinit var descriptionField: JBTextArea
 
     private var issueTrackerId: String? = null
+    @Suppress("UnstableApiUsage")
     private var optionsHolder: Placeholder? = null
 
     override fun _init() {
@@ -53,6 +53,7 @@ class CreateNewIssueStep(
 
     private val component: DialogPanel = panel {
         row {
+            @Suppress("UnstableApiUsage")
             optionsHolder = placeholder()
                 .align(Align.FILL)
         }
@@ -90,6 +91,7 @@ class CreateNewIssueStep(
 
         val issueOptions = IssueOptionsProvider.provideAll(project, model)
 
+        @Suppress("UnstableApiUsage")
         currentHolder.component = panel {
             if (issueOptions.isNotEmpty())
                 issueOptions.map { component -> createOptionsRow(component.createOptionsPanel()) }

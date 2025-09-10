@@ -36,7 +36,7 @@ import javax.swing.ListSelectionModel
     2. https://github.com/JetBrains/intellij-community/blob/ce3350428547b29fc91584a082389769540623fd/platform/collaboration-tools/src/com/intellij/collaboration/ui/util/popup/CollaborationToolsPopupUtil.kt#L23
  */
 
-@Suppress("UnstableApiUsage")
+@Suppress("UnstableApiUsage") // for the use of SelectableWrapper
 object TagsChooserPopup {
     suspend fun <Tag> showTagsChooserPopup(
         tags: Map<Tag, TagPresentation<Tag>>,

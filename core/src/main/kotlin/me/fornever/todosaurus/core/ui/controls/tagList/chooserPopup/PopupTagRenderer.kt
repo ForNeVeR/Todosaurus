@@ -21,7 +21,7 @@ import me.fornever.todosaurus.core.ui.controls.tagList.TagPresentation
 import me.fornever.todosaurus.core.ui.controls.tagList.TagRendererBase
 import java.awt.Component
 
-@Suppress("UnstableApiUsage")
+@Suppress("UnstableApiUsage") // use of SelectableWrapper
 internal class PopupTagRenderer<Tag> : TagRendererBase<SelectableWrapper<Tag>> {
     override fun renderComponent(tagPresentation: TagPresentation<SelectableWrapper<Tag>>, isSelected: Boolean, hasFocus: Boolean): Component {
         val content = panel {
