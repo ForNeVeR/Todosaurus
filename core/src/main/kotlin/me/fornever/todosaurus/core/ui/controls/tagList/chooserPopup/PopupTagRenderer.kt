@@ -51,7 +51,7 @@ internal class PopupTagRenderer<Tag> : TagRendererBase<SelectableWrapper<Tag>> {
 				tagPresentation.description?.let {
 					row {
 						label(it)
-							.customize(UnscaledGaps(top = 4, left = 44)) // TODO: Left gap is a dirty hack. We have to find another way to align the description strictly under the title
+							.customize(UnscaledGaps(top = 4, left = 44)) // TODO[#231]: Left gap is a dirty hack. We have to find another way to align the description strictly under the title
 							.applyToComponent {
 								font = JBFont.medium()
 								foreground = UIUtil.getLabelInfoForeground()

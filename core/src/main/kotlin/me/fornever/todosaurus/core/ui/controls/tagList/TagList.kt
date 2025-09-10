@@ -387,7 +387,7 @@ open class TagList<Key, Tag>(
 
             val panel = panel {
                 row {
-                    label(reason) // TODO: Add support for multiline (\n) text
+                    label(reason) // TODO[#233]: Add support for multiline (\n) text
                         .align(Align.CENTER)
                         .applyToComponent {
                             icon = AllIcons.General.Error
