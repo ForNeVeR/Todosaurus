@@ -4,7 +4,6 @@
 
 package me.fornever.todosaurus.core.issues.labels.ui.controls
 
-import com.intellij.ui.ColorUtil
 import kotlinx.coroutines.CoroutineScope
 import me.fornever.todosaurus.core.TodosaurusCoreBundle
 import me.fornever.todosaurus.core.issues.labels.IssueLabel
