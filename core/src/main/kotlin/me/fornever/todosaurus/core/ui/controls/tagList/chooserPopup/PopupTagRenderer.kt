@@ -5,8 +5,8 @@
 package me.fornever.todosaurus.core.ui.controls.tagList.chooserPopup
 
 import com.intellij.collaboration.ui.codereview.details.SelectableWrapper
-import com.intellij.ide.plugins.newui.ListPluginComponent
 import com.intellij.openapi.ui.popup.util.PopupUtil
+import com.intellij.ui.JBColor
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.EmptySpacingConfiguration
 import com.intellij.ui.dsl.builder.panel
@@ -71,7 +71,11 @@ internal class PopupTagRenderer<Tag> : TagRendererBase<SelectableWrapper<Tag>> {
                 PopupUtil.configListRendererFlexibleHeight(this@apply)
 
                 if (isSelected)
-                    selectionColor = ListPluginComponent.SELECTION_COLOR
+                    selectionColor = componentSelectionColor
             }
     }
 }
+
+// Taken from com.intellij.ide.plugins.newui.ListPluginComponent.SELECTION_COLOR, which is marked as internal:
+private val componentSelectionColor =
+    JBColor.namedColor("Plugins.lightSelectionBackground", JBColor(0xEDF6FE, 0x464A4D))
