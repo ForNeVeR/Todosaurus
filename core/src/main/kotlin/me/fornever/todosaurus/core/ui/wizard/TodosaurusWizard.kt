@@ -36,7 +36,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.fornever.todosaurus.core.TodosaurusCoreBundle
-import me.fornever.todosaurus.core.git.GitBasedPlacementDetails
 import me.fornever.todosaurus.core.ui.Notifications
 import me.fornever.todosaurus.core.ui.wizard.memoization.ForgettableStep
 import me.fornever.todosaurus.core.ui.wizard.memoization.MemorableStep
@@ -241,33 +240,29 @@ class TodosaurusWizard(
         val bottomPanel = JPanel()
 
         val userChoice = UserChoiceStore.getInstance(project).getChoiceOrNull()
+
         if (userChoice != null) {
             val eastPanel = JPanel().apply {
                 layout = BoxLayout(this, BoxLayout.Y_AXIS)
                 alignmentX = Component.RIGHT_ALIGNMENT
             }
-            var labelText = TodosaurusCoreBundle.message(
-                "wizard.issueTrackerDetails.title",
-                userChoice.issueTrackerId ?: "unknown"
-            )
 
-            val placementDetails = userChoice.placementDetails
-            if (placementDetails is GitBasedPlacementDetails) {
-                labelText = TodosaurusCoreBundle.message(
-                    "wizard.issueTrackerDetailsWithOwner.title",
-                    userChoice.issueTrackerId ?: "unknown",
-                    placementDetails.remote?.owner ?: "unknown"
-                )
-            } else {
-                placementDetails?.let {
-                    logger.warn("Unsupported PlacementDetails type: ${placementDetails::class.qualifiedName}")
-                } ?: logger.warn("UserChoice has null placementDetails")
+            val issueTracker = userChoice.issueTrackerId ?: ""
+            val credentialsName = model.connectionDetails.credentials?.username ?: ""
+
+            val choiceDetailsText = when {
+                issueTracker.isNotEmpty() && credentialsName.isNotEmpty() -> TodosaurusCoreBundle.message("wizard.chooseAnotherTracker.credentialDetails.title", issueTracker, credentialsName)
+                issueTracker.isNotEmpty() -> TodosaurusCoreBundle.message("wizard.chooseAnotherTracker.issueTrackerDetails.title", issueTracker)
+                else -> TodosaurusCoreBundle.message("wizard.chooseAnotherTracker.fallback.title")
             }
 
-            eastPanel.add(JLabel(labelText).apply {
+            eastPanel.add(Box.createVerticalStrut(6))
+
+            eastPanel.add(JLabel(choiceDetailsText).apply {
                 alignmentX = Component.RIGHT_ALIGNMENT
             })
-            eastPanel.add(Box.createVerticalStrut(4))
+
+            eastPanel.add(Box.createVerticalStrut(2))
 
             mySteps.filterIsInstance<ForgettableStep>().firstOrNull()?.let { forgettableStep ->
                 val link = ActionLink(TodosaurusCoreBundle.message("wizard.chooseAnotherTracker.title")) {
@@ -279,7 +274,8 @@ class TodosaurusWizard(
             }
 
             topPanel.add(eastPanel, BorderLayout.EAST)
-        } else if (mySteps.any { it is MemorableStep }) {
+        }
+        else if (mySteps.any { it is MemorableStep }) {
             JPanel(BorderLayout()).also {
                 it.add(rememberUserChoiceCheckBox, BorderLayout.CENTER)
                 topPanel.add(it, BorderLayout.EAST)
