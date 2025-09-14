@@ -4,12 +4,26 @@
 
 package me.fornever.todosaurus.core.issues.ui.wizard
 
+import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.editor.EditorFactory
+import com.intellij.openapi.editor.EditorKind
+import com.intellij.openapi.editor.ScrollType
+import com.intellij.openapi.editor.colors.EditorColors
+import com.intellij.openapi.editor.colors.EditorColorsManager
+import com.intellij.openapi.editor.ex.EditorEx
+import com.intellij.openapi.editor.highlighter.EditorHighlighterFactory
+import com.intellij.openapi.editor.markup.HighlighterLayer
+import com.intellij.openapi.editor.markup.HighlighterTargetArea
+import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
+import com.intellij.openapi.ui.Splitter
 import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.components.JBTextArea
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
+import com.intellij.util.ui.JBUI
+import com.intellij.util.ui.UIUtil
 import me.fornever.todosaurus.core.TodosaurusCoreBundle
 import me.fornever.todosaurus.core.issues.ToDoItem
 import me.fornever.todosaurus.core.issues.ToDoService
@@ -30,6 +44,7 @@ class CreateNewIssueStep(
 
     private lateinit var titleField: JBTextField
     private lateinit var descriptionField: JBTextArea
+    private lateinit var todoPreviewer: Editor
 
     private var issueTrackerId: String? = null
     @Suppress("UnstableApiUsage")
@@ -51,7 +66,51 @@ class CreateNewIssueStep(
         issueTrackerId = issueTracker.id
     }
 
-    private val component: DialogPanel = panel {
+    private fun createTodoPreviewer(): JComponent? {
+        val document = model.toDoItem.toDoRange.document
+        val file = FileDocumentManager.getInstance().getFile(document) ?: return null
+
+        val selectionStartOffset = model.toDoItem.toDoRange.textRange.startOffset
+        val selectionEndOffset = model.toDoItem.toDoRange.textRange.endOffset
+
+        val editor = EditorFactory.getInstance().createViewer(document, project, EditorKind.PREVIEW)
+
+        editor.component.preferredSize = JBUI.size(150, 50)
+
+        if (editor is EditorEx) {
+            editor.settings.apply {
+                isLineNumbersShown = true
+                isFoldingOutlineShown = false
+                isAdditionalPageAtBottom = false
+                isCaretRowShown = false
+                isVirtualSpace = false
+                isUseSoftWraps = false
+            }
+
+            editor.highlighter = EditorHighlighterFactory
+                .getInstance()
+                .createEditorHighlighter(project, file)
+        }
+
+        editor.caretModel.moveToOffset(selectionStartOffset)
+        editor.scrollingModel.scrollToCaret(ScrollType.CENTER)
+
+        val selectionAttributes = EditorColorsManager
+            .getInstance()
+            .globalScheme
+            .getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES)
+
+        editor.markupModel.addRangeHighlighter(
+            selectionStartOffset,
+            selectionEndOffset,
+            HighlighterLayer.SELECTION - 1,
+            selectionAttributes,
+            HighlighterTargetArea.EXACT_RANGE)
+
+        return editor.also { todoPreviewer = it }.component
+    }
+
+    private val mainPanel: DialogPanel = panel {
         row {
             @Suppress("UnstableApiUsage")
             optionsHolder = placeholder()
@@ -100,8 +159,17 @@ class CreateNewIssueStep(
         model.issueOptions = issueOptions
     }
 
-    override fun createComponent(): JComponent
-        = ScrollPaneFactory.createScrollPane(component, true)
+    override fun createComponent(): JComponent {
+        val rootPanel = Splitter(true, 0.50f)
+        val todoPreviewer = createTodoPreviewer()
+
+        rootPanel.firstComponent = mainPanel
+
+        if (todoPreviewer != null)
+            rootPanel.secondComponent = todoPreviewer
+
+        return ScrollPaneFactory.createScrollPane(rootPanel, true)
+    }
 
     // Copied from https://github.com/JetBrains/intellij-community/blob/dc6fdfc676b0dcc191611482c2907be241f181ae/platform/vcs-impl/src/com/intellij/vcs/commit/CommitOptionsPanel.kt#L110
     // SPDX-SnippetBegin
@@ -142,5 +210,18 @@ class CreateNewIssueStep(
     override fun forgetUserChoice() {
         UserChoiceStore.getInstance(project).forgetChoice()
         ToDoService.getInstance(project).createNewIssue(model.toDoItem)
+    }
+
+    override fun dispose() {
+        super.dispose()
+
+        UIUtil.invokeLaterIfNeeded {
+            try {
+                EditorFactory.getInstance().releaseEditor(todoPreviewer)
+            }
+            catch (_: Throwable) {
+                // Ignore
+            }
+        }
     }
 }
