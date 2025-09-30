@@ -103,7 +103,10 @@ sealed class ToDoItem(val text: String, protected val todosaurusSettings: Todosa
     }
 
     var title: String = text
-        .substringBefore('\n')
+        .substringAfter("//")
+        .substringAfter("/*")
+        .substringBefore("*/")
+        .substringBefore("\n")
         .replace(newItemPattern, "")
         .trim()
 
