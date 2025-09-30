@@ -4,6 +4,7 @@
 
 package me.fornever.todosaurus.core.issues.ui.wizard
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.EditorKind
@@ -14,11 +15,12 @@ import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.editor.highlighter.EditorHighlighterFactory
 import com.intellij.openapi.editor.markup.HighlighterLayer
 import com.intellij.openapi.editor.markup.HighlighterTargetArea
+import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.ui.Splitter
-import com.intellij.ui.ScrollPaneFactory
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.components.JBTextArea
 import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.*
@@ -27,12 +29,14 @@ import com.intellij.util.ui.UIUtil
 import me.fornever.todosaurus.core.TodosaurusCoreBundle
 import me.fornever.todosaurus.core.issues.ToDoItem
 import me.fornever.todosaurus.core.issues.ToDoService
+import me.fornever.todosaurus.core.issues.UrlReplacement
 import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardContext
 import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardStep
 import me.fornever.todosaurus.core.ui.wizard.memoization.ForgettableStep
 import me.fornever.todosaurus.core.ui.wizard.memoization.UserChoiceStore
 import java.awt.BorderLayout
 import javax.swing.JComponent
+import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.border.EmptyBorder
 
@@ -45,7 +49,20 @@ class CreateNewIssueStep(
 
     private lateinit var titleField: JBTextField
     private lateinit var descriptionField: JBTextArea
+    private var filePathLabel: JLabel = JLabel().apply {
+        foreground = UIUtil.getLabelInfoForeground()
+    }
+
     private lateinit var todoPreviewer: Editor
+
+    private val file: VirtualFile?
+        = FileDocumentManager.getInstance().getFile(model.toDoItem.toDoRange.document)
+
+    private val selectionAttributes: TextAttributes
+        = EditorColorsManager
+            .getInstance()
+            .globalScheme
+            .getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES)
 
     private var issueTrackerId: String? = null
     private var optionsHolder: Placeholder? = null
@@ -68,21 +85,22 @@ class CreateNewIssueStep(
 
     private fun createTodoPreviewer(): JComponent? {
         val document = model.toDoItem.toDoRange.document
-        val file = FileDocumentManager.getInstance().getFile(document) ?: return null
 
-        val selectionStartOffset = model.toDoItem.toDoRange.textRange.startOffset
-        val selectionEndOffset = model.toDoItem.toDoRange.textRange.endOffset
+        if (file == null)
+            return null
 
         val editor = EditorFactory.getInstance().createViewer(document, project, EditorKind.PREVIEW)
+            .also { todoPreviewer = it }
 
-        editor.component.preferredSize = JBUI.size(150, 50)
+        editor.component.preferredSize = JBUI.emptySize()
 
         if (editor is EditorEx) {
             editor.settings.apply {
                 isLineNumbersShown = true
+                isAnimatedScrolling = true
                 isFoldingOutlineShown = false
                 isAdditionalPageAtBottom = false
-                isCaretRowShown = false
+                isCaretRowShown = true
                 isVirtualSpace = false
                 isUseSoftWraps = false
             }
@@ -92,22 +110,32 @@ class CreateNewIssueStep(
                 .createEditorHighlighter(project, file)
         }
 
-        editor.caretModel.moveToOffset(selectionStartOffset)
-        editor.scrollingModel.scrollToCaret(ScrollType.CENTER)
+        return panel {
+            row {
+                cell(filePathLabel)
+            }
 
-        val selectionAttributes = EditorColorsManager
-            .getInstance()
-            .globalScheme
-            .getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES)
+            row {
+                cell(editor.component)
+                    .resizableColumn()
+                    .align(Align.FILL)
+            }
+            .resizableRow()
+        }
+    }
 
-        editor.markupModel.addRangeHighlighter(
-            selectionStartOffset,
-            selectionEndOffset,
+    private fun highlightUrlReplacementInsideTodoPreviewer(urlReplacement: UrlReplacement) {
+        todoPreviewer.markupModel.removeAllHighlighters()
+
+        todoPreviewer.caretModel.moveToOffset(urlReplacement.startLineOffset)
+        todoPreviewer.scrollingModel.scrollToCaret(ScrollType.CENTER)
+
+        todoPreviewer.markupModel.addRangeHighlighter(
+            urlReplacement.startLineOffset,
+            urlReplacement.endLineOffset,
             HighlighterLayer.SELECTION - 1,
             selectionAttributes,
-            HighlighterTargetArea.EXACT_RANGE)
-
-        return editor.also { todoPreviewer = it }.component
+            HighlighterTargetArea.LINES_IN_RANGE)
     }
 
     private val mainPanel: DialogPanel = panel {
@@ -132,16 +160,43 @@ class CreateNewIssueStep(
                 .label(TodosaurusCoreBundle.getMessage("wizard.steps.createNewIssue.description"), LabelPosition.TOP)
                 .align(Align.FILL)
                 .text(model.toDoItem.description)
-                .onChanged {
-                    model.toDoItem.description = it.text
+                .onChanged { textArea ->
+                    model.toDoItem.description = textArea.text
                 }
                 .component
-                .also {
-                    it.lineWrap = true
-                    it.wrapStyleWord = true
+                .also { textArea ->
+                    textArea.lineWrap = true
+                    textArea.wrapStyleWord = true
+                    textArea.addCaretListener { caret ->
+                        val currentPosition = caret?.dot
+                            ?: return@addCaretListener
+
+                        val replacement = model.toDoItem.urlReplacements.getSelectedReplacement(currentPosition)
+                            ?: model.toDoItem.urlReplacements.getLastReplacement()
+
+                        updateFilePath(replacement)
+
+                        if (replacement != null) {
+                            highlightUrlReplacementInsideTodoPreviewer(replacement)
+                        }
+                        else {
+                            todoPreviewer.markupModel.removeAllHighlighters()
+                        }
+                    }
                 }
         }
         .resizableRow()
+    }
+
+    private fun updateFilePath(replacement: UrlReplacement?) {
+        if (file == null)
+            return
+
+        filePathLabel.text = when {
+            replacement == null -> TodosaurusCoreBundle.getMessage("wizard.steps.createNewIssue.labels.filePath.text", file.path)
+            replacement.startLineNumber == replacement.endLineNumber -> TodosaurusCoreBundle.getMessage("wizard.steps.createNewIssue.labels.filePath.text.designator.singleLine", file.path, replacement.startLineNumber)
+            else -> TodosaurusCoreBundle.getMessage("wizard.steps.createNewIssue.labels.filePath.text.designator.multipleLines", file.path, replacement.startLineNumber, replacement.endLineNumber)
+        }
     }
 
     private fun recreateIssueOptions() {
@@ -166,7 +221,18 @@ class CreateNewIssueStep(
         if (todoPreviewer != null)
             rootPanel.secondComponent = todoPreviewer
 
-        return ScrollPaneFactory.createScrollPane(rootPanel, true)
+        ApplicationManager.getApplication().invokeLater {
+            val lastReplacement = model.toDoItem
+                .urlReplacements
+                .getLastReplacement()
+
+            if (lastReplacement != null) {
+                updateFilePath(lastReplacement)
+                highlightUrlReplacementInsideTodoPreviewer(lastReplacement)
+            }
+        }
+
+        return rootPanel
     }
 
     // TODO: Add license information. Copied from https://github.com/JetBrains/intellij-community/blob/dc6fdfc676b0dcc191611482c2907be241f181ae/platform/vcs-impl/src/com/intellij/vcs/commit/CommitOptionsPanel.kt#L110

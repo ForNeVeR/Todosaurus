@@ -109,9 +109,22 @@ sealed class ToDoItem(val text: String, protected val todosaurusSettings: Todosa
 
     var description: String = (if (text.contains("\n")) text.substringAfter('\n') + "\n" else "") +
         todosaurusSettings.descriptionTemplate
+        set(value) {
+            field = value
 
-    class Reported(text: String, val issueNumber: String, todosaurusSettings: TodosaurusSettings.State) : ToDoItem(text, todosaurusSettings)
-    class New(val toDoRange: RangeMarker, todosaurusSettings: TodosaurusSettings.State) : ToDoItem(toDoRange.document.getText(toDoRange.textRange), todosaurusSettings) {
+            if (this is New)
+                urlReplacements.update()
+        }
+
+    class Reported(text: String, val issueNumber: String, todosaurusSettings: TodosaurusSettings.State)
+        : ToDoItem(text, todosaurusSettings)
+
+    class New(val toDoRange: RangeMarker, todosaurusSettings: TodosaurusSettings.State)
+        : ToDoItem(toDoRange.document.getText(toDoRange.textRange), todosaurusSettings) {
+
+        var urlReplacements: UrlReplacements
+            = UrlReplacements(this)
+
         @RequiresWriteLock
         fun toReported(issueNumber: String): Reported {
             val previousText = text

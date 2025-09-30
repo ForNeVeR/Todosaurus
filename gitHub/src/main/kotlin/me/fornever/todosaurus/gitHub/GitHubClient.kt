@@ -118,7 +118,7 @@ class GitHubClient(
 
     @RequiresReadLock
     private fun replacePatterns(serverPath: GithubServerPath, toDoItem: ToDoItem): String {
-        if (toDoItem !is ToDoItem.New || !toDoItem.description.contains(TodosaurusSettings.URL_REPLACEMENT))
+        if (toDoItem !is ToDoItem.New || toDoItem.urlReplacements.isEmpty())
             return toDoItem.description
 
         val rootPath = remote.rootPath
@@ -129,12 +129,30 @@ class GitHubClient(
             ?: error("Cannot calculate relative path between \"${remote.rootPath}\" and \"${filePath}\"")
 
         val currentCommit = getCurrentCommitHash()
-        val startLineNumber = toDoItem.toDoRange.document.getLineNumber(toDoItem.toDoRange.startOffset) + 1
-        val endLineNumber = toDoItem.toDoRange.document.getLineNumber(toDoItem.toDoRange.endOffset) + 1
-        val lineDesignator = if (startLineNumber == endLineNumber) "L$startLineNumber" else "L$startLineNumber-L$endLineNumber"
-        val linkText = "${serverPath.schema}://${serverPath.host}/${remote.owner}/${remote.name}/blob/$currentCommit/$path#$lineDesignator"
 
-        return toDoItem.description.replace(TodosaurusSettings.URL_REPLACEMENT, linkText)
+        val urlReplacements = toDoItem
+            .urlReplacements
+            .getAll()
+            .sortedBy { it.positionInDescription.first }
+
+        var description = toDoItem.description
+        var replacementDelta = 0
+
+        for (urlReplacement in urlReplacements) {
+            val startReplacementOffset = urlReplacement.positionInDescription.first + replacementDelta
+            val endReplacementOffset = urlReplacement.positionInDescription.last + replacementDelta
+
+            if (startReplacementOffset < 0 || endReplacementOffset < startReplacementOffset || endReplacementOffset > description.length)
+                continue
+
+            val lineDesignator = if (urlReplacement.startLineNumber == urlReplacement.endLineNumber) "L${urlReplacement.startLineNumber}" else "L${urlReplacement.startLineNumber}-L${urlReplacement.endLineNumber}"
+            val linkText = "${serverPath.schema}://${serverPath.host}/${remote.owner}/${remote.name}/blob/$currentCommit/$path#$lineDesignator"
+            description = description.replaceRange(startReplacementOffset, endReplacementOffset, linkText)
+
+            replacementDelta += (linkText.length - endReplacementOffset + startReplacementOffset)
+        }
+
+        return description
     }
 
     private fun getCurrentCommitHash(): String {

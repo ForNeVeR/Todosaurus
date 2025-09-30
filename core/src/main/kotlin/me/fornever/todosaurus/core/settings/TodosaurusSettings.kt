@@ -14,7 +14,6 @@ import com.intellij.openapi.components.*
 class TodosaurusSettings : SimplePersistentStateComponent<TodosaurusSettings.State>(State.defaultState) {
     companion object {
         const val ISSUE_NUMBER_REPLACEMENT = "{ISSUE_NUMBER}"
-        const val URL_REPLACEMENT = "{URL_REPLACEMENT}"
 
         fun getInstance(): TodosaurusSettings = service()
     }
@@ -22,7 +21,7 @@ class TodosaurusSettings : SimplePersistentStateComponent<TodosaurusSettings.Sta
     class State : BaseState() {
         companion object {
             private const val DEFAULT_NUMBER_PATTERN = "[#$ISSUE_NUMBER_REPLACEMENT]:"
-            private const val DEFAULT_DESCRIPTION_TEMPLATE = "See the code near this line: $URL_REPLACEMENT\n\nAlso, look for the number of this issue in the project code base."
+            private const val DEFAULT_DESCRIPTION_TEMPLATE = "See the code near this line: {URL_REPLACEMENT}\n\nAlso, look for the number of this issue in the project code base."
 
             val defaultState: State = State()
         }
