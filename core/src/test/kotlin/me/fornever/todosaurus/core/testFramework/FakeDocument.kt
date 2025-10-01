@@ -34,7 +34,7 @@ class FakeDocument(private var text: String) : Document {
 
     override fun getLineNumber(offset: Int): Int {
         if (offset < 0 || offset > text.length)
-            throw IndexOutOfBoundsException("offset = $offset, length = ${text.length}")
+            throw IndexOutOfBoundsException("Incorrect offset specified (actual offset is $offset, but text length was ${text.length})")
 
         val starts = lineStarts()
         val lineNumber = starts.binarySearch(offset)
@@ -46,7 +46,7 @@ class FakeDocument(private var text: String) : Document {
         val starts = lineStarts()
 
         if (line !in starts.indices)
-            throw IndexOutOfBoundsException("line = $line, lineCount = ${starts.size}")
+            throw IndexOutOfBoundsException("Provided line number not found in text (actual line number is $line, but count of lines was ${starts.size})")
 
         return starts[line]
     }
@@ -55,7 +55,7 @@ class FakeDocument(private var text: String) : Document {
         val starts = lineStarts()
 
         if (line !in starts.indices)
-            throw IndexOutOfBoundsException("line = $line, lineCount = ${starts.size}")
+            throw IndexOutOfBoundsException("Provided line number not found (actual line number is $line, but count of lines was ${starts.size}")
 
         return if (line == starts.lastIndex) text.length else starts[line + 1] - 1
     }
