@@ -7,6 +7,18 @@ SPDX-License-Identifier: MIT
 Changelog
 =========
 
+## [1.7.1] - 2025-09-11
+### Fixed
+- [#235: Internal API use](https://github.com/ForNeVeR/Todosaurus/issues/235).
+
+## [1.7.0] - 2025-09-11
+### Added
+- [#62](https://github.com/ForNeVeR/Todosaurus/issues/62): add labels for the issues created by Todosaurus. Thanks to @y0ung3r!
+- [#16: Create Issue dialog: add word wrap](https://github.com/ForNeVeR/Todosaurus/issues/16). Thanks to @y0ung3r!
+
+### Fixed
+- [#175: Wizard: waste of resources that occurs when switching steps](https://github.com/ForNeVeR/Todosaurus/issues/175). Thanks to @y0ung3r!
+
 ## [1.6.0] - 2025-08-07
 ### Changed
 - **(Requirement update!)** Update the compatible IntelliJ version range to \[2025.2; 2025.3\].
@@ -58,7 +70,9 @@ Changelog
 ## [1.0.0] - 2024-02-26
 This is the initial plugin release. At this point, it provides a context menu for the TODO items to create GitHub issues from them.
 
-[Unreleased]: https://github.com/ForNeVeR/Todosaurus/compare/v1.6.0...HEAD
+[Unreleased]: https://github.com/ForNeVeR/Todosaurus/compare/v1.7.1...HEAD
+[1.7.1]: https://github.com/ForNeVeR/Todosaurus/compare/v1.7.0...v1.7.1
+[1.7.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.5.0...v1.6.0
 [1.5.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.3.0...v1.4.0

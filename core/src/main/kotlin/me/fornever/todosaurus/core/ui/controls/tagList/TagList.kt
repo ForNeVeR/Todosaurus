@@ -39,7 +39,7 @@ open class TagList<Key, Tag>(
     private val keySelector: (Tag) -> Key,
     private val rendererFactory: (TagList<Key, Tag>) -> TagRenderer<Key, Tag>): JPanel() {
 
-    private var userInterface: TagList<Key, Tag>.UserInterface = Regular()
+    private var userInterface: UserInterface = Regular()
     private var tagProvider: suspend () -> Iterable<Tag> = { emptyList() }
     private var afterFetch: () -> Unit = { }
     private val keyMap: MutableMap<Key, Tag> = mutableMapOf()
@@ -56,18 +56,6 @@ open class TagList<Key, Tag>(
         get() = noTagsLabel.text
         set(value) {
             noTagsLabel.text = value
-        }
-
-    var selectText: String
-        get() = selectLink.text
-        set(value) {
-            selectLink.text = value
-        }
-
-    var clearAllText: String
-        get() = deselectAllLink.text
-        set(value) {
-            deselectAllLink.text = value
         }
 
     private val tagRenderer: TagRendererBase<Tag> by lazy {
@@ -93,7 +81,7 @@ open class TagList<Key, Tag>(
         }
         .apply {
             setDropDownLinkIcon()
-            border = JBUI.Borders.empty(0, 20, 0, 0)
+            border = JBUI.Borders.emptyLeft(20)
             autoHideOnDisable = false
         }
 
@@ -124,7 +112,7 @@ open class TagList<Key, Tag>(
     override fun getMinimumSize(): Dimension
         = Dimension(0, super.getMinimumSize().height)
 
-    private fun setUI(userInterface: TagList<Key, Tag>.UserInterface) {
+    private fun setUI(userInterface: UserInterface) {
         this.userInterface = userInterface
         this.userInterface.update()
     }
@@ -138,13 +126,6 @@ open class TagList<Key, Tag>(
     fun extractTag(key: Key): Tag?
         = keyMap[key]
 
-    fun selectTag(tag: Tag) {
-        addSelectionFor(tag)
-
-        if (userInterface !is Loading)
-            userInterface.update()
-    }
-
     /*
         Remarks: Updates the user interface once after all tags have been created
      */
@@ -153,7 +134,7 @@ open class TagList<Key, Tag>(
             addSelectionFor(it)
         }
 
-        if (userInterface !is Loading)
+        if (userInterface !is TagList<*, *>.Loading)
             userInterface.update()
     }
 
@@ -171,7 +152,7 @@ open class TagList<Key, Tag>(
     fun deselectTag(tag: Tag) {
         removeSelectionFor(tag)
 
-        if (userInterface !is Loading)
+        if (userInterface !is TagList<*, *>.Loading)
             userInterface.update()
     }
 
@@ -183,7 +164,7 @@ open class TagList<Key, Tag>(
             removeSelectionFor(it)
         }
 
-        if (userInterface !is Loading)
+        if (userInterface !is TagList<*, *>.Loading)
             userInterface.update()
     }
 
@@ -204,11 +185,11 @@ open class TagList<Key, Tag>(
 
         selectedTags.clear()
 
-        if (userInterface !is Loading)
+        if (userInterface !is TagList<*, *>.Loading)
             userInterface.update()
     }
 
-    private abstract inner class UserInterface {
+    private abstract class UserInterface {
         abstract fun update()
         abstract suspend fun showPopupIn(position: RelativePoint)
     }
@@ -387,7 +368,7 @@ open class TagList<Key, Tag>(
 
             val panel = panel {
                 row {
-                    label(reason) // TODO: Add support for multiline (\n) text
+                    label(reason) // TODO[#233]: Add support for multiline (\n) text
                         .align(Align.CENTER)
                         .applyToComponent {
                             icon = AllIcons.General.Error

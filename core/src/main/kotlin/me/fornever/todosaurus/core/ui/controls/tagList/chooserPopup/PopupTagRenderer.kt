@@ -5,8 +5,8 @@
 package me.fornever.todosaurus.core.ui.controls.tagList.chooserPopup
 
 import com.intellij.collaboration.ui.codereview.details.SelectableWrapper
-import com.intellij.ide.plugins.newui.ListPluginComponent
 import com.intellij.openapi.ui.popup.util.PopupUtil
+import com.intellij.ui.JBColor
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.dsl.builder.EmptySpacingConfiguration
 import com.intellij.ui.dsl.builder.panel
@@ -21,7 +21,7 @@ import me.fornever.todosaurus.core.ui.controls.tagList.TagPresentation
 import me.fornever.todosaurus.core.ui.controls.tagList.TagRendererBase
 import java.awt.Component
 
-@Suppress("UnstableApiUsage")
+@Suppress("UnstableApiUsage") // use of SelectableWrapper
 internal class PopupTagRenderer<Tag> : TagRendererBase<SelectableWrapper<Tag>> {
     override fun renderComponent(tagPresentation: TagPresentation<SelectableWrapper<Tag>>, isSelected: Boolean, hasFocus: Boolean): Component {
         val content = panel {
@@ -51,7 +51,7 @@ internal class PopupTagRenderer<Tag> : TagRendererBase<SelectableWrapper<Tag>> {
 				tagPresentation.description?.let {
 					row {
 						label(it)
-							.customize(UnscaledGaps(top = 4, left = 44)) // TODO: Left gap is a dirty hack. We have to find another way to align the description strictly under the title
+							.customize(UnscaledGaps(top = 4, left = 44)) // TODO[#231]: Left gap is a dirty hack. We have to find another way to align the description strictly under the title
 							.applyToComponent {
 								font = JBFont.medium()
 								foreground = UIUtil.getLabelInfoForeground()
@@ -71,7 +71,11 @@ internal class PopupTagRenderer<Tag> : TagRendererBase<SelectableWrapper<Tag>> {
                 PopupUtil.configListRendererFlexibleHeight(this@apply)
 
                 if (isSelected)
-                    selectionColor = ListPluginComponent.SELECTION_COLOR
+                    selectionColor = componentSelectionColor
             }
     }
 }
+
+// Taken from com.intellij.ide.plugins.newui.ListPluginComponent.SELECTION_COLOR, which is marked as internal:
+private val componentSelectionColor =
+    JBColor.namedColor("Plugins.lightSelectionBackground", JBColor(0xEDF6FE, 0x464A4D))

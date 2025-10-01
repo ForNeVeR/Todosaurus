@@ -16,9 +16,9 @@ data class TagColors(
     val foregroundColor: Color) {
     companion object {
         /*
-            TODO: It seems that the color of UIUtil.getPanelBackground() is not updated after changing the theme in the IDE.
-            TODO: We need to calculate colors for light and dark themes exactly once.
-            TODO: Expand the cache so that it stores colors for dark and light themes separately (currently, the cache only stores colors for one theme).
+            TODO[#232]: It seems that the color of UIUtil.getPanelBackground() is not updated after changing the theme in the IDE.
+            TODO[#232]: We need to calculate colors for light and dark themes exactly once.
+            TODO[#232]: Expand the cache so that it stores colors for dark and light themes separately (currently, the cache only stores colors for one theme).
          */
         private val themeColor: Color = UIUtil.getPanelBackground()
         private val cache: MutableMap<Color, TagColors> = mutableMapOf()

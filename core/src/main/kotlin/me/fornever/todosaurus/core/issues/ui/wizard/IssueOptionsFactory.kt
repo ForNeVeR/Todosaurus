@@ -15,7 +15,6 @@ interface IssueOptionsFactory {
         val EP_NAME = ExtensionPointName<IssueOptionsFactory>("me.fornever.todosaurus.issueOptionsFactory")
     }
 
-    @Suppress("KDocUnresolvedReference") // Fixed in IntelliJ IDEA 2025.1
     /**
      * This is supposed to be equal to a [TaskRepositoryType.name] of one of the configured [TaskRepositoryType].
      */

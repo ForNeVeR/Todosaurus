@@ -6,6 +6,7 @@
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.exceptions.MissingVersionException
 import org.jetbrains.changelog.markdownToHTML
+import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask
 
 fun properties(key: String) = providers.gradleProperty(key)
 fun environment(key: String) = providers.environmentVariable(key)
@@ -79,8 +80,11 @@ intellijPlatform {
         }
     }
 
-    pluginVerification.ides {
-        recommended()
+    pluginVerification {
+        ides {
+            recommended()
+        }
+        failureLevel.add(VerifyPluginTask.FailureLevel.INTERNAL_API_USAGES)
     }
 
     publishing {

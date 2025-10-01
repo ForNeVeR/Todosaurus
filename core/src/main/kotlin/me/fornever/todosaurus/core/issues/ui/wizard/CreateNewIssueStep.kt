@@ -40,7 +40,6 @@ import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.border.EmptyBorder
 
-@Suppress("UnstableApiUsage")
 class CreateNewIssueStep(
     private val project: Project,
     private val model: TodosaurusWizardContext<ToDoItem.New>) : TodosaurusWizardStep(), ForgettableStep {
@@ -65,6 +64,7 @@ class CreateNewIssueStep(
             .getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES)
 
     private var issueTrackerId: String? = null
+    @Suppress("UnstableApiUsage")
     private var optionsHolder: Placeholder? = null
 
     override fun _init() {
@@ -140,6 +140,7 @@ class CreateNewIssueStep(
 
     private val mainPanel: DialogPanel = panel {
         row {
+            @Suppress("UnstableApiUsage")
             optionsHolder = placeholder()
                 .align(Align.FILL)
         }
@@ -204,6 +205,7 @@ class CreateNewIssueStep(
 
         val issueOptions = IssueOptionsProvider.provideAll(project, model)
 
+        @Suppress("UnstableApiUsage")
         currentHolder.component = panel {
             if (issueOptions.isNotEmpty())
                 issueOptions.map { component -> createOptionsRow(component.createOptionsPanel()) }
@@ -235,7 +237,10 @@ class CreateNewIssueStep(
         return rootPanel
     }
 
-    // TODO: Add license information. Copied from https://github.com/JetBrains/intellij-community/blob/dc6fdfc676b0dcc191611482c2907be241f181ae/platform/vcs-impl/src/com/intellij/vcs/commit/CommitOptionsPanel.kt#L110
+    // Copied from https://github.com/JetBrains/intellij-community/blob/dc6fdfc676b0dcc191611482c2907be241f181ae/platform/vcs-impl/src/com/intellij/vcs/commit/CommitOptionsPanel.kt#L110
+    // SPDX-SnippetBegin
+    // SPDX-SnippetCopyrightText: 2000-2019 JetBrains s.r.o.
+    // SPDX-License-Identifier: Apache-2.0
     private fun Panel.createOptionsRow(component: JComponent): Row {
         val meaningfulComponent = extractMeaningfulComponent(component)
 
@@ -246,7 +251,7 @@ class CreateNewIssueStep(
         .bottomGap(BottomGap.MEDIUM)
     }
 
-    // TODO: Add license information. Copied from https://github.com/JetBrains/intellij-community/blob/dc6fdfc676b0dcc191611482c2907be241f181ae/platform/vcs-impl/src/com/intellij/vcs/commit/CommitOptionsPanel.kt#L118
+    // Copied from https://github.com/JetBrains/intellij-community/blob/dc6fdfc676b0dcc191611482c2907be241f181ae/platform/vcs-impl/src/com/intellij/vcs/commit/CommitOptionsPanel.kt#L118
     private fun extractMeaningfulComponent(component: JComponent): JComponent? {
         if (component is DialogPanel)
             return null
@@ -260,6 +265,7 @@ class CreateNewIssueStep(
 
         return null
     }
+    // SPDX-SnippetEnd
 
     override fun getPreferredFocusedComponent(): JComponent
         = titleField

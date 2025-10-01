@@ -20,8 +20,8 @@ import me.fornever.todosaurus.core.git.GitHostingRemote
 import me.fornever.todosaurus.core.issueTrackers.IssueTrackerClient
 import me.fornever.todosaurus.core.issues.IssueModel
 import me.fornever.todosaurus.core.issues.ToDoItem
-import me.fornever.todosaurus.core.issues.ui.wizard.IssueOptions
 import me.fornever.todosaurus.core.issues.labels.LabelsOptions
+import me.fornever.todosaurus.core.issues.ui.wizard.IssueOptions
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
 import me.fornever.todosaurus.gitLab.api.GitLabError
 import me.fornever.todosaurus.gitLab.api.GitLabIssue
@@ -57,8 +57,7 @@ class GitLabClient(
             .filterIsInstance<LabelsOptions>()
             .firstOrNull()
             ?.getSelectedLabels()
-            ?.map { it.name }
-            ?.joinToString(",")
+            ?.joinToString(",") { it.name }
 
         val request = restClient
             .request(endpointPath)
