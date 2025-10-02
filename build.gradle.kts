@@ -6,6 +6,7 @@
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.exceptions.MissingVersionException
 import org.jetbrains.changelog.markdownToHTML
+import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask
 
 fun properties(key: String) = providers.gradleProperty(key)
@@ -82,7 +83,8 @@ intellijPlatform {
 
     pluginVerification {
         ides {
-            recommended()
+            // TODO[#244]: Use recommended() plugin verifier configuration after upgrading to 2025.3
+            create(IntelliJPlatformType.IntellijIdeaCommunity, libs.versions.ideaSdk)
         }
         failureLevel.add(VerifyPluginTask.FailureLevel.INTERNAL_API_USAGES)
     }
