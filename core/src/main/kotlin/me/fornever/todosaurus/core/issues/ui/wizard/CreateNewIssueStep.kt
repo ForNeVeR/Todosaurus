@@ -5,6 +5,7 @@
 package me.fornever.todosaurus.core.issues.ui.wizard
 
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorFactory
 import com.intellij.openapi.editor.EditorKind
@@ -285,8 +286,8 @@ class CreateNewIssueStep(
             try {
                 EditorFactory.getInstance().releaseEditor(todoPreviewer)
             }
-            catch (_: Throwable) {
-                // Ignore
+            catch (throwable: Throwable) {
+                thisLogger().error("Unable to release editor instance for TODO previewer", throwable)
             }
         }
     }
