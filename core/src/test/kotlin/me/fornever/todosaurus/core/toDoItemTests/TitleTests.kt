@@ -19,11 +19,14 @@ class TitleTests {
             Arguments.of("TODO", ""),
             Arguments.of("ToDo", ""),
             Arguments.of("todo some text", "some text"),
+            Arguments.of("/* todo some text */", "some text"),
             Arguments.of("Todo:text", "text"),
             Arguments.of("ToDo Text", "Text"),
+            Arguments.of("// ToDo Text", "Text"),
             Arguments.of("Todo:Text", "Text"),
             Arguments.of("TODO    Text", "Text"),
-            Arguments.of("TODO\nText", "")
+            Arguments.of("TODO\nText", ""),
+            Arguments.of("/* TODO: Text", "Text")
         )
     }
 
