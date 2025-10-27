@@ -22,7 +22,6 @@ import me.fornever.todosaurus.core.issues.IssueModel
 import me.fornever.todosaurus.core.issues.ToDoItem
 import me.fornever.todosaurus.core.issues.labels.LabelsOptions
 import me.fornever.todosaurus.core.issues.ui.wizard.IssueOptions
-import me.fornever.todosaurus.core.settings.TodosaurusSettings
 import me.fornever.todosaurus.gitLab.api.GitLabError
 import me.fornever.todosaurus.gitLab.api.GitLabIssue
 import me.fornever.todosaurus.gitLab.api.GitLabLabel
@@ -200,7 +199,7 @@ class GitLabClient(
             val startReplacementOffset = urlReplacement.positionInDescription.first + replacementDelta
             val endReplacementOffset = urlReplacement.positionInDescription.last + replacementDelta
 
-            if (startReplacementOffset < 0 || endReplacementOffset < startReplacementOffset || endReplacementOffset > description.length)
+            if (startReplacementOffset !in 0..endReplacementOffset || endReplacementOffset > description.length)
                 continue
 
             val lineDesignator = if (urlReplacement.startLineNumber == urlReplacement.endLineNumber) "L${urlReplacement.startLineNumber}" else "L${urlReplacement.startLineNumber}-L${urlReplacement.endLineNumber}"

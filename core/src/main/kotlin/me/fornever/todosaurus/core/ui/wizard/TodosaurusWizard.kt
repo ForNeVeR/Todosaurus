@@ -14,7 +14,6 @@ import com.intellij.ide.wizard.CommitStepCancelledException
 import com.intellij.ide.wizard.CommitStepException
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.EDT
-import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
@@ -61,7 +60,6 @@ class TodosaurusWizard(
     private val rememberUserChoiceCheckBox = JBCheckBox(TodosaurusCoreBundle.message("wizard.rememberMyChoice.title"), true)
 
     var nextButtonName: String? = null
-    private val logger = logger<TodosaurusWizard>()
 
     init {
         isModal = false
