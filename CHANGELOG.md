@@ -7,6 +7,13 @@ SPDX-License-Identifier: MIT
 Changelog
 =========
 
+## [1.8.0] - 2025-10-27
+### Added
+- [#210](https://github.com/ForNeVeR/Todosaurus/issues/210): add a preview of issue content. Thanks to @y0ung3r!
+
+### Fixed
+- [#238: Indicator of chosen tracker displays the repository owner's name instead of the credentials](https://github.com/ForNeVeR/Todosaurus/issues/238). Thanks to @y0ung3r!
+
 ## [1.7.1] - 2025-09-11
 ### Fixed
 - [#235: Internal API use](https://github.com/ForNeVeR/Todosaurus/issues/235).
@@ -70,7 +77,8 @@ Changelog
 ## [1.0.0] - 2024-02-26
 This is the initial plugin release. At this point, it provides a context menu for the TODO items to create GitHub issues from them.
 
-[Unreleased]: https://github.com/ForNeVeR/Todosaurus/compare/v1.7.1...HEAD
+[Unreleased]: https://github.com/ForNeVeR/Todosaurus/compare/v1.8.0...HEAD
+[1.8.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.7.1...v1.8.0
 [1.7.1]: https://github.com/ForNeVeR/Todosaurus/compare/v1.7.0...v1.7.1
 [1.7.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.5.0...v1.6.0
