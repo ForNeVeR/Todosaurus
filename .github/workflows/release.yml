@@ -51,10 +51,14 @@ jobs:
             ~/AppData/Local/gradle-jvm
           key: ${{ runner.os }}-${{ hashFiles('gradlew*') }}
 
+      - name: Maximize Build Space
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: false
+          large-packages: false
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
-        with:
-          gradle-home-cache-cleanup: true
 
       - name: 'Build the plugin'
         shell: pwsh
