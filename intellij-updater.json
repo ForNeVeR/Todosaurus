@@ -2,14 +2,14 @@
     "updates": [{
         "file": "gradle/libs.versions.toml",
         "field": "ideaSdk",
-        "kind": "intellij-idea-community",
+        "kind": "intellij-idea",
         "versionFlavor": "release",
         "versionConstraint": "latestWave",
         "order": "oldest"
     }, {
         "file": "gradle.properties",
         "field": "pluginUntilBuild",
-        "kind": "intellij-idea-community",
+        "kind": "intellij-idea",
         "versionFlavor": "release",
         "augmentation": "nextMajor"
     }, {
