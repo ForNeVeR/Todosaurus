@@ -412,7 +412,4 @@ class TodosaurusWizard(
             Disposer.dispose(step)
         }
     }
-
-    override fun getHelpID(): String?
-        = null
 }
