@@ -136,9 +136,10 @@ jobs:
           tool-cache: false
           large-packages: false
 
-      # Check out current repository
       - name: Fetch Sources
         uses: actions/checkout@v6
+        with:
+          fetch-depth: '0' # Qodana needs full history to run inspections
 
       # Set up Java environment for the next steps
       - name: Setup Java
