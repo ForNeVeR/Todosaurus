@@ -65,13 +65,13 @@ jobs:
         run: ./gradlew buildPlugin
 
       - name: Upload the artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: Todosaurus-${{ steps.version.outputs.version }}.zip
           path: build/distributions/Todosaurus-${{ steps.version.outputs.version }}.zip
 
       - name: Upload the changelog
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: changelog-section.md
           path: ./changelog-section.md
