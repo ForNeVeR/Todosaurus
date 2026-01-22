@@ -1,5 +1,5 @@
 let licenseHeader = """
-# SPDX-FileCopyrightText: 2024-2025 Friedrich von Never <friedrich@fornever.me>
+# SPDX-FileCopyrightText: 2024-2026 Friedrich von Never <friedrich@fornever.me>
 #
 # SPDX-License-Identifier: MIT
 
@@ -45,12 +45,17 @@ let workflows = [
             yield! steps
         ]
 
-    workflow "main" [
-        name "Main"
+    let mainTriggers = [
         onPushTo "main"
+        onPushTo "renovate/**"
         onPullRequestTo "main"
         onSchedule "0 0 * * 6"
         onWorkflowDispatch
+    ]
+
+    workflow "main" [
+        name "Main"
+        yield! mainTriggers
 
         dotNetJob "verify-workflows" [
             runsOn "ubuntu-24.04"
@@ -125,11 +130,8 @@ let workflows = [
 
     workflow "release" [
         name "Release"
-        onPushTo "main"
+        yield! mainTriggers
         onPushTags "v*"
-        onPullRequestTo "main"
-        onSchedule "0 0 * * 6"
-        onWorkflowDispatch
         dotNetJob "nuget" [
             jobPermission(PermissionKind.Contents, AccessKind.Write)
             runsOn "ubuntu-24.04"
