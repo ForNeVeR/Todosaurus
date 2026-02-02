@@ -5,7 +5,7 @@ let licenseHeader = """
 
 # This file is auto-generated.""".Trim()
 
-#r "nuget: Generaptor.Library, 1.9.1"
+#r "nuget: Generaptor, 1.9.1"
 
 open Generaptor
 open Generaptor.GitHubActions
@@ -65,7 +65,7 @@ let workflows = [
         dotNetJob "check" [
             strategy(failFast = false, matrix = [
                 "image", [
-                    "macos-15"
+                    "macos-14"
                     "ubuntu-24.04"
                     "ubuntu-24.04-arm"
                     "windows-11-arm"
