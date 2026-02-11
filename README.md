@@ -1,12 +1,12 @@
 <!--
-SPDX-FileCopyrightText: 2024-2025 Friedrich von Never <friedrich@fornever.me>
+SPDX-FileCopyrightText: 2024-2026 Friedrich von Never <friedrich@fornever.me>
 
 SPDX-License-Identifier: MIT
 -->
 
-FVNeverDotNetTemplate [![Status Zero][status-zero]][andivionian-status-classifier] [![FVNeverDotNetTemplate on nuget.org][nuget.badge]][nuget]
-========
-FVNeverDotNetTemplate is a fresh project deployed from a repository template.
+TodosaurusCli [![Status Zero][status-zero]][andivionian-status-classifier] [![TodosaurusCli on nuget.org][nuget.badge]][nuget]
+=============
+CLI for Todosaurus — a tool to process TODO issues in a repository.
 
 Documentation
 -------------
@@ -23,10 +23,10 @@ The license indication in the project's sources is compliant with the [REUSE spe
 
 [andivionian-status-classifier]: https://andivionian.fornever.me/v1/#status-zero-
 [status-zero]: https://img.shields.io/badge/status-zero-lightgrey.svg
-[nuget.badge]: https://img.shields.io/nuget/v/FVNeverDotNetTemplate
-[nuget]: https://www.nuget.org/packages/FVNeverDotNetTemplate
+[nuget.badge]: https://img.shields.io/nuget/v/TodosaurusCli
+[nuget]: https://www.nuget.org/packages/TodosaurusCli
 [reuse]: https://reuse.software/
-[docs]: https://FVNeverDotNetTemplateOwner.github.io/FVNeverDotNetTemplate
+[docs]: https://ForNeVeR.github.io/TodosaurusCli
 [docs.changelog]: CHANGELOG.md
 [docs.contributing]: CONTRIBUTING.md
 [docs.license]: LICENSE.txt

@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2024-2025 Friedrich von Never <friedrich@fornever.me>
+SPDX-FileCopyrightText: 2024-2026 Friedrich von Never <friedrich@fornever.me>
 
 SPDX-License-Identifier: MIT
 -->
@@ -13,5 +13,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ## [Unreleased] (0.0.0)
 This is the first published version of the package. It doesn't contain any features, serves the purpose of kickstarting the publication system, and to be an anchor for further additions to the package.
 
-[0.0.0]: https://github.com/FVNeverDotNetTemplateOwner/FVNeverDotNetTemplate/releases/tag/v0.0.0
-[Unreleased]: https://github.com/FVNeverDotNetTemplateOwner/FVNeverDotNetTemplate/compare/v0.0.0...HEAD
+[0.0.0]: https://github.com/ForNeVeR/Todosaurus/releases/tag/v0.0.0
+[Unreleased]: https://github.com/ForNeVeR/Todosaurus/compare/v0.0.0...HEAD

@@ -5,7 +5,7 @@
                 {
                     "src": "..",
                     "files": [
-                        "FVNeverDotNetTemplate/FVNeverDotNetTemplate.csproj"
+                        "TodosaurusCli/TodosaurusCli.csproj"
                     ]
                 }
             ],
@@ -36,8 +36,8 @@
             "modern"
         ],
         "globalMetadata": {
-            "_appName": "FVNeverDotNetTemplate",
-            "_appTitle": "FVNeverDotNetTemplate",
+            "_appName": "TodosaurusCli",
+            "_appTitle": "TodosaurusCli",
             "_enableSearch": true,
             "pdf": false
         }
