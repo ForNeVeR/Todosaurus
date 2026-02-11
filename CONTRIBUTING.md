@@ -1,5 +1,5 @@
 <!--
-SPDX-FileCopyrightText: 2024-2025 Friedrich von Never <friedrich@fornever.me>
+SPDX-FileCopyrightText: 2024-2026 Friedrich von Never <friedrich@fornever.me>
 
 SPDX-License-Identifier: MIT
 -->
@@ -9,13 +9,14 @@ Contributor Guide
 
 Prerequisites
 -------------
-To work with the project, you'll need [.NET SDK 9][dotnet-sdk] or later.
+To work with the project, you'll need [.NET SDK 10][dotnet-sdk] or later.
 
 Build
 -----
 Use the following shell command:
 
 ```console
+$ cd cli
 $ dotnet build
 ```
 
@@ -24,18 +25,9 @@ Test
 Use the following shell command:
 
 ```console
+$ cd cli
 $ dotnet test
 ```
-
-Test Documentation
-------------------
-To open the project documentation site locally, use the following shell commands:
-```console
-$ dotnet tool restore
-$ dotnet docfx docs/docfx.json --serve
-```
-
-Then, open http://localhost:8080/ and browse the documentation.
 
 License Automation
 ------------------

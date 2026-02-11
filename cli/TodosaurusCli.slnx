@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="TodosaurusCli.slnx.license" />
+    <File Path="Directory.Build.props" />
+    <File Path="global.json" />
+    <File Path="global.json.license" />
+  </Folder>
+  <Project Path="TodosaurusCli\TodosaurusCli.csproj" Type="C#" />
+</Solution>

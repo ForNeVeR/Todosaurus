@@ -1,16 +1,12 @@
-# SPDX-FileCopyrightText: 2025 Friedrich von Never <friedrich@fornever.me>
+# SPDX-FileCopyrightText: 2025-2026 Friedrich von Never <friedrich@fornever.me>
 #
 # SPDX-License-Identifier: MIT
 
 # IDE files:
-/.idea/
-/.vs/
+.idea/
+.vs/
 *.user
 
-# Generated documentation:
-/docs/_site/
-/docs/api/
-
-# Project binaries:
+# .NET binaries:
 bin/
 obj/
