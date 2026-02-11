@@ -1,9 +1,12 @@
 <Solution>
+  <Folder Name="/scripts/">
+    <File Path="../scripts/github-actions.fsx" />
+  </Folder>
   <Folder Name="/Solution Items/">
-    <File Path="TodosaurusCli.slnx.license" />
     <File Path="Directory.Build.props" />
     <File Path="global.json" />
     <File Path="global.json.license" />
+    <File Path="Todosaurus.slnx.license" />
   </Folder>
-  <Project Path="TodosaurusCli/TodosaurusCli.fsproj" />
+  <Project Path="Cli/Cli.fsproj" />
 </Solution>

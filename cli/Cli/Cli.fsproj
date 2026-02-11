@@ -8,9 +8,11 @@ SPDX-License-Identifier: MIT
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>net10.0</TargetFramework>
+        <RootNamespace>TodosaurusCli</RootNamespace>
     </PropertyGroup>
 
     <PropertyGroup Label="Packaging">
+        <PackageId>FVNever.Todosaurus.Cli</PackageId>
         <PackageDescription>CLI for Todosaurus — a tool to process TODO issues in a repository.</PackageDescription>
         <IsPackable>true</IsPackable>
         <PackAsTool>true</PackAsTool>

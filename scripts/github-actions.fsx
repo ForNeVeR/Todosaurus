@@ -85,23 +85,6 @@ let workflows = [
             )
         ]
 
-        dotNetJob "check-docs" [
-            runsOn "ubuntu-24.04"
-            step(
-                name = "Restore dotnet tools",
-                run = "dotnet tool restore"
-            )
-            step(
-                name = "Validate docfx",
-                run = "dotnet docfx docs/docfx.json --warningsAsErrors"
-            )
-        ]
-
-        dotNetJob "check-all-warnings" [ // separate check not bothering the local compilation
-            runsOn "ubuntu-24.04"
-            step(name = "Verify with full warning check", run = "dotnet build -p:AllWarningsMode=true")
-        ]
-
         job "licenses" [
             runsOn "ubuntu-24.04"
             step(
@@ -155,7 +138,7 @@ let workflows = [
                 name = "Upload artifacts",
                 usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
-                    "path", "./release-notes.md\n./TodosaurusCli/bin/Release/TodosaurusCli.${{ steps.version.outputs.version }}.nupkg\n./TodosaurusCli/bin/Release/TodosaurusCli.${{ steps.version.outputs.version }}.snupkg"
+                    "path", "./release-notes.md\n./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.nupkg\n./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.snupkg"
                 ]
             )
             step(
@@ -164,52 +147,14 @@ let workflows = [
                 usesSpec = Auto "softprops/action-gh-release",
                 options = Map.ofList [
                     "body_path", "./release-notes.md"
-                    "files", "./TodosaurusCli/bin/Release/TodosaurusCli.${{ steps.version.outputs.version }}.nupkg\n./TodosaurusCli/bin/Release/TodosaurusCli.${{ steps.version.outputs.version }}.snupkg"
-                    "name", "TodosaurusCli v${{ steps.version.outputs.version }}"
+                    "files", "./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.nupkg\n./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.snupkg"
+                    "name", "Todosaurus v${{ steps.version.outputs.version }}"
                 ]
             )
             step(
                 condition = "startsWith(github.ref, 'refs/tags/v')",
                 name = "Push artifact to NuGet",
-                run = "dotnet nuget push ./TodosaurusCli/bin/Release/TodosaurusCli.${{ steps.version.outputs.version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}"
-            )
-        ]
-    ]
-
-    workflow "docs" [
-        name "Docs"
-        onPushTo "main"
-        onWorkflowDispatch
-        workflowPermission(PermissionKind.Actions, AccessKind.Read)
-        workflowPermission(PermissionKind.Pages, AccessKind.Write)
-        workflowPermission(PermissionKind.IdToken, AccessKind.Write)
-        workflowConcurrency(
-            group = "pages",
-            cancelInProgress = false
-        )
-        dotNetJob "publish-docs" [
-            environment(name = "github-pages", url = "${{ steps.deployment.outputs.page_url }}")
-            runsOn "ubuntu-24.04"
-
-            step(
-                name = "Set up .NET tools",
-                run = "dotnet tool restore"
-            )
-            step(
-                name = "Build the documentation",
-                run = "dotnet docfx docs/docfx.json"
-            )
-            step(
-                name = "Upload artifact",
-                usesSpec = Auto "actions/upload-pages-artifact",
-                options = Map.ofList [
-                    "path", "docs/_site"
-                ]
-            )
-            step(
-                name = "Deploy to GitHub Pages",
-                id = "deployment",
-                usesSpec = Auto "actions/deploy-pages"
+                run = "dotnet nuget push ./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}"
             )
         ]
     ]
