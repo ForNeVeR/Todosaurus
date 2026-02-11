@@ -1,66 +1,94 @@
-# SPDX-FileCopyrightText: 2024-2026 Friedrich von Never <friedrich@fornever.me>
+# SPDX-FileCopyrightText: 2000-2021 JetBrains s.r.o.
+# SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 #
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: Apache-2.0
 
-# This file is auto-generated.
 name: Release
 on:
   push:
     branches:
-    - main
-    - renovate/**
+      - main
+      - renovate/**
     tags:
-    - v*
+      - 'v*'
   pull_request:
     branches:
-    - main
+      - main
   schedule:
-  - cron: 0 0 * * 6
-  workflow_dispatch: 
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
 jobs:
-  nuget:
+
+  # Prepare and publish the plugin to JetBrains Marketplace repository
+  release:
+    name: Publish Plugin
+    runs-on: ubuntu-latest
     permissions:
       contents: write
-    runs-on: ubuntu-24.04
-    env:
-      DOTNET_CLI_TELEMETRY_OPTOUT: 1
-      DOTNET_NOLOGO: 1
-      NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
     steps:
-    - name: Check out the sources
-      uses: actions/checkout@v6
-    - name: Set up .NET SDK
-      uses: actions/setup-dotnet@v5
-    - name: Cache NuGet packages
-      uses: actions/cache@v5
-      with:
-        key: ${{ runner.os }}.nuget.${{ hashFiles('**/*.*proj', '**/*.props') }}
-        path: ${{ env.NUGET_PACKAGES }}
-    - id: version
-      name: Get version
-      shell: pwsh
-      run: echo "version=$(scripts/Get-Version.ps1 -RefName $env:GITHUB_REF)" >> $env:GITHUB_OUTPUT
-    - run: dotnet pack --configuration Release -p:Version=${{ steps.version.outputs.version }}
-    - name: Read changelog
-      uses: ForNeVeR/ChangelogAutomation.action@v2
-      with:
-        output: ./release-notes.md
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v6
-      with:
-        path: |-
-          ./release-notes.md
-          ./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.nupkg
-          ./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.snupkg
-    - if: startsWith(github.ref, 'refs/tags/v')
-      name: Create a release
-      uses: softprops/action-gh-release@v2
-      with:
-        body_path: ./release-notes.md
-        files: |-
-          ./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.nupkg
-          ./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.snupkg
-        name: Todosaurus v${{ steps.version.outputs.version }}
-    - if: startsWith(github.ref, 'refs/tags/v')
-      name: Push artifact to NuGet
-      run: dotnet nuget push ./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}
+      - name: Read version from Git ref
+        id: version
+        shell: pwsh
+        run: echo "version=$(if ($env:GITHUB_REF.StartsWith('refs/tags/v')) { $env:GITHUB_REF -replace '^refs/tags/v', '' } else { 'next' })" >> $env:GITHUB_OUTPUT
+
+      # Check out the current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Read the changelog
+        uses: ForNeVeR/ChangelogAutomation.action@v2
+        with:
+          input: ./CHANGELOG.md
+          output: ./changelog-section.md
+
+      - name: 'Cache downloaded JDK'
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.local/share/gradle-jvm
+            ~/AppData/Local/gradle-jvm
+          key: ${{ runner.os }}-${{ hashFiles('gradlew*') }}
+
+      - name: Maximize Build Space
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: false
+          large-packages: false
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: 'Build the plugin'
+        shell: pwsh
+        run: ./gradlew buildPlugin
+
+      - name: Upload the artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: Todosaurus-${{ steps.version.outputs.version }}.zip
+          path: build/distributions/Todosaurus-${{ steps.version.outputs.version }}.zip
+
+      - name: Upload the changelog
+        uses: actions/upload-artifact@v6
+        with:
+          name: changelog-section.md
+          path: ./changelog-section.md
+
+      - if: startsWith(github.ref, 'refs/tags/v')
+        name: Create the release
+        shell: pwsh
+        run: scripts/New-Release.ps1 -Version $env:VERSION -ReleaseNotesFilePath ./changelog-section.md -FileToUpload $env:FILE_TO_UPLOAD
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+          FILE_TO_UPLOAD: build/distributions/Todosaurus-${{ steps.version.outputs.version }}.zip
+
+      # Publish the plugin to JetBrains Marketplace
+      - if: startsWith(github.ref, 'refs/tags/v')
+        name: Publish the plugin
+        env:
+          PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+        run: ./gradlew publishPlugin

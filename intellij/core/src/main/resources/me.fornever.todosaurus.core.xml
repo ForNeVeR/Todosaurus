@@ -1,0 +1,47 @@
+<!--
+  ~ SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+  ~
+  ~ SPDX-License-Identifier: MIT
+  -->
+
+<idea-plugin package="me.fornever.todosaurus.core">
+
+    <dependencies>
+        <plugin id="Git4Idea"/>
+        <plugin id="com.intellij.tasks"/>
+    </dependencies>
+
+    <resource-bundle>messages.TodosaurusCore</resource-bundle>
+
+    <actions>
+        <action id="CreateNewIssue" class="me.fornever.todosaurus.core.ui.actions.CreateNewIssueAction">
+            <add-to-group group-id="VersionControlsGroup"/> <!-- TODO[#18]: This is a temporary solution until the TODO tool window supports a proper action group -->
+        </action>
+        <action id="OpenReportedIssueInBrowser" class="me.fornever.todosaurus.core.ui.actions.OpenReportedIssueInBrowserAction">
+            <add-to-group group-id="VersionControlsGroup"/> <!-- TODO[#18]: This is a temporary solution until the TODO tool window supports a proper action group -->
+        </action>
+    </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable parentId="tools"
+                                 instance="me.fornever.todosaurus.core.settings.ui.TodosaurusConfigurable"
+                                 id="me.fornever.todosaurus.settings.ui.TodosaurusConfigurable"
+                                 key="settings.page.title"/>
+
+        <notificationGroup id="TodosaurusNotifications"
+                           displayType="BALLOON"
+                           key="notifications.group.name"/>
+
+        <codeInsight.lineMarkerProvider implementationClass="me.fornever.todosaurus.core.issues.ui.gutter.ToDoLineMarkerProvider"
+                                        language=""/>
+    </extensions>
+
+    <extensionPoints>
+        <extensionPoint qualifiedName="me.fornever.todosaurus.issueTrackerFactory"
+                        interface="me.fornever.todosaurus.core.issueTrackers.IssueTrackerFactory"
+                        dynamic="true"/>
+        <extensionPoint qualifiedName="me.fornever.todosaurus.issueOptionsFactory"
+                        interface="me.fornever.todosaurus.core.issues.ui.wizard.IssueOptionsFactory"
+                        dynamic="false"/>
+    </extensionPoints>
+</idea-plugin>

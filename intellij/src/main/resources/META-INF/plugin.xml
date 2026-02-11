@@ -1,0 +1,20 @@
+<!--
+  ~ SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+  ~
+  ~ SPDX-License-Identifier: MIT
+  -->
+
+<idea-plugin>
+    <id>me.fornever.todosaurus</id>
+    <name>Todosaurus</name>
+    <vendor>fornever</vendor>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>Git4Idea</depends>
+
+    <content>
+        <module name="me.fornever.todosaurus.core" loading="required" />
+        <module name="me.fornever.todosaurus.gitHub" />
+        <module name="me.fornever.todosaurus.gitLab" />
+    </content>
+</idea-plugin>

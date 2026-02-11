@@ -8,6 +8,18 @@ path = [
     ".idea/**/**",
     "*.DotSettings"
 ]
-precedence = "aggregate"
-SPDX-FileCopyrightText = "2025-2026 Friedrich von Never <friedrich@fornever.me>"
+precedence = "override"
+SPDX-FileCopyrightText = "2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>"
 SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = ".run/*.xml"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2000-2021 JetBrains s.r.o."
+SPDX-License-Identifier = "Apache-2.0"
+
+[[annotations]]
+path = ["gradle/wrapper/gradle-wrapper.jar", "gradle/wrapper/gradle-wrapper.properties"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Gradle authors <https://gradle.org/>"
+SPDX-License-Identifier = "Apache-2.0"

@@ -1,0 +1,19 @@
+# SPDX-FileCopyrightText: 2000-2021 JetBrains s.r.o.
+# SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+#
+# SPDX-License-Identifier: MIT AND Apache-2.0
+
+# Qodana configuration:
+# https://www.jetbrains.com/help/qodana/qodana-yaml.html
+
+version: 1.0
+linter: jetbrains/qodana-jvm-community:latest
+projectJDK: "17"
+profile:
+  name: qodana.recommended
+exclude:
+  - name: All
+    paths:
+      - .qodana
+bootstrap: |
+  ./gradlew clean assemble

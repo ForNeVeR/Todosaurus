@@ -5,6 +5,12 @@
     ],
     "automerge": true,
     "automergeType": "branch",
+    "packageRules": [
+        {
+            "matchPackagePatterns": ["org.jetbrains.kotlin:kotlin-gradle-plugin"],
+            "enabled": false
+        }
+    ],
     "customManagers": [
         {
             "description": "Update the Generaptor package.",

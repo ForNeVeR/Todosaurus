@@ -1,0 +1,18 @@
+<!--
+  ~ SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+  ~
+  ~ SPDX-License-Identifier: MIT
+  -->
+
+<idea-plugin package="me.fornever.todosaurus.gitHub">
+    <dependencies>
+        <module name="me.fornever.todosaurus.core"/>
+        <plugin id="com.intellij.tasks"/>
+        <plugin id="org.jetbrains.plugins.github"/>
+    </dependencies>
+
+    <extensions defaultExtensionNs="me.fornever.todosaurus">
+        <issueTrackerFactory implementation="me.fornever.todosaurus.gitHub.GitHubTrackerFactory"/>
+        <issueOptionsFactory implementation="me.fornever.todosaurus.gitHub.ui.wizard.GitHubLabelsOptionsFactory"/>
+    </extensions>
+</idea-plugin>

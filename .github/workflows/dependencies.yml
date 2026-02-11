@@ -1,0 +1,45 @@
+# SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+#
+# SPDX-License-Identifier: MIT
+
+name: "Dependency Checker"
+on:
+  schedule:
+    - cron: '0 0 * * *' # Every day
+  push:
+    branches:
+      - main
+      - renovate/**
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  main:
+    permissions:
+      contents: write
+      pull-requests: write
+
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: "Check out the sources"
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - id: update
+        uses: ForNeVeR/intellij-updater@v1
+        name: "Update the dependency versions"
+
+      - if: steps.update.outputs.has-changes == 'true' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        name: "Create a PR"
+        shell: pwsh
+        run: ./scripts/New-PR.ps1 -BranchName $env:BRANCH_NAME -CommitMessage $env:COMMIT_MESSAGE -PrTitle $env:PR_TITLE -PrBodyPath $env:PR_BODY_PATH
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH_NAME: ${{ steps.update.outputs.branch-name }}
+          COMMIT_MESSAGE: ${{ steps.update.outputs.commit-message }}
+          PR_TITLE: ${{ steps.update.outputs.pr-title }}
+          PR_BODY_PATH: ${{ steps.update.outputs.pr-body-path }}

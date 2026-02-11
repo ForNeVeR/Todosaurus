@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2025-2026 Friedrich von Never <friedrich@fornever.me>
+# SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 #
 # SPDX-License-Identifier: MIT
 
@@ -7,6 +7,14 @@
 .vs/
 *.user
 
+# IntelliJ Platform Gradle Plugin storage:
+.intellijPlatform/
+
 # .NET binaries:
 bin/
 obj/
+
+# Gradle build files:
+.gradle/
+.kotlin/
+build/
