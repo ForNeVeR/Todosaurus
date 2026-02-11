@@ -5,5 +5,5 @@
     <File Path="global.json" />
     <File Path="global.json.license" />
   </Folder>
-  <Project Path="TodosaurusCli\TodosaurusCli.csproj" Type="C#" />
+  <Project Path="TodosaurusCli/TodosaurusCli.fsproj" />
 </Solution>
