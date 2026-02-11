@@ -1,33 +1,22 @@
 <!--
-SPDX-FileCopyrightText: 2024-2026 Friedrich von Never <friedrich@fornever.me>
+SPDX-FileCopyrightText: 2026 Friedrich von Never <friedrich@fornever.me>
 
 SPDX-License-Identifier: MIT
 -->
 
 Contributor Guide
 =================
+<!-- REUSE-IgnoreStart -->
+This repository hosts two sub-projects: [Todosaurus IntelliJ plugin][intellij] and [Todosaurus CLI][cli].
+
+See the `CONTRIBUTING.md` files in the corresponding subfolders for details on working on particular projects. This file will contain general description for working with the repository, applicable to all the subprojects.
 
 Prerequisites
 -------------
-To work with the project, you'll need [.NET SDK 10][dotnet-sdk] or later.
-
-Build
------
-Use the following shell command:
-
-```console
-$ cd cli
-$ dotnet build
-```
-
-Test
-----
-Use the following shell command:
-
-```console
-$ cd cli
-$ dotnet test
-```
+Some of the tasks to work with general repository infrastructure will require you to install the following components:
+- the [REUSE][reuse] tool;
+- [PowerShell Core][powershell];
+- [.NET SDK 10][dotnet-sdk] or later.
 
 License Automation
 ------------------
@@ -64,6 +53,10 @@ Then run the following shell command:
 $ dotnet fsi scripts/github-actions.fsx
 ```
 
+[cli]: cli/CONTRIBUTING.md
 [dotnet-sdk]: https://dotnet.microsoft.com/en-us/download
+[intellij]: intellij/CONTRIBUTING.md
 [powershell]: https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell
 [reuse]: https://reuse.software/
+
+<!-- REUSE-IgnoreEnd -->
