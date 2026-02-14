@@ -168,11 +168,11 @@ let workflows = [
             runsOn "ubuntu-24.04"
             step(
                 name = "Fetch Sources",
-                uses = "actions/checkout@v6"
+                usesSpec = Auto "actions/checkout"
             )
             step(
                 name = "Cache downloaded JDK",
-                uses = "actions/cache@v5",
+                usesSpec = Auto "actions/cache",
                 options = Map.ofList [
                     "path", "~/.local/share/gradle-jvm\n~/AppData/Local/gradle-jvm\n"
                     "key", "${{ runner.os }}-${{ hashFiles('gradlew*') }}"
@@ -180,7 +180,7 @@ let workflows = [
             )
             step(
                 name = "Maximize Build Space",
-                uses = "jlumbroso/free-disk-space@v1.3.1",
+                usesSpec = Auto "jlumbroso/free-disk-space",
                 options = Map.ofList [
                     "tool-cache", "false"
                     "large-packages", "false"
@@ -188,7 +188,7 @@ let workflows = [
             )
             step(
                 name = "Setup Gradle",
-                uses = "gradle/actions/setup-gradle@v5"
+                usesSpec = Auto "gradle/actions/setup-gradle"
             )
             step(
                 name = "Build plugin",
@@ -202,7 +202,7 @@ let workflows = [
             )
             step(
                 name = "Upload artifact",
-                uses = "actions/upload-artifact@v6",
+                usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
                     "name", "${{ steps.artifact.outputs.filename }}"
                     "path", "./build/distributions/content/*/*"
@@ -215,11 +215,11 @@ let workflows = [
             runsOn "ubuntu-24.04"
             step(
                 name = "Fetch Sources",
-                uses = "actions/checkout@v6"
+                usesSpec = Auto "actions/checkout"
             )
             step(
                 name = "Maximize Build Space",
-                uses = "jlumbroso/free-disk-space@v1.3.1",
+                usesSpec = Auto "jlumbroso/free-disk-space",
                 options = Map.ofList [
                     "tool-cache", "false"
                     "large-packages", "false"
@@ -227,7 +227,7 @@ let workflows = [
             )
             step(
                 name = "Setup Gradle",
-                uses = "gradle/actions/setup-gradle@v5"
+                usesSpec = Auto "gradle/actions/setup-gradle"
             )
             step(
                 name = "Run Tests",
@@ -235,7 +235,7 @@ let workflows = [
             )
             step(
                 name = "Upload Test Results",
-                uses = "actions/upload-artifact@v6",
+                usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
                     "name", "${{ runner.os }}.test-results"
                     "path", "*/build/reports/tests"
@@ -244,7 +244,7 @@ let workflows = [
             )
             step(
                 name = "Upload Test Logs",
-                uses = "actions/upload-artifact@v6",
+                usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
                     "name", "${{ runner.os }}.test-logs"
                     "path", "*/build/idea-sandbox/*/log-test"
@@ -261,7 +261,7 @@ let workflows = [
             jobPermission(PermissionKind.PullRequests, AccessKind.Write)
             step(
                 name = "Maximize Build Space",
-                uses = "jlumbroso/free-disk-space@v1.3.1",
+                usesSpec = Auto "jlumbroso/free-disk-space",
                 options = Map.ofList [
                     "tool-cache", "false"
                     "large-packages", "false"
@@ -269,14 +269,14 @@ let workflows = [
             )
             step(
                 name = "Fetch Sources",
-                uses = "actions/checkout@v6",
+                usesSpec = Auto "actions/checkout",
                 options = Map.ofList [
                     "fetch-depth", "0"
                 ]
             )
             step(
                 name = "Setup Java",
-                uses = "actions/setup-java@v5",
+                usesSpec = Auto "actions/setup-java",
                 options = Map.ofList [
                     "distribution", "oracle"
                     "java-version", "21"
@@ -284,7 +284,7 @@ let workflows = [
             )
             step(
                 name = "Qodana - Code Inspection",
-                uses = "JetBrains/qodana-action@v2025.3.1",
+                usesSpec = Auto "JetBrains/qodana-action",
                 options = Map.ofList [
                     "cache-default-branch-only", "true"
                 ]
@@ -296,7 +296,7 @@ let workflows = [
             runsOn "ubuntu-24.04"
             step(
                 name = "Maximize Build Space",
-                uses = "jlumbroso/free-disk-space@v1.3.1",
+                usesSpec = Auto "jlumbroso/free-disk-space",
                 options = Map.ofList [
                     "tool-cache", "false"
                     "large-packages", "false"
@@ -304,11 +304,11 @@ let workflows = [
             )
             step(
                 name = "Fetch Sources",
-                uses = "actions/checkout@v6"
+                usesSpec = Auto "actions/checkout"
             )
             step(
                 name = "Setup Gradle",
-                uses = "gradle/actions/setup-gradle@v5"
+                usesSpec = Auto "gradle/actions/setup-gradle"
             )
             step(
                 name = "Run Plugin Verification tasks",
@@ -317,7 +317,7 @@ let workflows = [
             step(
                 name = "Collect Plugin Verifier Result",
                 condition = "${{ always() }}",
-                uses = "actions/upload-artifact@v6",
+                usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
                     "name", "pluginVerifier-result"
                     "path", "${{ github.workspace }}/build/reports/pluginVerifier"
@@ -328,11 +328,11 @@ let workflows = [
             runsOn "ubuntu-24.04"
             step(
                 name = "Check out the sources",
-                uses = "actions/checkout@v6"
+                usesSpec = Auto "actions/checkout"
             )
             step(
                 name = "REUSE license check",
-                uses = "fsfe/reuse-action@v6"
+                usesSpec = Auto "fsfe/reuse-action"
             )
         ]
     ]
@@ -379,14 +379,14 @@ let workflows = [
             )
             step(
                 name = "Fetch Sources",
-                uses = "actions/checkout@v6",
+                usesSpec = Auto "actions/checkout",
                 options = Map.ofList [
                     "ref", "${{ github.event.release.tag_name }}"
                 ]
             )
             step(
                 name = "Cache downloaded JDK",
-                uses = "actions/cache@v5",
+                usesSpec = Auto "actions/cache",
                 options = Map.ofList [
                     "path", "~/.local/share/gradle-jvm\n~/AppData/Local/gradle-jvm\n"
                     "key", "${{ runner.os }}-${{ hashFiles('gradlew*') }}"
@@ -394,7 +394,7 @@ let workflows = [
             )
             step(
                 name = "Maximize Build Space",
-                uses = "jlumbroso/free-disk-space@v1.3.1",
+                usesSpec = Auto "jlumbroso/free-disk-space",
                 options = Map.ofList [
                     "tool-cache", "false"
                     "large-packages", "false"
@@ -402,7 +402,7 @@ let workflows = [
             )
             step(
                 name = "Setup Gradle",
-                uses = "gradle/actions/setup-gradle@v5"
+                usesSpec = Auto "gradle/actions/setup-gradle"
             )
             step(
                 name = "Build the plugin",
@@ -411,7 +411,7 @@ let workflows = [
             )
             step(
                 name = "Upload the artifact",
-                uses = "actions/upload-artifact@v6",
+                usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
                     "name", "Todosaurus-${{ steps.version.outputs.version }}.zip"
                     "path", "build/distributions/Todosaurus-${{ steps.version.outputs.version }}.zip"
@@ -446,7 +446,7 @@ let workflows = [
             )
             step(
                 name = "Read the changelog",
-                uses = "ForNeVeR/ChangelogAutomation.action@v2",
+                usesSpec = Auto "ForNeVeR/ChangelogAutomation.action",
                 options = Map.ofList [
                     "input", "./CHANGELOG.md"
                     "output", "./changelog-section.md"
@@ -473,7 +473,7 @@ let workflows = [
 
             step(
                 name = "Upload the NuGet artifact",
-                uses = "actions/upload-artifact@v6",
+                usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
                     "name", "nuget"
                     "path", "nuget/"
@@ -481,7 +481,7 @@ let workflows = [
             )
             step(
                 name = "Upload the IntelliJ plugin",
-                uses = "actions/upload-artifact@v6",
+                usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
                     "name", "intellij"
                     "path", "intellij/Todosaurus-${{ steps.version.outputs.version }}.zip"
@@ -489,7 +489,7 @@ let workflows = [
             )
             step(
                 name = "Upload the changelog",
-                uses = "actions/upload-artifact@v6",
+                usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
                     "name", "changelog-section.md"
                     "path", "./changelog-section.md"
