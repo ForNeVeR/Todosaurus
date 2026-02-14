@@ -372,17 +372,14 @@ let workflows = [
             runsOn "ubuntu-24.04"
             jobPermission(PermissionKind.Contents, AccessKind.Write)
             step(
+                name = "Check out the sources",
+                usesSpec = Auto "actions/checkout"
+            )
+            step(
                 name = "Get version",
                 id = "version",
                 shell = "pwsh",
                 run = "echo \"version=$(scripts/Get-Version.ps1 -RefName $env:GITHUB_REF)\" >> $env:GITHUB_OUTPUT"
-            )
-            step(
-                name = "Fetch Sources",
-                usesSpec = Auto "actions/checkout",
-                options = Map.ofList [
-                    "ref", "${{ github.event.release.tag_name }}"
-                ]
             )
             step(
                 name = "Cache downloaded JDK",
