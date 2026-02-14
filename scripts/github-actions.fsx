@@ -372,10 +372,10 @@ let workflows = [
             runsOn "ubuntu-24.04"
             jobPermission(PermissionKind.Contents, AccessKind.Write)
             step(
-                name = "Read version from Git ref",
+                name = "Get version",
                 id = "version",
                 shell = "pwsh",
-                run = "echo \"version=$(if ($env:GITHUB_REF.StartsWith('refs/tags/v')) { $env:GITHUB_REF -replace '^refs/tags/v', '' } else { 'next' })\" >> $env:GITHUB_OUTPUT"
+                run = "echo \"version=$(scripts/Get-Version.ps1 -RefName $env:GITHUB_REF)\" >> $env:GITHUB_OUTPUT"
             )
             step(
                 name = "Fetch Sources",
@@ -435,10 +435,10 @@ let workflows = [
             needs "intellij"
 
             step(
-                name = "Read version from Git ref",
+                name = "Get version",
                 id = "version",
                 shell = "pwsh",
-                run = "echo \"version=$(if ($env:GITHUB_REF.StartsWith('refs/tags/v')) { $env:GITHUB_REF -replace '^refs/tags/v', '' } else { 'next' })\" >> $env:GITHUB_OUTPUT"
+                run = "echo \"version=$(scripts/Get-Version.ps1 -RefName $env:GITHUB_REF)\" >> $env:GITHUB_OUTPUT"
             )
             step(
                 name = "Check out the sources",
