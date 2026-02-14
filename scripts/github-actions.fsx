@@ -342,6 +342,7 @@ let workflows = [
         yield! mainTriggers
         onPushTags "v*"
         dotNetJob "nuget" [
+            jobName "NuGet Package"
             jobPermission(PermissionKind.Contents, AccessKind.Write)
             runsOn "ubuntu-24.04"
             step(
@@ -358,7 +359,10 @@ let workflows = [
                 usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
                     "name", "nuget"
-                    "path", "./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.nupkg\n./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.snupkg"
+                    "path", [
+                        "./cli/Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.nupkg"
+                        "./cli/Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.snupkg"
+                    ] |> String.concat "\n"
                 ]
             )
             step(
@@ -368,7 +372,7 @@ let workflows = [
             )
         ]
         job "intellij" [
-            jobName "Publish Plugin"
+            jobName "IntelliJ Plugin"
             runsOn "ubuntu-24.04"
             jobPermission(PermissionKind.Contents, AccessKind.Write)
             step(
