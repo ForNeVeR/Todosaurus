@@ -1,11 +1,12 @@
 let licenseHeader = """
-# SPDX-FileCopyrightText: 2024-2026 Friedrich von Never <friedrich@fornever.me>
+# SPDX-FileCopyrightText: 2000-2021 JetBrains s.r.o.
+# SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 #
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: MIT AND Apache-2.0
 
 # This file is auto-generated.""".Trim()
 
-#r "nuget: Generaptor, 1.9.1"
+#r "nuget: Generaptor, 1.11.0"
 
 open Generaptor
 open Generaptor.GitHubActions
@@ -53,36 +54,13 @@ let workflows = [
         onWorkflowDispatch
     ]
 
-    workflow "main" [
-        name "Main"
+    workflow "infra" [
+        name "Infrastructure"
         yield! mainTriggers
 
         dotNetJob "verify-workflows" [
             runsOn "ubuntu-24.04"
             step(run = "dotnet fsi ./scripts/github-actions.fsx verify")
-        ]
-
-        dotNetJob "check" [
-            strategy(failFast = false, matrix = [
-                "image", [
-                    "macos-15"
-                    "ubuntu-24.04"
-                    "ubuntu-24.04-arm"
-                    "windows-11-arm"
-                    "windows-2025"
-                ]
-            ])
-            runsOn "${{ matrix.image }}"
-
-            step(
-                name = "Build",
-                run = "dotnet build"
-            )
-            step(
-                name = "Test",
-                run = "dotnet test",
-                timeoutMin = 10
-            )
         ]
 
         job "licenses" [
@@ -111,6 +89,254 @@ let workflows = [
         ]
     ]
 
+    workflow "dependencies" [
+        name "Dependency Updater"
+        yield! mainTriggers
+
+        job "main" [
+            jobPermission(PermissionKind.Contents, AccessKind.Write)
+            jobPermission(PermissionKind.PullRequests, AccessKind.Write)
+            runsOn "ubuntu-24.04"
+            jobTimeout 15
+            step(
+                name = "Check out the sources",
+                usesSpec = Auto "actions/checkout",
+                options = Map.ofList [
+                    "fetch-depth", "0"
+                ]
+            )
+            step(
+                id = "update",
+                usesSpec = Auto "ForNeVeR/intellij-updater",
+                name = "Update the dependency versions"
+            )
+            step(
+                condition = "steps.update.outputs.has-changes == 'true' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')",
+                name = "Create a PR",
+                shell = "pwsh",
+                run = "./scripts/New-PR.ps1 -BranchName $env:BRANCH_NAME -CommitMessage $env:COMMIT_MESSAGE -PrTitle $env:PR_TITLE -PrBodyPath $env:PR_BODY_PATH",
+                env = Map.ofList [
+                    "GITHUB_TOKEN", "${{ secrets.GITHUB_TOKEN }}"
+                    "BRANCH_NAME", "${{ steps.update.outputs.branch-name }}"
+                    "COMMIT_MESSAGE", "${{ steps.update.outputs.commit-message }}"
+                    "PR_TITLE", "${{ steps.update.outputs.pr-title }}"
+                    "PR_BODY_PATH", "${{ steps.update.outputs.pr-body-path }}"
+                ]
+            )
+        ]
+    ]
+
+    workflow "cli" [
+        name "Main"
+        yield! mainTriggers
+
+        dotNetJob "check" [
+            strategy(failFast = false, matrix = [
+                "image", [
+                    "macos-15"
+                    "ubuntu-24.04"
+                    "ubuntu-24.04-arm"
+                    "windows-11-arm"
+                    "windows-2025"
+                ]
+            ])
+            runsOn "${{ matrix.image }}"
+
+            step(
+                name = "Build",
+                run = "dotnet build"
+            )
+            step(
+                name = "Test",
+                run = "dotnet test",
+                timeoutMin = 10
+            )
+        ]
+    ]
+
+    workflow "intellij" [
+        name "Build"
+        onPushTo "main"
+        onPushTo "renovate/**"
+        onPullRequest
+        workflowConcurrency(
+            group = "${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}",
+            cancelInProgress = true
+        )
+        job "build" [
+            jobName "Build"
+            runsOn "ubuntu-24.04"
+            step(
+                name = "Fetch Sources",
+                uses = "actions/checkout@v6"
+            )
+            step(
+                name = "Cache downloaded JDK",
+                uses = "actions/cache@v5",
+                options = Map.ofList [
+                    "path", "~/.local/share/gradle-jvm\n~/AppData/Local/gradle-jvm\n"
+                    "key", "${{ runner.os }}-${{ hashFiles('gradlew*') }}"
+                ]
+            )
+            step(
+                name = "Maximize Build Space",
+                uses = "jlumbroso/free-disk-space@v1.3.1",
+                options = Map.ofList [
+                    "tool-cache", "false"
+                    "large-packages", "false"
+                ]
+            )
+            step(
+                name = "Setup Gradle",
+                uses = "gradle/actions/setup-gradle@v5"
+            )
+            step(
+                name = "Build plugin",
+                run = "./gradlew buildPlugin"
+            )
+            step(
+                name = "Prepare Plugin Artifact",
+                id = "artifact",
+                shell = "bash",
+                run = "cd ${{ github.workspace }}/build/distributions\nFILENAME=`ls *.zip`\nunzip \"$FILENAME\" -d content\n\necho \"filename=${FILENAME:0:-4}\" >> $GITHUB_OUTPUT\n"
+            )
+            step(
+                name = "Upload artifact",
+                uses = "actions/upload-artifact@v6",
+                options = Map.ofList [
+                    "name", "${{ steps.artifact.outputs.filename }}"
+                    "path", "./build/distributions/content/*/*"
+                ]
+            )
+        ]
+        job "test" [
+            jobName "Test"
+            needs "build"
+            runsOn "ubuntu-24.04"
+            step(
+                name = "Fetch Sources",
+                uses = "actions/checkout@v6"
+            )
+            step(
+                name = "Maximize Build Space",
+                uses = "jlumbroso/free-disk-space@v1.3.1",
+                options = Map.ofList [
+                    "tool-cache", "false"
+                    "large-packages", "false"
+                ]
+            )
+            step(
+                name = "Setup Gradle",
+                uses = "gradle/actions/setup-gradle@v5"
+            )
+            step(
+                name = "Run Tests",
+                run = "./gradlew check"
+            )
+            step(
+                name = "Upload Test Results",
+                uses = "actions/upload-artifact@v6",
+                options = Map.ofList [
+                    "name", "${{ runner.os }}.test-results"
+                    "path", "*/build/reports/tests"
+                ],
+                condition = "${{ always() }}"
+            )
+            step(
+                name = "Upload Test Logs",
+                uses = "actions/upload-artifact@v6",
+                options = Map.ofList [
+                    "name", "${{ runner.os }}.test-logs"
+                    "path", "*/build/idea-sandbox/*/log-test"
+                ],
+                condition = "${{ always() }}"
+            )
+        ]
+        job "inspectCode" [
+            jobName "Inspect code"
+            needs "build"
+            runsOn "ubuntu-24.04"
+            jobPermission(PermissionKind.Contents, AccessKind.Write)
+            jobPermission(PermissionKind.Checks, AccessKind.Write)
+            jobPermission(PermissionKind.PullRequests, AccessKind.Write)
+            step(
+                name = "Maximize Build Space",
+                uses = "jlumbroso/free-disk-space@v1.3.1",
+                options = Map.ofList [
+                    "tool-cache", "false"
+                    "large-packages", "false"
+                ]
+            )
+            step(
+                name = "Fetch Sources",
+                uses = "actions/checkout@v6",
+                options = Map.ofList [
+                    "fetch-depth", "0"
+                ]
+            )
+            step(
+                name = "Setup Java",
+                uses = "actions/setup-java@v5",
+                options = Map.ofList [
+                    "distribution", "oracle"
+                    "java-version", "21"
+                ]
+            )
+            step(
+                name = "Qodana - Code Inspection",
+                uses = "JetBrains/qodana-action@v2025.3.1",
+                options = Map.ofList [
+                    "cache-default-branch-only", "true"
+                ]
+            )
+        ]
+        job "verify" [
+            jobName "Verify plugin"
+            needs "build"
+            runsOn "ubuntu-24.04"
+            step(
+                name = "Maximize Build Space",
+                uses = "jlumbroso/free-disk-space@v1.3.1",
+                options = Map.ofList [
+                    "tool-cache", "false"
+                    "large-packages", "false"
+                ]
+            )
+            step(
+                name = "Fetch Sources",
+                uses = "actions/checkout@v6"
+            )
+            step(
+                name = "Setup Gradle",
+                uses = "gradle/actions/setup-gradle@v5"
+            )
+            step(
+                name = "Run Plugin Verification tasks",
+                run = "./gradlew :verifyPlugin"
+            )
+            step(
+                name = "Collect Plugin Verifier Result",
+                condition = "${{ always() }}",
+                uses = "actions/upload-artifact@v6",
+                options = Map.ofList [
+                    "name", "pluginVerifier-result"
+                    "path", "${{ github.workspace }}/build/reports/pluginVerifier"
+                ]
+            )
+        ]
+        job "licenses" [
+            runsOn "ubuntu-24.04"
+            step(
+                name = "Check out the sources",
+                uses = "actions/checkout@v6"
+            )
+            step(
+                name = "REUSE license check",
+                uses = "fsfe/reuse-action@v6"
+            )
+        ]
+    ]
+
     workflow "release" [
         name "Release"
         yield! mainTriggers
@@ -128,33 +354,161 @@ let workflows = [
                 run = "dotnet pack --configuration Release -p:Version=${{ steps.version.outputs.version }}"
             )
             step(
-                name = "Read changelog",
-                usesSpec = Auto "ForNeVeR/ChangelogAutomation.action",
-                options = Map.ofList [
-                    "output", "./release-notes.md"
-                ]
-            )
-            step(
                 name = "Upload artifacts",
                 usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
-                    "path", "./release-notes.md\n./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.nupkg\n./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.snupkg"
-                ]
-            )
-            step(
-                condition = "startsWith(github.ref, 'refs/tags/v')",
-                name = "Create a release",
-                usesSpec = Auto "softprops/action-gh-release",
-                options = Map.ofList [
-                    "body_path", "./release-notes.md"
-                    "files", "./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.nupkg\n./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.snupkg"
-                    "name", "Todosaurus v${{ steps.version.outputs.version }}"
+                    "name", "nuget"
+                    "path", "./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.nupkg\n./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.snupkg"
                 ]
             )
             step(
                 condition = "startsWith(github.ref, 'refs/tags/v')",
                 name = "Push artifact to NuGet",
                 run = "dotnet nuget push ./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}"
+            )
+        ]
+        job "intellij" [
+            jobName "Publish Plugin"
+            runsOn "ubuntu-24.04"
+            jobPermission(PermissionKind.Contents, AccessKind.Write)
+            step(
+                name = "Read version from Git ref",
+                id = "version",
+                shell = "pwsh",
+                run = "echo \"version=$(if ($env:GITHUB_REF.StartsWith('refs/tags/v')) { $env:GITHUB_REF -replace '^refs/tags/v', '' } else { 'next' })\" >> $env:GITHUB_OUTPUT"
+            )
+            step(
+                name = "Fetch Sources",
+                uses = "actions/checkout@v6",
+                options = Map.ofList [
+                    "ref", "${{ github.event.release.tag_name }}"
+                ]
+            )
+            step(
+                name = "Cache downloaded JDK",
+                uses = "actions/cache@v5",
+                options = Map.ofList [
+                    "path", "~/.local/share/gradle-jvm\n~/AppData/Local/gradle-jvm\n"
+                    "key", "${{ runner.os }}-${{ hashFiles('gradlew*') }}"
+                ]
+            )
+            step(
+                name = "Maximize Build Space",
+                uses = "jlumbroso/free-disk-space@v1.3.1",
+                options = Map.ofList [
+                    "tool-cache", "false"
+                    "large-packages", "false"
+                ]
+            )
+            step(
+                name = "Setup Gradle",
+                uses = "gradle/actions/setup-gradle@v5"
+            )
+            step(
+                name = "Build the plugin",
+                shell = "pwsh",
+                run = "./gradlew buildPlugin"
+            )
+            step(
+                name = "Upload the artifact",
+                uses = "actions/upload-artifact@v6",
+                options = Map.ofList [
+                    "name", "Todosaurus-${{ steps.version.outputs.version }}.zip"
+                    "path", "build/distributions/Todosaurus-${{ steps.version.outputs.version }}.zip"
+                ]
+            )
+            step(
+                condition = "startsWith(github.ref, 'refs/tags/v')",
+                name = "Publish the plugin",
+                env = Map.ofList [
+                    "PUBLISH_TOKEN", "${{ secrets.PUBLISH_TOKEN }}"
+                ],
+                run = "./gradlew publishPlugin"
+            )
+        ]
+        job "github" [
+            jobName "Create a Release"
+            jobPermission(PermissionKind.Contents, AccessKind.Write)
+            runsOn "ubuntu-24.04"
+
+            needs "nuget"
+            needs "intellij"
+
+            step(
+                name = "Read version from Git ref",
+                id = "version",
+                shell = "pwsh",
+                run = "echo \"version=$(if ($env:GITHUB_REF.StartsWith('refs/tags/v')) { $env:GITHUB_REF -replace '^refs/tags/v', '' } else { 'next' })\" >> $env:GITHUB_OUTPUT"
+            )
+            step(
+                name = "Check out the sources",
+                usesSpec = Auto "actions/checkout"
+            )
+            step(
+                name = "Read the changelog",
+                uses = "ForNeVeR/ChangelogAutomation.action@v2",
+                options = Map.ofList [
+                    "input", "./CHANGELOG.md"
+                    "output", "./changelog-section.md"
+                ]
+            )
+
+            step(
+                name = "Download NuGet package",
+                usesSpec = Auto "actions/download-artifact",
+                options = Map.ofSeq [
+                    "name", "nuget"
+                    "path", "nuget"
+                ]
+            )
+
+            step(
+                name = "Download IntelliJ plugin",
+                usesSpec = Auto "actions/download-artifact",
+                options = Map.ofSeq [
+                    "name", "Todosaurus-${{ steps.version.outputs.version }}.zip"
+                    "path", "intellij/"
+                ]
+            )
+
+            step(
+                name = "Upload the NuGet artifact",
+                uses = "actions/upload-artifact@v6",
+                options = Map.ofList [
+                    "name", "nuget"
+                    "path", "nuget/"
+                ]
+            )
+            step(
+                name = "Upload the IntelliJ plugin",
+                uses = "actions/upload-artifact@v6",
+                options = Map.ofList [
+                    "name", "intellij"
+                    "path", "intellij/Todosaurus-${{ steps.version.outputs.version }}.zip"
+                ]
+            )
+            step(
+                name = "Upload the changelog",
+                uses = "actions/upload-artifact@v6",
+                options = Map.ofList [
+                    "name", "changelog-section.md"
+                    "path", "./changelog-section.md"
+                ]
+            )
+
+            step(
+                condition = "startsWith(github.ref, 'refs/tags/v')",
+                name = "Create a release",
+                usesSpec = Auto "softprops/action-gh-release",
+                options = Map.ofList [
+                    "body_path", "./release-notes.md"
+                    "files", [
+                        "nuget/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.nupkg"
+                        "nuget/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.snupkg"
+                        "intellij/Todosaurus-${{ steps.version.outputs.version }}.zip"
+                    ] |> String.concat "\n"
+                    "name", "Todosaurus v${{ steps.version.outputs.version }}"
+                ]
             )
         ]
     ]

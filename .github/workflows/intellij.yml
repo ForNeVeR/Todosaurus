@@ -1,198 +1,140 @@
 # SPDX-FileCopyrightText: 2000-2021 JetBrains s.r.o.
-# SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+# SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 #
 # SPDX-License-Identifier: MIT AND Apache-2.0
 
-# GitHub Actions Workflow is created for testing and preparing the plugin release in the following steps:
-# - Validate Gradle Wrapper.
-# - Run 'test' and 'verifyPlugin' tasks.
-# - Run Qodana inspections.
-# - Run the 'buildPlugin' task and prepare artifact for further tests.
-# - Run the 'runPluginVerifier' task.
-#
-# The workflow is triggered on push and pull_request events.
-#
-# GitHub Actions reference: https://help.github.com/en/actions
-#
-## JBIJPPTPL
-
+# This file is auto-generated.
 name: Build
 on:
-  # Trigger the workflow on pushes to only the 'main' branch (this avoids duplicate checks being run e.g., for dependabot pull requests)
   push:
     branches:
-      - main
-      - renovate/**
-  # Trigger the workflow on any pull request
-  pull_request:
-
+    - main
+    - renovate/**
+  pull_request: 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
-
 jobs:
-
-  # Prepare environment and build the plugin
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
+    - name: Fetch Sources
+      uses: actions/checkout@v6
+    - name: Cache downloaded JDK
+      uses: actions/cache@v5
+      with:
+        key: ${{ runner.os }}-${{ hashFiles('gradlew*') }}
+        path: |
+          ~/.local/share/gradle-jvm
+          ~/AppData/Local/gradle-jvm
+    - name: Maximize Build Space
+      uses: jlumbroso/free-disk-space@v1.3.1
+      with:
+        large-packages: false
+        tool-cache: false
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v5
+    - name: Build plugin
+      run: ./gradlew buildPlugin
+    - id: artifact
+      name: Prepare Plugin Artifact
+      shell: bash
+      run: |
+        cd ${{ github.workspace }}/build/distributions
+        FILENAME=`ls *.zip`
+        unzip "$FILENAME" -d content
 
-      # Check out current repository
-      - name: Fetch Sources
-        uses: actions/checkout@v6
-
-      - name: 'Cache downloaded JDK'
-        uses: actions/cache@v5
-        with:
-          path: |
-            ~/.local/share/gradle-jvm
-            ~/AppData/Local/gradle-jvm
-          key: ${{ runner.os }}-${{ hashFiles('gradlew*') }}
-
-      - name: Maximize Build Space
-        uses: jlumbroso/free-disk-space@v1.3.1
-        with:
-          tool-cache: false
-          large-packages: false
-
-      # Setup Gradle
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
-
-      # Build plugin
-      - name: Build plugin
-        run: ./gradlew buildPlugin
-
-      # Prepare plugin archive content for creating artifact
-      - name: Prepare Plugin Artifact
-        id: artifact
-        shell: bash
-        run: |
-          cd ${{ github.workspace }}/build/distributions
-          FILENAME=`ls *.zip`
-          unzip "$FILENAME" -d content
-
-          echo "filename=${FILENAME:0:-4}" >> $GITHUB_OUTPUT
-
-      # Store already-built plugin as an artifact for downloading
-      - name: Upload artifact
-        uses: actions/upload-artifact@v6
-        with:
-          name: ${{ steps.artifact.outputs.filename }}
-          path: ./build/distributions/content/*/*
-
-  # Run tests
+        echo "filename=${FILENAME:0:-4}" >> $GITHUB_OUTPUT
+    - name: Upload artifact
+      uses: actions/upload-artifact@v6
+      with:
+        name: ${{ steps.artifact.outputs.filename }}
+        path: ./build/distributions/content/*/*
   test:
     name: Test
-    needs: [ build ]
-    runs-on: ubuntu-latest
+    needs:
+    - build
+    runs-on: ubuntu-24.04
     steps:
-
-      # Check out current repository
-      - name: Fetch Sources
-        uses: actions/checkout@v6
-
-      - name: Maximize Build Space
-        uses: jlumbroso/free-disk-space@v1.3.1
-        with:
-          tool-cache: false
-          large-packages: false
-
-      # Setup Gradle
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
-
-      # Run tests
-      - name: Run Tests
-        run: ./gradlew check
-
-      - name: Upload Test Results
-        uses: actions/upload-artifact@v6
-        with:
-          name: ${{ runner.os }}.test-results
-          path: '*/build/reports/tests'
-        if: ${{ always() }}
-      - name: Upload Test Logs
-        uses: actions/upload-artifact@v6
-        with:
-          name: ${{ runner.os }}.test-logs
-          path: '*/build/idea-sandbox/*/log-test'
-        if: ${{ always() }}
-
-  # Run Qodana inspections and provide report
+    - name: Fetch Sources
+      uses: actions/checkout@v6
+    - name: Maximize Build Space
+      uses: jlumbroso/free-disk-space@v1.3.1
+      with:
+        large-packages: false
+        tool-cache: false
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v5
+    - name: Run Tests
+      run: ./gradlew check
+    - if: ${{ always() }}
+      name: Upload Test Results
+      uses: actions/upload-artifact@v6
+      with:
+        name: ${{ runner.os }}.test-results
+        path: '*/build/reports/tests'
+    - if: ${{ always() }}
+      name: Upload Test Logs
+      uses: actions/upload-artifact@v6
+      with:
+        name: ${{ runner.os }}.test-logs
+        path: '*/build/idea-sandbox/*/log-test'
   inspectCode:
     name: Inspect code
-    needs: [ build ]
-    runs-on: ubuntu-latest
     permissions:
-      contents: write
       checks: write
+      contents: write
       pull-requests: write
+    needs:
+    - build
+    runs-on: ubuntu-24.04
     steps:
-
-      # Free GitHub Actions Environment Disk Space
-      - name: Maximize Build Space
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: false
-          large-packages: false
-
-      - name: Fetch Sources
-        uses: actions/checkout@v6
-        with:
-          fetch-depth: '0' # Qodana needs full history to run inspections
-
-      # Set up Java environment for the next steps
-      - name: Setup Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: oracle
-          java-version: 21
-
-      # Run Qodana inspections
-      - name: Qodana - Code Inspection
-        uses: JetBrains/qodana-action@v2025.3.1
-        with:
-          cache-default-branch-only: true
-
-  # Run plugin structure verification along with IntelliJ Plugin Verifier
+    - name: Maximize Build Space
+      uses: jlumbroso/free-disk-space@v1.3.1
+      with:
+        large-packages: false
+        tool-cache: false
+    - name: Fetch Sources
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+    - name: Setup Java
+      uses: actions/setup-java@v5
+      with:
+        distribution: oracle
+        java-version: 21
+    - name: Qodana - Code Inspection
+      uses: JetBrains/qodana-action@v2025.3.1
+      with:
+        cache-default-branch-only: true
   verify:
     name: Verify plugin
-    needs: [ build ]
-    runs-on: ubuntu-latest
+    needs:
+    - build
+    runs-on: ubuntu-24.04
     steps:
-
-      - name: Maximize Build Space
-        uses: jlumbroso/free-disk-space@v1.3.1
-        with:
-          tool-cache: false
-          large-packages: false
-
-      # Check out the current repository
-      - name: Fetch Sources
-        uses: actions/checkout@v6
-
-      # Setup Gradle
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
-
-      # Run Verify Plugin task and IntelliJ Plugin Verifier tool
-      - name: Run Plugin Verification tasks
-        run: ./gradlew :verifyPlugin
-
-      # Collect Plugin Verifier Result
-      - name: Collect Plugin Verifier Result
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v6
-        with:
-          name: pluginVerifier-result
-          path: ${{ github.workspace }}/build/reports/pluginVerifier
-
+    - name: Maximize Build Space
+      uses: jlumbroso/free-disk-space@v1.3.1
+      with:
+        large-packages: false
+        tool-cache: false
+    - name: Fetch Sources
+      uses: actions/checkout@v6
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v5
+    - name: Run Plugin Verification tasks
+      run: ./gradlew :verifyPlugin
+    - if: ${{ always() }}
+      name: Collect Plugin Verifier Result
+      uses: actions/upload-artifact@v6
+      with:
+        name: pluginVerifier-result
+        path: ${{ github.workspace }}/build/reports/pluginVerifier
   licenses:
     runs-on: ubuntu-24.04
     steps:
-      - name: Check out the sources
-        uses: actions/checkout@v6
-      - name: REUSE license check
-        uses: fsfe/reuse-action@v6
+    - name: Check out the sources
+      uses: actions/checkout@v6
+    - name: REUSE license check
+      uses: fsfe/reuse-action@v6

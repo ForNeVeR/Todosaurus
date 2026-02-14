@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MIT AND Apache-2.0
 
 # This file is auto-generated.
-name: Main
+name: Infrastructure
 on:
   push:
     branches:
@@ -17,17 +17,8 @@ on:
   - cron: 0 0 * * 6
   workflow_dispatch: 
 jobs:
-  check:
-    strategy:
-      matrix:
-        image:
-        - macos-15
-        - ubuntu-24.04
-        - ubuntu-24.04-arm
-        - windows-11-arm
-        - windows-2025
-      fail-fast: false
-    runs-on: ${{ matrix.image }}
+  verify-workflows:
+    runs-on: ubuntu-24.04
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
       DOTNET_NOLOGO: 1
@@ -42,8 +33,19 @@ jobs:
       with:
         key: ${{ runner.os }}.nuget.${{ hashFiles('**/*.*proj', '**/*.props') }}
         path: ${{ env.NUGET_PACKAGES }}
-    - name: Build
-      run: dotnet build
-    - name: Test
-      run: dotnet test
-      timeout-minutes: 10
+    - run: dotnet fsi ./scripts/github-actions.fsx verify
+  licenses:
+    runs-on: ubuntu-24.04
+    steps:
+    - name: Check out the sources
+      uses: actions/checkout@v6
+    - name: REUSE license check
+      uses: fsfe/reuse-action@v6
+  encoding:
+    runs-on: ubuntu-24.04
+    steps:
+    - name: Check out the sources
+      uses: actions/checkout@v6
+    - name: Verify encoding
+      shell: pwsh
+      run: Install-Module VerifyEncoding -Repository PSGallery -RequiredVersion 2.2.1 -Force && Test-Encoding
