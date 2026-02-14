@@ -351,7 +351,7 @@ let workflows = [
                 run = "echo \"version=$(scripts/Get-Version.ps1 -RefName $env:GITHUB_REF)\" >> $env:GITHUB_OUTPUT"
             )
             step(
-                run = "dotnet pack --configuration Release -p:Version=${{ steps.version.outputs.version }}"
+                run = "dotnet pack ./cli/Todosaurus.slnx --configuration Release -p:Version=${{ steps.version.outputs.version }}"
             )
             step(
                 name = "Upload artifacts",
