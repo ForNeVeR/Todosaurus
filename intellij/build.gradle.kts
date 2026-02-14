@@ -39,6 +39,7 @@ dependencies {
 }
 
 changelog {
+    path = file("../CHANGELOG.md").canonicalPath
     groups.empty()
     repositoryUrl = properties("pluginRepositoryUrl").get()
 }
