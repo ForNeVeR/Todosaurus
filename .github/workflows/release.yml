@@ -82,14 +82,17 @@ jobs:
     - name: Build the plugin
       shell: pwsh
       run: ./gradlew buildPlugin
+      working-directory: intellij
     - name: Upload the artifact
       uses: actions/upload-artifact@v6
       with:
         name: Todosaurus-${{ steps.version.outputs.version }}.zip
-        path: build/distributions/Todosaurus-${{ steps.version.outputs.version }}.zip
+        path: intellij/build/distributions/Todosaurus-${{ steps.version.outputs.version }}.zip
     - if: startsWith(github.ref, 'refs/tags/v')
       name: Publish the plugin
+      shell: pwsh
       run: ./gradlew publishPlugin
+      working-directory: intellij
       env:
         PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
   github:

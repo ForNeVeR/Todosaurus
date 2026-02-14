@@ -408,6 +408,7 @@ let workflows = [
             step(
                 name = "Build the plugin",
                 shell = "pwsh",
+                workingDirectory = "intellij",
                 run = "./gradlew buildPlugin"
             )
             step(
@@ -415,7 +416,7 @@ let workflows = [
                 usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
                     "name", "Todosaurus-${{ steps.version.outputs.version }}.zip"
-                    "path", "build/distributions/Todosaurus-${{ steps.version.outputs.version }}.zip"
+                    "path", "intellij/build/distributions/Todosaurus-${{ steps.version.outputs.version }}.zip"
                 ]
             )
             step(
@@ -424,6 +425,8 @@ let workflows = [
                 env = Map.ofList [
                     "PUBLISH_TOKEN", "${{ secrets.PUBLISH_TOKEN }}"
                 ],
+                shell = "pwsh",
+                workingDirectory = "intellij",
                 run = "./gradlew publishPlugin"
             )
         ]
