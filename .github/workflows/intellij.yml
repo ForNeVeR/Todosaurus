@@ -38,6 +38,7 @@ jobs:
     - name: Build plugin
       shell: pwsh
       run: ./gradlew buildPlugin
+      working-directory: intellij
     - id: artifact
       name: Prepare Plugin Artifact
       shell: bash

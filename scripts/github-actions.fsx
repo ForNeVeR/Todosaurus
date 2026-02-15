@@ -199,9 +199,11 @@ let workflows = [
                 name = "Setup Gradle",
                 usesSpec = Auto "gradle/actions/setup-gradle"
             )
-            pwsh(
-                "Build plugin",
-                "./gradlew buildPlugin"
+            step(
+                name = "Build plugin",
+                shell = "pwsh",
+                workingDirectory = "intellij",
+                run = "./gradlew buildPlugin"
             )
             step(
                 name = "Prepare Plugin Artifact",
