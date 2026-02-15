@@ -341,7 +341,14 @@ let workflows = [
         name "Release"
         yield! mainTriggers
         onPushTags "v*"
-        dotNetJob "nuget" [
+
+        let nuGetJob = "nuget"
+        let intelliJJob = "intellij"
+
+        let nuGetArtifact = "_nuget"
+        let intelliJArtifact = "_intellij"
+
+        dotNetJob nuGetJob [
             jobName "NuGet Package"
             jobPermission(PermissionKind.Contents, AccessKind.Write)
             runsOn "ubuntu-24.04"
@@ -358,7 +365,7 @@ let workflows = [
                 name = "Upload artifacts",
                 usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
-                    "name", "nuget"
+                    "name", nuGetArtifact
                     "path", [
                         "./cli/Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.nupkg"
                         "./cli/Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.snupkg"
@@ -371,7 +378,7 @@ let workflows = [
                 run = "dotnet nuget push ./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}"
             )
         ]
-        job "intellij" [
+        job intelliJJob [
             jobName "IntelliJ Plugin"
             runsOn "ubuntu-24.04"
             jobPermission(PermissionKind.Contents, AccessKind.Write)
@@ -415,7 +422,7 @@ let workflows = [
                 name = "Upload the artifact",
                 usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
-                    "name", "Todosaurus-${{ steps.version.outputs.version }}.zip"
+                    "name", intelliJArtifact
                     "path", "intellij/build/distributions/Todosaurus-${{ steps.version.outputs.version }}.zip"
                 ]
             )
@@ -435,8 +442,8 @@ let workflows = [
             jobPermission(PermissionKind.Contents, AccessKind.Write)
             runsOn "ubuntu-24.04"
 
-            needs "nuget"
-            needs "intellij"
+            needs nuGetJob
+            needs intelliJJob
 
             step(
                 name = "Check out the sources",
@@ -461,7 +468,7 @@ let workflows = [
                 name = "Download NuGet package",
                 usesSpec = Auto "actions/download-artifact",
                 options = Map.ofSeq [
-                    "name", "nuget"
+                    "name", nuGetArtifact
                     "path", "nuget"
                 ]
             )
@@ -470,7 +477,7 @@ let workflows = [
                 name = "Download IntelliJ plugin",
                 usesSpec = Auto "actions/download-artifact",
                 options = Map.ofSeq [
-                    "name", "Todosaurus-${{ steps.version.outputs.version }}.zip"
+                    "name", intelliJArtifact
                     "path", "intellij/"
                 ]
             )
@@ -487,7 +494,7 @@ let workflows = [
                 name = "Upload the IntelliJ plugin",
                 usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
-                    "name", "intellij"
+                    "name", "Todosaurus-${{ steps.version.outputs.version }}.zip"
                     "path", "intellij/Todosaurus-${{ steps.version.outputs.version }}.zip"
                 ]
             )
