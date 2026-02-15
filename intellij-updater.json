@@ -1,19 +1,19 @@
 {
     "updates": [{
-        "file": "gradle/libs.versions.toml",
+        "file": "intellij/gradle/libs.versions.toml",
         "field": "ideaSdk",
         "kind": "intellij-idea",
         "versionFlavor": "release",
         "versionConstraint": "latestWave",
         "order": "oldest"
     }, {
-        "file": "gradle.properties",
+        "file": "intellij/gradle.properties",
         "field": "pluginUntilBuild",
         "kind": "intellij-idea",
         "versionFlavor": "release",
         "augmentation": "nextMajor"
     }, {
-        "file": "gradle/libs.versions.toml",
+        "file": "intellij/gradle/libs.versions.toml",
         "field": "kotlin",
         "kind": "kotlin",
         "versionFlavor": "release"
