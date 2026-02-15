@@ -13,15 +13,41 @@
     ],
     "customManagers": [
         {
+            "description": "Update the Generaptor package.",
+            "customType": "regex",
+            "managerFilePatterns": [
+                "scripts/github-actions.fsx"
+            ],
+            "matchStrings": [
+                "#r \"nuget: (?<depName>.+), (?<currentValue>\\S+)\""
+            ],
+            "datasourceTemplate": "nuget"
+        },
+        {
             "description": "Update the GitHub Actions runners.",
             "customType": "regex",
             "managerFilePatterns": [
-                ".github/workflows/*.yml"
+                ".github/workflows/*.yml",
+                "scripts/github-actions.fsx"
             ],
             "matchStrings": [
                 "(?<depName>macos|ubuntu|windows)-(?<currentValue>[-\\w.\\d]+)"
             ],
             "datasourceTemplate": "github-runners"
+        },
+        {
+            "description": "Update the VerifyEncoding PowerShell module.",
+            "customType": "regex",
+            "managerFilePatterns": [
+                "CONTRIBUTING.md",
+                ".github/workflows/*.yml",
+                "scripts/github-actions.fsx"
+            ],
+            "matchStrings": [
+                "Install-Module (?<depName>\\S+?) -Repository PSGallery -RequiredVersion (?<currentValue>\\S+)"
+            ],
+            "datasourceTemplate": "nuget",
+            "registryUrlTemplate": "https://www.powershellgallery.com/api/v2/"
         }
     ]
 }

@@ -1,10 +1,20 @@
-# SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+# SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 #
 # SPDX-License-Identifier: MIT
 
-/.idea/
-/.intellijPlatform/
+# IDE files:
+.idea/
+.vs/
+*.user
 
+# IntelliJ Platform Gradle Plugin storage:
+.intellijPlatform/
+
+# .NET binaries:
+bin/
+obj/
+
+# Gradle build files:
 .gradle/
 .kotlin/
 build/

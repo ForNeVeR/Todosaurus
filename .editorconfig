@@ -1,14 +1,16 @@
-# SPDX-FileCopyrightText: 2024 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+# SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 #
 # SPDX-License-Identifier: MIT
+
+root = true
 
 [*]
 charset = utf-8
 end_of_line = lf
-trim_trailing_whitespace = true
-insert_final_newline = true
 indent_style = space
 indent_size = 4
+trim_trailing_whitespace = true
+insert_final_newline = true
 
 [*.yml]
 indent_size = 2
