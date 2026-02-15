@@ -72,7 +72,7 @@ The license indication in the project's sources is compliant with the [REUSE spe
 [docs.changelog]: CHANGELOG.md
 [docs.code-of-conduct]: CODE_OF_CONDUCT.md
 [docs.contributing]: CONTRIBUTING.md
-[docs.license]: LICENSE.md
+[docs.license]: ../LICENSE.txt
 [docs.maintainer-guide]: MAINTAINERSHIP.md
 [intellij-community]: https://github.com/JetBrains/intellij-community
 [intellij-platform-plugin-template]: https://github.com/JetBrains/intellij-platform-plugin-template

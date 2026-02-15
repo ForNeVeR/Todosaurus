@@ -28,7 +28,7 @@ The license indication in the project's sources is compliant with the [REUSE spe
 [docs.contributing.cli]: cli/CONTRIBUTING.md
 [docs.contributing.intellij]: intellij/CONTRIBUTING.md
 [docs.contributing]: CONTRIBUTING.md
-[docs.license]: LICENSE.txt
+[docs.license]: ../LICENSE.txt
 [docs.maintaining]: MAINTAINING.md
 [docs]: https://ForNeVeR.github.io/TodosaurusCli
 [nuget.badge]: https://img.shields.io/nuget/v/TodosaurusCli
