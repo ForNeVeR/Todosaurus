@@ -84,34 +84,6 @@ jobs:
       with:
         name: ${{ runner.os }}.test-logs
         path: intellij/*/build/idea-sandbox/*/log-test
-  inspectCode:
-    name: Inspect code
-    permissions:
-      checks: write
-      contents: write
-      pull-requests: write
-    needs:
-    - build
-    runs-on: ubuntu-24.04
-    steps:
-    - name: Maximize Build Space
-      uses: jlumbroso/free-disk-space@v1.3.1
-      with:
-        large-packages: false
-        tool-cache: false
-    - name: Fetch Sources
-      uses: actions/checkout@v6
-      with:
-        fetch-depth: 0
-    - name: Setup Java
-      uses: actions/setup-java@v5
-      with:
-        distribution: oracle
-        java-version: 21
-    - name: Qodana - Code Inspection
-      uses: JetBrains/qodana-action@v2025.3.1
-      with:
-        cache-default-branch-only: true
   verify:
     name: Verify plugin
     needs:

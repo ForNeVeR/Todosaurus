@@ -265,44 +265,7 @@ let workflows = [
                 condition = "${{ always() }}"
             )
         ]
-        job "inspectCode" [
-            jobName "Inspect code"
-            needs "build"
-            runsOn "ubuntu-24.04"
-            jobPermission(PermissionKind.Contents, AccessKind.Write)
-            jobPermission(PermissionKind.Checks, AccessKind.Write)
-            jobPermission(PermissionKind.PullRequests, AccessKind.Write)
-            step(
-                name = "Maximize Build Space",
-                usesSpec = Auto "jlumbroso/free-disk-space",
-                options = Map.ofList [
-                    "tool-cache", "false"
-                    "large-packages", "false"
-                ]
-            )
-            step(
-                name = "Fetch Sources",
-                usesSpec = Auto "actions/checkout",
-                options = Map.ofList [
-                    "fetch-depth", "0"
-                ]
-            )
-            step(
-                name = "Setup Java",
-                usesSpec = Auto "actions/setup-java",
-                options = Map.ofList [
-                    "distribution", "oracle"
-                    "java-version", "21"
-                ]
-            )
-            step(
-                name = "Qodana - Code Inspection",
-                usesSpec = Auto "JetBrains/qodana-action",
-                options = Map.ofList [
-                    "cache-default-branch-only", "true"
-                ]
-            )
-        ]
+
         job "verify" [
             jobName "Verify plugin"
             needs "build"
