@@ -9,4 +9,5 @@
     <File Path="Todosaurus.slnx.license" />
   </Folder>
   <Project Path="Cli/Cli.fsproj" />
+  <Project Path="Tests/Tests.fsproj" />
 </Solution>

@@ -26,6 +26,29 @@ Usage
 -----
 After installation, the tool will be available in shell as `dotnet todosaurus`.
 
+Syntax:
+```
+dotnet todosaurus [switches] <command>
+```
+
+Command-line switches:
+- `--help | -h | -?` — print the help;
+- `--version` — print the program version. 
+
+### Commands
+#### `todosaurus files`
+This is a diagnostic command.
+
+Lists text files in the current directory (recursively) that are eligible for TODO checking. Outputs one relative path per line, sorted alphabetically.
+
+##### File discovery
+- **Anywhere inside of a Git repository** (if a `.git` folder detected): runs `git ls-files` to list tracked files and untracked files that are not ignored by `.gitignore`. This means newly created files appear even before they are staged, but files matching `.gitignore` patterns are excluded.
+  - **Git executable not found**: if the `git` command is not available on `PATH`, a warning is printed to stderr and the command falls back to recursive filesystem enumeration.
+- **Outside of a Git repository**: recursively enumerates all the files under the current directory.
+
+##### Binary file detection
+Files are classified as text or binary using a heuristic: the first 8000 bytes of each file are read; if any NUL (`0x00`) byte is found, the file is considered binary and excluded from the output. Files that cannot be read (permission errors, etc.) are skipped with a warning.
+
 Documentation
 -------------
 - [Changelog][docs.changelog]
@@ -38,7 +61,7 @@ The project is distributed under the terms of [the MIT license][docs.license].
 
 The license indication in the project's sources is compliant with the [REUSE specification v3.3][reuse.spec].
 
-[docs.changelog]: CHANGELOG.md
+[docs.changelog]: ../CHANGELOG.md
 [docs.contributing]: CONTRIBUTING.md
 [docs.license]: ../LICENSE.txt
 [docs.maintaining]: ../MAINTAINING.md

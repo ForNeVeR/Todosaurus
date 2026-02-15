@@ -1,0 +1,31 @@
+<!--
+SPDX-FileCopyrightText: 2026 Friedrich von Never <friedrich@fornever.me>
+
+SPDX-License-Identifier: MIT
+-->
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net10.0</TargetFramework>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MedallionShell" Version="1.6.2" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="3.1.0" />
+        <PackageReference Include="xunit.v3" Version="3.2.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Cli\Cli.fsproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="TestFramework.fs" />
+        <Compile Include="TextFileFilterTests.fs" />
+        <Compile Include="FilesCommandTests.fs" />
+    </ItemGroup>
+
+</Project>
