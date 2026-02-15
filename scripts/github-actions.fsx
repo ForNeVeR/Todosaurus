@@ -240,16 +240,18 @@ let workflows = [
                 name = "Setup Gradle",
                 usesSpec = Auto "gradle/actions/setup-gradle"
             )
-            pwsh(
-                "Run Tests",
-                "./gradlew check"
+            step(
+                name = "Run Tests",
+                shell = "pwsh",
+                workingDirectory = "intellij",
+                run = "./gradlew check"
             )
             step(
                 name = "Upload Test Results",
                 usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
                     "name", "${{ runner.os }}.test-results"
-                    "path", "*/build/reports/tests"
+                    "path", "intellij/*/build/reports/tests"
                 ],
                 condition = "${{ always() }}"
             )
@@ -258,7 +260,7 @@ let workflows = [
                 usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
                     "name", "${{ runner.os }}.test-logs"
-                    "path", "*/build/idea-sandbox/*/log-test"
+                    "path", "intellij/*/build/idea-sandbox/*/log-test"
                 ],
                 condition = "${{ always() }}"
             )
@@ -321,9 +323,11 @@ let workflows = [
                 name = "Setup Gradle",
                 usesSpec = Auto "gradle/actions/setup-gradle"
             )
-            pwsh(
-                "Run Plugin Verification tasks",
-                "./gradlew :verifyPlugin"
+            step(
+                name = "Run Plugin Verification tasks",
+                shell = "pwsh",
+                workingDirectory = "intellij",
+                run = "./gradlew :verifyPlugin"
             )
             step(
                 name = "Collect Plugin Verifier Result",
@@ -331,7 +335,7 @@ let workflows = [
                 usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
                     "name", "pluginVerifier-result"
-                    "path", "${{ github.workspace }}/build/reports/pluginVerifier"
+                    "path", "${{ github.workspace }}/intellij/build/reports/pluginVerifier"
                 ]
             )
         ]

@@ -71,18 +71,19 @@ jobs:
     - name: Run Tests
       shell: pwsh
       run: ./gradlew check
+      working-directory: intellij
     - if: ${{ always() }}
       name: Upload Test Results
       uses: actions/upload-artifact@v6
       with:
         name: ${{ runner.os }}.test-results
-        path: '*/build/reports/tests'
+        path: intellij/*/build/reports/tests
     - if: ${{ always() }}
       name: Upload Test Logs
       uses: actions/upload-artifact@v6
       with:
         name: ${{ runner.os }}.test-logs
-        path: '*/build/idea-sandbox/*/log-test'
+        path: intellij/*/build/idea-sandbox/*/log-test
   inspectCode:
     name: Inspect code
     permissions:
@@ -129,9 +130,10 @@ jobs:
     - name: Run Plugin Verification tasks
       shell: pwsh
       run: ./gradlew :verifyPlugin
+      working-directory: intellij
     - if: ${{ always() }}
       name: Collect Plugin Verifier Result
       uses: actions/upload-artifact@v6
       with:
         name: pluginVerifier-result
-        path: ${{ github.workspace }}/build/reports/pluginVerifier
+        path: ${{ github.workspace }}/intellij/build/reports/pluginVerifier
