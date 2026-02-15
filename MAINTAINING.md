@@ -14,11 +14,10 @@ Publish a New Version
 3. Update the project's status in the `README.md` file, if required.
 4. Make sure there's a properly formed version entry in the `CHANGELOG.md`.
 5. Choose the new version according to [Semantic Versioning][semver]. It should consist of three numbers (i.e. `1.0.0`).
-6. Update the version in the `intellij/gradle.properties` file.
-7. Update the `<Version>` in the `cli/Directory.Build.props` file.
-8. Merge the aforementioned changes via a pull request.
-9. Check if the NuGet key is still valid (see the **Rotate NuGet Publishing Key** section if it isn't).
-10. Push a tag named `v<VERSION>` to GitHub.
+6. Update the version of all the packages via `scripts/Update-Version.ps1 -NewVersion <the new version>`. 
+7. Merge the aforementioned changes via a pull request.
+8. Check if the NuGet key is still valid (see the **Rotate NuGet Publishing Key** section if it isn't).
+9. Push a tag named `v<VERSION>` to GitHub.
 
 The new release will be published automatically.
 
