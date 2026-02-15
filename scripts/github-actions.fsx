@@ -54,13 +54,22 @@ let workflows = [
         onWorkflowDispatch
     ]
 
+    let pwsh(name, script) = step(
+        name = name,
+        shell = "pwsh",
+        run = script
+    )
+
     workflow "infra" [
         name "Infrastructure"
         yield! mainTriggers
 
         dotNetJob "verify-workflows" [
             runsOn "ubuntu-24.04"
-            step(run = "dotnet fsi ./scripts/github-actions.fsx verify")
+            pwsh(
+                "Verify via Generaptor",
+                "dotnet fsi ./scripts/github-actions.fsx verify"
+            )
         ]
 
         job "licenses" [
@@ -81,10 +90,9 @@ let workflows = [
                 name = "Check out the sources",
                 usesSpec = Auto "actions/checkout"
             )
-            step(
-                name = "Verify encoding",
-                shell = "pwsh",
-                run = "Install-Module VerifyEncoding -Repository PSGallery -RequiredVersion 2.2.1 -Force && Test-Encoding"
+            pwsh(
+                "Verify encoding",
+                "Install-Module VerifyEncoding -Repository PSGallery -RequiredVersion 2.2.1 -Force && Test-Encoding"
             )
         ]
     ]
@@ -142,12 +150,13 @@ let workflows = [
             ])
             runsOn "${{ matrix.image }}"
 
-            step(
-                name = "Build",
-                run = "dotnet build"
+            pwsh(
+                "Build",
+                "dotnet build"
             )
             step(
                 name = "Test",
+                shell = "pwsh",
                 run = "dotnet test",
                 timeoutMin = 10
             )
@@ -190,9 +199,9 @@ let workflows = [
                 name = "Setup Gradle",
                 usesSpec = Auto "gradle/actions/setup-gradle"
             )
-            step(
-                name = "Build plugin",
-                run = "./gradlew buildPlugin"
+            pwsh(
+                "Build plugin",
+                "./gradlew buildPlugin"
             )
             step(
                 name = "Prepare Plugin Artifact",
@@ -229,9 +238,9 @@ let workflows = [
                 name = "Setup Gradle",
                 usesSpec = Auto "gradle/actions/setup-gradle"
             )
-            step(
-                name = "Run Tests",
-                run = "./gradlew check"
+            pwsh(
+                "Run Tests",
+                "./gradlew check"
             )
             step(
                 name = "Upload Test Results",
@@ -310,9 +319,9 @@ let workflows = [
                 name = "Setup Gradle",
                 usesSpec = Auto "gradle/actions/setup-gradle"
             )
-            step(
-                name = "Run Plugin Verification tasks",
-                run = "./gradlew :verifyPlugin"
+            pwsh(
+                "Run Plugin Verification tasks",
+                "./gradlew :verifyPlugin"
             )
             step(
                 name = "Collect Plugin Verifier Result",
@@ -358,8 +367,9 @@ let workflows = [
                 shell = "pwsh",
                 run = "echo \"version=$(scripts/Get-Version.ps1 -RefName $env:GITHUB_REF)\" >> $env:GITHUB_OUTPUT"
             )
-            step(
-                run = "dotnet pack ./cli/Todosaurus.slnx --configuration Release -p:Version=${{ steps.version.outputs.version }}"
+            pwsh(
+                "Pack the CLI",
+                "dotnet pack ./cli/Todosaurus.slnx --configuration Release -p:Version=${{ steps.version.outputs.version }}"
             )
             step(
                 name = "Upload artifacts",
@@ -375,6 +385,7 @@ let workflows = [
             step(
                 condition = "startsWith(github.ref, 'refs/tags/v')",
                 name = "Push artifact to NuGet",
+                shell = "pwsh",
                 run = "dotnet nuget push ./Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}"
             )
         ]
@@ -450,8 +461,8 @@ let workflows = [
                 usesSpec = Auto "actions/checkout"
             )
             step(
-                name = "Get version",
                 id = "version",
+                name = "Get version",
                 shell = "pwsh",
                 run = "echo \"version=$(scripts/Get-Version.ps1 -RefName $env:GITHUB_REF)\" >> $env:GITHUB_OUTPUT"
             )
@@ -465,7 +476,7 @@ let workflows = [
             )
 
             step(
-                name = "Download NuGet package",
+                name = "Download the NuGet package",
                 usesSpec = Auto "actions/download-artifact",
                 options = Map.ofSeq [
                     "name", nuGetArtifact
@@ -474,12 +485,20 @@ let workflows = [
             )
 
             step(
-                name = "Download IntelliJ plugin",
+                name = "Download the IntelliJ plugin",
                 usesSpec = Auto "actions/download-artifact",
                 options = Map.ofSeq [
                     "name", intelliJArtifact
                     "path", "intellij/"
                 ]
+            )
+
+            let intelliJUnpackLocation = "intellij/unpacked"
+            pwsh(
+                "Unpack the IntelliJ plugin",
+                "Expand-Archive"
+                    + " -LiteralPath \"intellij/Todosaurus-${{ steps.version.outputs.version }}.zip\""
+                    + $" -DestinationPath \"{intelliJUnpackLocation}\""
             )
 
             step(
@@ -495,7 +514,7 @@ let workflows = [
                 usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
                     "name", "Todosaurus-${{ steps.version.outputs.version }}.zip"
-                    "path", "intellij/Todosaurus-${{ steps.version.outputs.version }}.zip"
+                    "path", intelliJUnpackLocation
                 ]
             )
             step(

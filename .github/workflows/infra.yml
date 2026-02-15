@@ -33,7 +33,9 @@ jobs:
       with:
         key: ${{ runner.os }}.nuget.${{ hashFiles('**/*.*proj', '**/*.props') }}
         path: ${{ env.NUGET_PACKAGES }}
-    - run: dotnet fsi ./scripts/github-actions.fsx verify
+    - name: Verify via Generaptor
+      shell: pwsh
+      run: dotnet fsi ./scripts/github-actions.fsx verify
   licenses:
     runs-on: ubuntu-24.04
     steps:

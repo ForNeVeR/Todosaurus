@@ -36,6 +36,7 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v5
     - name: Build plugin
+      shell: pwsh
       run: ./gradlew buildPlugin
     - id: artifact
       name: Prepare Plugin Artifact
@@ -67,6 +68,7 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v5
     - name: Run Tests
+      shell: pwsh
       run: ./gradlew check
     - if: ${{ always() }}
       name: Upload Test Results
@@ -124,6 +126,7 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v5
     - name: Run Plugin Verification tasks
+      shell: pwsh
       run: ./gradlew :verifyPlugin
     - if: ${{ always() }}
       name: Collect Plugin Verifier Result
