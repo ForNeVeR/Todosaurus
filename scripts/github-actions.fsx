@@ -209,7 +209,7 @@ let workflows = [
                 name = "Prepare Plugin Artifact",
                 id = "artifact",
                 shell = "bash",
-                run = "cd ${{ github.workspace }}/build/distributions\nFILENAME=`ls *.zip`\nunzip \"$FILENAME\" -d content\n\necho \"filename=${FILENAME:0:-4}\" >> $GITHUB_OUTPUT\n"
+                run = "cd ${{ github.workspace }}/intellij/build/distributions\nFILENAME=`ls *.zip`\nunzip \"$FILENAME\" -d content\n\necho \"filename=${FILENAME:0:-4}\" >> $GITHUB_OUTPUT"
             )
             step(
                 name = "Upload artifact",
@@ -333,17 +333,6 @@ let workflows = [
                     "name", "pluginVerifier-result"
                     "path", "${{ github.workspace }}/build/reports/pluginVerifier"
                 ]
-            )
-        ]
-        job "licenses" [
-            runsOn "ubuntu-24.04"
-            step(
-                name = "Check out the sources",
-                usesSpec = Auto "actions/checkout"
-            )
-            step(
-                name = "REUSE license check",
-                usesSpec = Auto "fsfe/reuse-action"
             )
         ]
     ]

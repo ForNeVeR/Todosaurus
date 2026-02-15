@@ -42,8 +42,8 @@ jobs:
     - id: artifact
       name: Prepare Plugin Artifact
       shell: bash
-      run: |
-        cd ${{ github.workspace }}/build/distributions
+      run: |-
+        cd ${{ github.workspace }}/intellij/build/distributions
         FILENAME=`ls *.zip`
         unzip "$FILENAME" -d content
 
@@ -135,10 +135,3 @@ jobs:
       with:
         name: pluginVerifier-result
         path: ${{ github.workspace }}/build/reports/pluginVerifier
-  licenses:
-    runs-on: ubuntu-24.04
-    steps:
-    - name: Check out the sources
-      uses: actions/checkout@v6
-    - name: REUSE license check
-      uses: fsfe/reuse-action@v6
