@@ -513,7 +513,7 @@ let workflows = [
                 name = "Upload the IntelliJ plugin",
                 usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
-                    "name", "Todosaurus-${{ steps.version.outputs.version }}.zip"
+                    "name", "Todosaurus-${{ steps.version.outputs.version }}"
                     "path", intelliJUnpackLocation
                 ]
             )

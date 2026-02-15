@@ -139,7 +139,7 @@ jobs:
     - name: Upload the IntelliJ plugin
       uses: actions/upload-artifact@v6
       with:
-        name: Todosaurus-${{ steps.version.outputs.version }}.zip
+        name: Todosaurus-${{ steps.version.outputs.version }}
         path: intellij/unpacked
     - name: Upload the changelog
       uses: actions/upload-artifact@v6
