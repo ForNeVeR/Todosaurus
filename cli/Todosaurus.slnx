@@ -5,8 +5,6 @@
   <Folder Name="/Solution Items/">
     <File Path="../.editorconfig" />
     <File Path="Directory.Build.props" />
-    <File Path="global.json" />
-    <File Path="global.json.license" />
     <File Path="README.md" />
     <File Path="Todosaurus.slnx.license" />
   </Folder>
