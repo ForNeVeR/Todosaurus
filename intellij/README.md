@@ -5,7 +5,7 @@ SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/
 SPDX-License-Identifier: MIT AND Apache-2.0
 -->
 
-Todosaurus [![Status Enfer][status-enfer]][andivionian-status-classifier] [![Download][badge.plugin]][marketplace.plugin]
+Todosaurus [![Download][badge.plugin]][marketplace.plugin]
 ==========
 
 <!-- Plugin description -->
@@ -67,13 +67,12 @@ The project is distributed under the terms of [the MIT license][docs.license]
 
 The license indication in the project's sources is compliant with the [REUSE specification v3.3][reuse.spec].
 
-[andivionian-status-classifier]: https://andivionian.fornever.me/v1/#status-enfer-
 [badge.plugin]: https://img.shields.io/jetbrains/plugin/v/23838.svg
 [docs.changelog]: CHANGELOG.md
 [docs.code-of-conduct]: CODE_OF_CONDUCT.md
 [docs.contributing]: CONTRIBUTING.md
 [docs.license]: ../LICENSE.txt
-[docs.maintainer-guide]: MAINTAINERSHIP.md
+[docs.maintainer-guide]: ../MAINTAINING.md
 [intellij-community]: https://github.com/JetBrains/intellij-community
 [intellij-platform-plugin-template]: https://github.com/JetBrains/intellij-platform-plugin-template
 [issues]: https://github.com/ForNeVeR/Todosaurus/issues
@@ -81,4 +80,3 @@ The license indication in the project's sources is compliant with the [REUSE spe
 [reuse.spec]: https://reuse.software/spec-3.3/
 [screenshot.editor]: docs/screenshot.editor.png
 [screenshot.todo]: docs/screenshot.todo.png
-[status-enfer]: https://img.shields.io/badge/status-enfer-orange.svg

@@ -3,6 +3,7 @@
     <File Path="../scripts/github-actions.fsx" />
   </Folder>
   <Folder Name="/Solution Items/">
+    <File Path="../.editorconfig" />
     <File Path="Directory.Build.props" />
     <File Path="global.json" />
     <File Path="global.json.license" />
