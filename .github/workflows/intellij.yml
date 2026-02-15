@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MIT AND Apache-2.0
 
 # This file is auto-generated.
-name: Build
+name: IntelliJ
 on:
   push:
     branches:

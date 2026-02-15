@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MIT AND Apache-2.0
 
 # This file is auto-generated.
-name: Main
+name: CLI
 on:
   push:
     branches:
@@ -44,8 +44,8 @@ jobs:
         path: ${{ env.NUGET_PACKAGES }}
     - name: Build
       shell: pwsh
-      run: dotnet build
+      run: dotnet build cli/Todosaurus.slnx
     - name: Test
       shell: pwsh
-      run: dotnet test
+      run: dotnet test cli/Todosaurus.slnx
       timeout-minutes: 10

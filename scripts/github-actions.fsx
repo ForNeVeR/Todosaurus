@@ -135,7 +135,7 @@ let workflows = [
     ]
 
     workflow "cli" [
-        name "Main"
+        name "CLI"
         yield! mainTriggers
 
         dotNetJob "check" [
@@ -152,19 +152,19 @@ let workflows = [
 
             pwsh(
                 "Build",
-                "dotnet build"
+                "dotnet build cli/Todosaurus.slnx"
             )
             step(
                 name = "Test",
                 shell = "pwsh",
-                run = "dotnet test",
+                run = "dotnet test cli/Todosaurus.slnx",
                 timeoutMin = 10
             )
         ]
     ]
 
     workflow "intellij" [
-        name "Build"
+        name "IntelliJ"
         onPushTo "main"
         onPushTo "renovate/**"
         onPullRequest
