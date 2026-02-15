@@ -15,6 +15,7 @@ SPDX-License-Identifier: MIT
         <PackageDescription>CLI for Todosaurus — a tool to process TODO issues in a repository.</PackageDescription>
         <IsPackable>true</IsPackable>
         <PackAsTool>true</PackAsTool>
+        <ToolCommandName>todosaurus</ToolCommandName>
     </PropertyGroup>
 
     <ItemGroup>
