@@ -28,7 +28,7 @@ For example, if you have a comment `// TODO: Fix this code` in your sources, the
 
 How to Use
 ----------
-Currently, plugin only supports one TODO pattern, namely `TODO:` (case-insensitive) that will be converted to `TODO[#<issue-number>]` by the plugin action.
+Currently, the plugin only supports one TODO pattern (see [TODO Format Specification][docs.todo-format]), namely `TODO:` (case-insensitive) that will be converted to `TODO[#<issue-number>]` by the plugin action.
 
 ### Editor
 ![A screenshot of the editor window with a TODO comment in the file text. Context action list is open, and the entry "Create New Issue" is highlighted.][screenshot.editor]
@@ -73,6 +73,7 @@ The license indication in the project's sources is compliant with the [REUSE spe
 [docs.contributing]: CONTRIBUTING.md
 [docs.license]: ../LICENSE.txt
 [docs.maintainer-guide]: ../MAINTAINING.md
+[docs.todo-format]: ../README.md#todo-format-specification
 [intellij-community]: https://github.com/JetBrains/intellij-community
 [intellij-platform-plugin-template]: https://github.com/JetBrains/intellij-platform-plugin-template
 [issues]: https://github.com/ForNeVeR/Todosaurus/issues

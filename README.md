@@ -21,8 +21,48 @@ Quick Installation Links
 
 Read the documentation of each Todosaurus component if you want to know more.
 
+TODO Format Specification
+-------------------------
+Both Todosaurus components share a common TODO format.
+
+### Unresolved TODOs
+A TODO is considered **unresolved** if it matches the regex pattern:
+```
+\b(?i)TODO(?-i)\b:?(?!\[.*?\])
+```
+That is, a case-insensitive word `TODO` (with an optional colon) that is **not** immediately followed by a bracketed issue reference like `[#123]`.
+
+### Resolved TODOs
+Appending `[#<number>]` **immediately** after `TODO` marks it as resolved:
+```
+// TODO[#123]: Fix this code
+```
+A space before the bracket does **not** resolve the TODO — `TODO [#123]` is still considered unresolved.
+
+### Multiple TODOs on One Line
+Multiple TODOs on the same line are allowed. Each is matched independently — a `[#issue]` resolves only the TODO it immediately follows. The line is flagged if **any** unresolved TODO remains. For example:
+- `// TODO[#1]: done TODO fix` — flagged (second TODO is unresolved)
+- `// TODO[#1]: done TODO[#2]: also done` — not flagged
+
+### IgnoreTODO Markers
+Regions of a file can be excluded from scanning using marker comments:
+```
+// IgnoreTODO-Start
+// TODO: this will not be reported
+// IgnoreTODO-End
+```
+Lines between `IgnoreTODO-Start` and `IgnoreTODO-End` are skipped. The marker lines themselves are not scanned for TODOs.
+
+The following are **errors** (exit code 2 in the CLI):
+- Unclosed `IgnoreTODO-Start` (no matching `IgnoreTODO-End` before end of file)
+- Nested `IgnoreTODO-Start` (opening a new region while one is already open)
+- `IgnoreTODO-End` without a matching `IgnoreTODO-Start`
+- Multiple IgnoreTODO markers on the same line
+- An IgnoreTODO marker and a TODO on the same line
+
 Documentation
 -------------
+- [TODO Format Specification][docs.todo-format]
 - [Changelog][docs.changelog]
 - [IntelliJ Plugin][docs.intellij]
 - [CLI][docs.cli]
@@ -40,6 +80,7 @@ The license indication in the project's sources is compliant with the [REUSE spe
 [andivionian-status-classifier]: https://andivionian.fornever.me/v1/#status-enfer-
 [badge.plugin]: https://img.shields.io/jetbrains/plugin/v/23838.svg
 [docs.changelog]: CHANGELOG.md
+[docs.todo-format]: #todo-format-specification
 [docs.cli]: cli/README.md
 [docs.contributing.cli]: cli/CONTRIBUTING.md
 [docs.contributing.intellij]: intellij/CONTRIBUTING.md

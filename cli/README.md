@@ -39,9 +39,9 @@ Command-line switches:
 #### `todosaurus scan`
 This is **the default command** — it runs when `todosaurus` is invoked without a subcommand.
 
-Scans all eligible text files (see [file discovery](#file-discovery) below) for unresolved TODO items and reports them. A TODO is considered unresolved if it matches the pattern `\b(?i)TODO(?-i)\b:?(?!\[.*?\])` — that is, a case-insensitive `TODO` (with an optional colon) that is **not** immediately followed by a bracketed issue reference like `[#123]`. This is the same pattern used by the [Todosaurus IntelliJ plugin][intellij].
+Scans all eligible text files (see [file discovery](#file-discovery) below) for unresolved TODO items (see [TODO Format Specification][docs.todo-format]) and reports them.
 
-The command exits with code **1** if any unresolved TODOs are found, and **0** otherwise, making it suitable for CI enforcement.
+The command exits with code **0** if no issues are found, **1** if unresolved TODOs are found, and **2** if there are IgnoreTODO marker errors, making it suitable for CI enforcement.
 
 ##### Output format
 The output format depends on the environment:
@@ -78,10 +78,11 @@ The license indication in the project's sources is compliant with the [REUSE spe
 [docs.contributing]: CONTRIBUTING.md
 [docs.license]: ../LICENSE.txt
 [docs.maintaining]: ../MAINTAINING.md
+[docs.todo-format]: ../README.md#todo-format-specification
 [dotnet-tools]: https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-list
+[dotnet]: https://dotnet.microsoft.com/en-us/
 [gh-workflow-commands]: https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions
 [intellij]: ../intellij/
-[dotnet]: https://dotnet.microsoft.com/en-us/
 [nuget.badge]: https://img.shields.io/nuget/v/FVNever.Todosaurus.Cli
 [nuget]: https://www.nuget.org/packages/FVNever.Todosaurus.Cli
 [reuse.spec]: https://reuse.software/spec-3.3/

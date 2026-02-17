@@ -149,3 +149,58 @@ let ``Scan returns zero exit code when all TODOs are inside ignore regions``(): 
         let! exitCode = ScanCommand.Scan tempDir
         Assert.Equal(0, exitCode)
     })
+
+[<Fact>]
+let ``Multiple markers on the same line is an error``(): Task =
+    WithTempDir(fun tempDir -> task {
+        do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-Start IgnoreTODO-End"
+        let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
+        match result with
+        | Error msg -> Assert.Contains("Multiple IgnoreTODO markers", msg)
+        | Ok _ -> failwith "Expected an error for multiple markers on same line"
+    })
+
+[<Fact>]
+let ``Marker and TODO on the same line is an error``(): Task =
+    WithTempDir(fun tempDir -> task {
+        do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-Start TODO fix"
+        let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
+        match result with
+        | Error msg -> Assert.Contains("IgnoreTODO marker and TODO on the same line", msg)
+        | Ok _ -> failwith "Expected an error for marker and TODO on same line"
+    })
+
+[<Fact>]
+let ``Multiple unresolved TODOs on the same line are detected as one match``(): Task =
+    WithTempDir(fun tempDir -> task {
+        do! (tempDir / "test.txt").WriteAllTextAsync "// TODO first TODO second"
+        let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
+        let matches = unwrapOk result
+        Assert.Equal(1, matches.Count)
+    })
+
+[<Fact>]
+let ``Resolved and unresolved TODO on the same line: unresolved is detected``(): Task =
+    WithTempDir(fun tempDir -> task {
+        do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#123]: tracked TODO fix"
+        let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
+        let matches = unwrapOk result
+        Assert.Equal(1, matches.Count)
+    })
+
+[<Fact>]
+let ``Multiple resolved TODOs on the same line: no match``(): Task =
+    WithTempDir(fun tempDir -> task {
+        do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#123]: a TODO[#456]: b"
+        let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
+        let matches = unwrapOk result
+        Assert.Empty matches
+    })
+
+[<Fact>]
+let ``Scan returns exit code 2 when marker and TODO on same line``(): Task =
+    WithTempDir(fun tempDir -> task {
+        do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-Start TODO fix"
+        let! exitCode = ScanCommand.Scan tempDir
+        Assert.Equal(2, exitCode)
+    })

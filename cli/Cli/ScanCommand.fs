@@ -25,6 +25,14 @@ let private todoPattern = Regex(@"\b(?i)TODO(?-i)\b:?(?!\[.*?\])", RegexOptions.
 let private IsCi(): bool =
     Environment.GetEnvironmentVariable("CI") |> isNull |> not
 
+let private CountOccurrences (text: string) (substring: string): int =
+    let mutable count = 0
+    let mutable index = text.IndexOf(substring, StringComparison.Ordinal)
+    while index >= 0 do
+        count <- count + 1
+        index <- text.IndexOf(substring, index + substring.Length, StringComparison.Ordinal)
+    count
+
 let private ProcessLines (filePath: LocalPath) (lines: string array) (i: int) (ignoring: bool) (ignoreStartLine: int) (matches: ResizeArray<TodoMatch>): Result<IReadOnlyList<TodoMatch>, string> =
     let rec loop i ignoring ignoreStartLine =
         if i >= lines.Length then
@@ -34,12 +42,19 @@ let private ProcessLines (filePath: LocalPath) (lines: string array) (i: int) (i
                 Ok(matches :> IReadOnlyList<_>)
         else
             let line = lines[i]
-            if line.Contains("IgnoreTODO-Start") then
+            let startCount = CountOccurrences line "IgnoreTODO-Start"
+            let endCount = CountOccurrences line "IgnoreTODO-End"
+            let markerCount = startCount + endCount
+            if markerCount > 1 then
+                Error $"%s{filePath.Value}(%d{i + 1}): Multiple IgnoreTODO markers on the same line"
+            elif markerCount = 1 && todoPattern.IsMatch(line) then
+                Error $"%s{filePath.Value}(%d{i + 1}): IgnoreTODO marker and TODO on the same line"
+            elif startCount = 1 then
                 if ignoring then
                     Error $"%s{filePath.Value}(%d{i + 1}): Nested IgnoreTODO-Start marker (previous at line %d{ignoreStartLine})"
                 else
                     loop (i + 1) true (i + 1)
-            elif line.Contains("IgnoreTODO-End") then
+            elif endCount = 1 then
                 if not ignoring then
                     Error $"%s{filePath.Value}(%d{i + 1}): IgnoreTODO-End without matching IgnoreTODO-Start"
                 else
