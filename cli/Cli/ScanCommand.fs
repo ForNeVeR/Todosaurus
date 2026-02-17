@@ -25,20 +25,41 @@ let private todoPattern = Regex(@"\b(?i)TODO(?-i)\b:?(?!\[.*?\])", RegexOptions.
 let private IsCi(): bool =
     Environment.GetEnvironmentVariable("CI") |> isNull |> not
 
-let ScanFile(workingDirectory: AbsolutePath, filePath: LocalPath): Task<IReadOnlyList<TodoMatch>> =
+let private ProcessLines (filePath: LocalPath) (lines: string array) (i: int) (ignoring: bool) (ignoreStartLine: int) (matches: ResizeArray<TodoMatch>): Result<IReadOnlyList<TodoMatch>, string> =
+    let rec loop i ignoring ignoreStartLine =
+        if i >= lines.Length then
+            if ignoring then
+                Error $"%s{filePath.Value}(%d{ignoreStartLine}): Unclosed IgnoreTODO-Start marker"
+            else
+                Ok(matches :> IReadOnlyList<_>)
+        else
+            let line = lines[i]
+            if line.Contains("IgnoreTODO-Start") then
+                if ignoring then
+                    Error $"%s{filePath.Value}(%d{i + 1}): Nested IgnoreTODO-Start marker (previous at line %d{ignoreStartLine})"
+                else
+                    loop (i + 1) true (i + 1)
+            elif line.Contains("IgnoreTODO-End") then
+                if not ignoring then
+                    Error $"%s{filePath.Value}(%d{i + 1}): IgnoreTODO-End without matching IgnoreTODO-Start"
+                else
+                    loop (i + 1) false 0
+            else
+                if not ignoring && todoPattern.IsMatch(line) then
+                    matches.Add({ File = filePath; Line = i + 1; Text = line })
+                loop (i + 1) ignoring ignoreStartLine
+    loop i ignoring ignoreStartLine
+
+let ScanFile(workingDirectory: AbsolutePath, filePath: LocalPath): Task<Result<IReadOnlyList<TodoMatch>, string>> =
     task {
         try
             let absolutePath = workingDirectory / filePath.Value
             let! lines = File.ReadAllLinesAsync(absolutePath.Value)
-            let matches = ResizeArray<TodoMatch>()
-            for i in 0 .. lines.Length - 1 do
-                if todoPattern.IsMatch(lines[i]) then
-                    matches.Add({ File = filePath; Line = i + 1; Text = lines[i] })
-            return matches :> IReadOnlyList<_>
+            return ProcessLines filePath lines 0 false 0 (ResizeArray<TodoMatch>())
         with
         | :? IOException as ex ->
             Logger.Warning $"Cannot read file %s{filePath.Value}: %s{ex.Message}"
-            return ResizeArray<TodoMatch>() :> IReadOnlyList<_>
+            return Ok(ResizeArray<TodoMatch>() :> IReadOnlyList<_>)
     }
 
 let FormatMatch(m: TodoMatch, isCi: bool): string =
@@ -53,12 +74,19 @@ let Scan(workingDirectory: AbsolutePath): Task<int> =
         let! files = FilesCommand.ListEligibleFiles workingDirectory
         let isCi = IsCi()
         let allMatches = ResizeArray<TodoMatch>()
+        let mutable hasErrors = false
         for file in files do
-            let! matches = ScanFile(workingDirectory, file)
-            allMatches.AddRange(matches)
+            let! result = ScanFile(workingDirectory, file)
+            match result with
+            | Ok matches -> allMatches.AddRange(matches)
+            | Error message ->
+                Logger.Error message
+                hasErrors <- true
         for m in allMatches do
             Logger.Info(FormatMatch(m, isCi))
-        if allMatches.Count > 0 then
+        if hasErrors then
+            return 2
+        elif allMatches.Count > 0 then
             return 1
         else
             return 0
