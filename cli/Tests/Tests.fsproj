@@ -26,6 +26,7 @@ SPDX-License-Identifier: MIT
         <Compile Include="TestFramework.fs" />
         <Compile Include="TextFileFilterTests.fs" />
         <Compile Include="FilesCommandTests.fs" />
+        <Compile Include="ScanCommandTests.fs" />
     </ItemGroup>
 
 </Project>

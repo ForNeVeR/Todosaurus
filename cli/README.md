@@ -28,7 +28,7 @@ After installation, the tool will be available in shell as `dotnet todosaurus`.
 
 Syntax:
 ```
-dotnet todosaurus [switches] <command>
+dotnet todosaurus [switches] [command]
 ```
 
 Command-line switches:
@@ -36,6 +36,18 @@ Command-line switches:
 - `--version` — print the program version. 
 
 ### Commands
+#### `todosaurus scan`
+This is **the default command** — it runs when `todosaurus` is invoked without a subcommand.
+
+Scans all eligible text files (see [file discovery](#file-discovery) below) for unresolved TODO items and reports them. A TODO is considered unresolved if it matches the pattern `\b(?i)TODO(?-i)\b:?(?!\[.*?\])` — that is, a case-insensitive `TODO` (with an optional colon) that is **not** immediately followed by a bracketed issue reference like `[#123]`. This is the same pattern used by the [Todosaurus IntelliJ plugin][intellij].
+
+The command exits with code **1** if any unresolved TODOs are found, and **0** otherwise, making it suitable for CI enforcement.
+
+##### Output format
+The output format depends on the environment:
+- **CI** (when the [`CI` environment variable][ci-env] is set, as is standard for GitHub Actions, GitLab CI, Travis CI, Azure Pipelines, and most other CI providers): each finding is printed as a [GitHub Actions workflow command][gh-workflow-commands] `::warning` annotation. This makes unresolved TODOs appear as inline annotations in pull request diffs.
+- **Local** (when `CI` is not set): each finding is printed in a human-readable format: `file(line): text`.
+
 #### `todosaurus files`
 This is a diagnostic command.
 
@@ -61,11 +73,14 @@ The project is distributed under the terms of [the MIT license][docs.license].
 
 The license indication in the project's sources is compliant with the [REUSE specification v3.3][reuse.spec].
 
+[ci-env]: https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/store-information-in-variables#default-environment-variables
 [docs.changelog]: ../CHANGELOG.md
 [docs.contributing]: CONTRIBUTING.md
 [docs.license]: ../LICENSE.txt
 [docs.maintaining]: ../MAINTAINING.md
 [dotnet-tools]: https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-list
+[gh-workflow-commands]: https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions
+[intellij]: ../intellij/
 [dotnet]: https://dotnet.microsoft.com/en-us/
 [nuget.badge]: https://img.shields.io/nuget/v/FVNever.Todosaurus.Cli
 [nuget]: https://www.nuget.org/packages/FVNever.Todosaurus.Cli
