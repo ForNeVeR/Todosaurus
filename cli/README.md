@@ -28,7 +28,7 @@ After installation, the tool will be available in shell as `dotnet todosaurus`.
 
 Syntax:
 ```
-dotnet todosaurus [switches] [command]
+dotnet todosaurus [switches] [command] [command-switches]
 ```
 
 Command-line switches:
@@ -41,7 +41,69 @@ This is **the default command** — it runs when `todosaurus` is invoked without
 
 Scans all eligible text files (see [file discovery](#file-discovery) below) for unresolved TODO items (see [TODO Format Specification][docs.todo-format]) and reports them.
 
-The command exits with code **0** if no issues are found, **1** if unresolved TODOs are found, and **2** if there are IgnoreTODO marker errors, making it suitable for CI enforcement.
+The command exits with a code reflecting the highest-priority issue found, making it suitable for CI enforcement.
+
+##### Exit codes
+
+| Code | Meaning                                                             |
+|------|---------------------------------------------------------------------|
+| 2    | IgnoreTODO marker errors                                            |
+| 1    | Unresolved TODOs found (no issue number)                            |
+| 3    | Connected TODOs reference non-existent issues                       |
+| 4    | Connected TODOs reference closed issues                             |
+| 5    | Connected TODOs found but GitHub repository could not be determined |
+| 0    | All clear — no issues found                                         |
+
+When multiple conditions are present, the highest-priority code is returned (priority: **2** > **1** > **3** > **4** > **5** > **0**).
+
+##### Connected TODO checking
+When Todosaurus encounters a connected TODO (e.g., `TODO[#123]`), it can verify the referenced issue against GitHub. If the issue is closed or does not exist, Todosaurus reports a warning.
+
+###### `--tracker` option
+```
+dotnet todosaurus scan --tracker owner/repo
+dotnet todosaurus scan --tracker https://github.com/owner/repo
+```
+
+Specifies the GitHub repository to check issues against. Accepts either `owner/repo` format or a full GitHub URL.
+
+###### GitHub repository discovery
+If `--tracker` is not provided, Todosaurus determines the repository automatically:
+1. Reads the URL of the `origin` Git remote (`git remote get-url origin`).
+2. Parses the GitHub owner and repository name from the URL.
+
+If neither source is available and connected TODOs exist, the command exits with code **5**.
+
+###### GitHub authentication
+Todosaurus reads a GitHub token from environment variables (checked in order):
+1. `GITHUB_TOKEN` — automatically available in GitHub Actions.
+2. `GH_TOKEN` — used by the [GitHub CLI][gh-cli].
+
+Without a token, only public repositories can be checked, subject to [GitHub's unauthenticated rate limit][gh-rate-limits] of 60 requests per hour.
+
+##### GitHub Actions setup
+To use Todosaurus with connected TODO checking in a GitHub Actions workflow:
+
+```yaml
+name: TODOs
+on: [push, pull_request]
+
+jobs:
+  permissions:
+    contents: read
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+      - run: dotnet tool install --global FVNever.Todosaurus.Cli
+      - name: Check TODOs
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: dotnet todosaurus scan
+```
+
+The default `GITHUB_TOKEN` provided by GitHub Actions has read access to the repository's issues, which is sufficient for connected TODO checking. No additional secrets or permissions are required.
 
 ##### Output format
 The output format depends on the environment:
@@ -81,6 +143,8 @@ The license indication in the project's sources is compliant with the [REUSE spe
 [docs.todo-format]: ../README.md#todo-format-specification
 [dotnet-tools]: https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-list
 [dotnet]: https://dotnet.microsoft.com/en-us/
+[gh-cli]: https://cli.github.com/
+[gh-rate-limits]: https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api
 [gh-workflow-commands]: https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions
 [intellij]: ../intellij/
 [nuget.badge]: https://img.shields.io/nuget/v/FVNever.Todosaurus.Cli

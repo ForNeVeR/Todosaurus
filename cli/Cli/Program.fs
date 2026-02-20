@@ -11,11 +11,16 @@ open TruePath
 [<EntryPoint>]
 let main(args: string[]): int =
     let rootCommand = RootCommand("Todosaurus — a tool to process TODO issues in a repository.")
+    rootCommand.Add(ScanCommand.TrackerOption)
     rootCommand.Add(FilesCommand.CreateCommand())
     rootCommand.Add(ScanCommand.CreateCommand())
-    rootCommand.SetAction(fun (_parseResult: ParseResult) ->
+    rootCommand.SetAction(fun (parseResult: ParseResult) ->
         task {
             let workingDirectory = AbsolutePath.CurrentWorkingDirectory
-            return! ScanCommand.Scan workingDirectory
+            let tracker =
+                match parseResult.GetValue(ScanCommand.TrackerOption) with
+                | null -> None
+                | v -> Some v
+            return! ScanCommand.Scan(workingDirectory, tracker, GitHubClient.CreateClient)
         } : Task<int>)
     rootCommand.Parse(args).Invoke()

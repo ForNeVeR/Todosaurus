@@ -20,6 +20,7 @@ SPDX-License-Identifier: MIT
 
     <ItemGroup>
         <PackageReference Include="MedallionShell" Version="1.6.2" />
+        <PackageReference Include="Octokit" Version="14.0.0" />
         <PackageReference Include="System.CommandLine" Version="2.0.3" />
         <PackageReference Include="TruePath" Version="1.11.0" />
         <PackageReference Include="TruePath.SystemIo" Version="1.11.0" />
@@ -34,6 +35,8 @@ SPDX-License-Identifier: MIT
         <Compile Include="GitFileProvider.fs" />
         <Compile Include="FileSystemFileProvider.fs" />
         <Compile Include="FilesCommand.fs" />
+        <Compile Include="GitRemote.fs" />
+        <Compile Include="GitHubClient.fs" />
         <Compile Include="ScanCommand.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>
