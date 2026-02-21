@@ -25,10 +25,17 @@ type ConnectedTodoMatch = {
     Text: string
 }
 
-type ScanFileResult = {
-    UnresolvedMatches: IReadOnlyList<TodoMatch>
-    ConnectedMatches: IReadOnlyList<ConnectedTodoMatch>
-}
+type ScanFileResult =
+    {
+        UnresolvedMatches: IReadOnlyList<TodoMatch>
+        ConnectedMatches: IReadOnlyList<ConnectedTodoMatch>
+    }
+    with
+
+    static member Empty = {
+        UnresolvedMatches = Array.empty
+        ConnectedMatches = Array.empty
+    }
 
 /// Matches TODO items without issue numbers. Direct port of IntelliJ plugin's ToDoItem.newItemPattern.
 /// See: https://regex101.com/r/lDDqm7/2
@@ -48,20 +55,21 @@ let private CountOccurrences (text: string) (substring: string): int =
     count
 
 let private ProcessLines
+    (cwd: AbsolutePath)
     (filePath: LocalPath)
     (lines: string array)
-    (i: int)
-    (ignoring: bool)
-    (ignoreStartLine: int)
-    (unresolvedMatches: ResizeArray<TodoMatch>)
-    (connectedMatches: ResizeArray<ConnectedTodoMatch>)
-    : Result<ScanFileResult, string> =
+    : ScanFileResult =
+    let unresolvedMatches = ResizeArray()
+    let connectedMatches = ResizeArray()
+    let incorrectStructure line message =
+        Logger.Error("Incorrect file structure", message, SourceInfo(cwd, filePath, line))
+        ScanFileResult.Empty
     let rec loop i ignoring ignoreStartLine =
         if i >= lines.Length then
             if ignoring then
-                Error $"%s{filePath.Value}(%d{ignoreStartLine}): Unclosed IgnoreTODO-Start marker"
+                incorrectStructure ignoreStartLine "Unclosed IgnoreTODO-Start marker."
             else
-                Ok {
+                {
                     UnresolvedMatches = unresolvedMatches :> IReadOnlyList<_>
                     ConnectedMatches = connectedMatches :> IReadOnlyList<_>
                 }
@@ -71,17 +79,17 @@ let private ProcessLines
             let endCount = CountOccurrences line "IgnoreTODO-End"
             let markerCount = startCount + endCount
             if markerCount > 1 then
-                Error $"%s{filePath.Value}(%d{i + 1}): Multiple IgnoreTODO markers on the same line"
+                incorrectStructure (i + 1) "Multiple IgnoreTODO markers on the same line."
             elif markerCount = 1 && todoPattern.IsMatch(line) then
-                Error $"%s{filePath.Value}(%d{i + 1}): IgnoreTODO marker and TODO on the same line"
+                incorrectStructure (i + 1) "IgnoreTODO marker and TODO on the same line."
             elif startCount = 1 then
                 if ignoring then
-                    Error $"%s{filePath.Value}(%d{i + 1}): Nested IgnoreTODO-Start marker (previous at line %d{ignoreStartLine})"
+                    incorrectStructure (i + 1) $"Nested IgnoreTODO-Start marker (previous at line %d{ignoreStartLine})."
                 else
                     loop (i + 1) true (i + 1)
             elif endCount = 1 then
                 if not ignoring then
-                    Error $"%s{filePath.Value}(%d{i + 1}): IgnoreTODO-End without matching IgnoreTODO-Start"
+                    incorrectStructure (i + 1) "IgnoreTODO-End without a matching IgnoreTODO-Start."
                 else
                     loop (i + 1) false 0
             else
@@ -97,21 +105,18 @@ let private ProcessLines
                             Text = line
                         })
                 loop (i + 1) ignoring ignoreStartLine
-    loop i ignoring ignoreStartLine
+    loop 0 false 0
 
 let ScanFile(workingDirectory: AbsolutePath, filePath: LocalPath): Task<Result<ScanFileResult, string>> =
     task {
         try
             let absolutePath = workingDirectory / filePath.Value
             let! lines = File.ReadAllLinesAsync(absolutePath.Value)
-            return ProcessLines filePath lines 0 false 0 (ResizeArray<TodoMatch>()) (ResizeArray<ConnectedTodoMatch>())
+            let result = ProcessLines workingDirectory filePath lines
+            return Ok result
         with
         | :? IOException as ex ->
-            Logger.Warning $"Cannot read file %s{filePath.Value}: %s{ex.Message}"
-            return Ok {
-                UnresolvedMatches = ResizeArray<TodoMatch>() :> IReadOnlyList<_>
-                ConnectedMatches = ResizeArray<ConnectedTodoMatch>() :> IReadOnlyList<_>
-            }
+            return Error $"Cannot read file: %s{ex.Message}"
     }
 
 let TrackerOption =
