@@ -117,7 +117,7 @@ let ``Unclosed IgnoreTODO-Start is an error``(): Task =
         do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-Start\n// TODO fix this"
         let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
         match result with
-        | Error msg -> Assert.Contains("Unclosed IgnoreTODO-Start", msg)
+        | Error msg -> Assert.Equal("See nested error messages.", msg)
         | Ok _ -> failwith "Expected an error for unclosed IgnoreTODO-Start"
     })
 
@@ -127,7 +127,7 @@ let ``Nested IgnoreTODO-Start is an error``(): Task =
         do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-Start\n// IgnoreTODO-Start\n// IgnoreTODO-End"
         let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
         match result with
-        | Error msg -> Assert.Contains("Nested IgnoreTODO-Start", msg)
+        | Error msg -> Assert.Equal("See nested error messages.", msg)
         | Ok _ -> failwith "Expected an error for nested IgnoreTODO-Start"
     })
 
@@ -137,7 +137,7 @@ let ``IgnoreTODO-End without matching Start is an error``(): Task =
         do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-End"
         let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
         match result with
-        | Error msg -> Assert.Contains("IgnoreTODO-End without matching IgnoreTODO-Start", msg)
+        | Error msg -> Assert.Equal("See nested error messages.", msg)
         | Ok _ -> failwith "Expected an error for IgnoreTODO-End without Start"
     })
 
@@ -163,7 +163,7 @@ let ``Multiple markers on the same line is an error``(): Task =
         do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-Start IgnoreTODO-End"
         let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
         match result with
-        | Error msg -> Assert.Contains("Multiple IgnoreTODO markers", msg)
+        | Error msg -> Assert.Equal("See nested error messages.", msg)
         | Ok _ -> failwith "Expected an error for multiple markers on same line"
     })
 
@@ -173,7 +173,7 @@ let ``Marker and TODO on the same line is an error``(): Task =
         do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-Start TODO fix"
         let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
         match result with
-        | Error msg -> Assert.Contains("IgnoreTODO marker and TODO on the same line", msg)
+        | Error msg -> Assert.Equal("See nested error messages.", msg)
         | Ok _ -> failwith "Expected an error for marker and TODO on same line"
     })
 

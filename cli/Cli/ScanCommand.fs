@@ -58,18 +58,18 @@ let private ProcessLines
     (cwd: AbsolutePath)
     (filePath: LocalPath)
     (lines: string array)
-    : ScanFileResult =
+    : Result<ScanFileResult, unit> =
     let unresolvedMatches = ResizeArray()
     let connectedMatches = ResizeArray()
     let incorrectStructure line message =
         Logger.Error("Incorrect file structure", message, SourceInfo(cwd, filePath, line))
-        ScanFileResult.Empty
+        Error()
     let rec loop i ignoring ignoreStartLine =
         if i >= lines.Length then
             if ignoring then
                 incorrectStructure ignoreStartLine "Unclosed IgnoreTODO-Start marker."
             else
-                {
+                Ok {
                     UnresolvedMatches = unresolvedMatches :> IReadOnlyList<_>
                     ConnectedMatches = connectedMatches :> IReadOnlyList<_>
                 }
@@ -112,8 +112,8 @@ let ScanFile(workingDirectory: AbsolutePath, filePath: LocalPath): Task<Result<S
         try
             let absolutePath = workingDirectory / filePath.Value
             let! lines = File.ReadAllLinesAsync(absolutePath.Value)
-            let result = ProcessLines workingDirectory filePath lines
-            return Ok result
+            return ProcessLines workingDirectory filePath lines
+                   |> Result.mapError(fun() -> "See nested error messages.")
         with
         | :? IOException as ex ->
             return Error $"Cannot read file: %s{ex.Message}"
