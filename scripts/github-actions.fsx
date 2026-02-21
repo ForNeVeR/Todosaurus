@@ -95,6 +95,16 @@ let workflows = [
                 "Install-Module VerifyEncoding -Repository PSGallery -RequiredVersion 2.2.1 -Force && Test-Encoding"
             )
         ]
+
+        dotNetJob "todos" [
+            runsOn "ubuntu-24.04"
+            step(
+                name = "Check for TODOs",
+                shell = "pwsh",
+                workingDirectory = "cli",
+                run = "dotnet run --project Cli"
+            )
+        ]
     ]
 
     workflow "dependencies" [

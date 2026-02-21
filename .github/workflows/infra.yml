@@ -51,3 +51,23 @@ jobs:
     - name: Verify encoding
       shell: pwsh
       run: Install-Module VerifyEncoding -Repository PSGallery -RequiredVersion 2.2.1 -Force && Test-Encoding
+  todos:
+    runs-on: ubuntu-24.04
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_NOLOGO: 1
+      NUGET_PACKAGES: ${{ github.workspace }}/.github/nuget-packages
+    steps:
+    - name: Check out the sources
+      uses: actions/checkout@v6
+    - name: Set up .NET SDK
+      uses: actions/setup-dotnet@v5
+    - name: Cache NuGet packages
+      uses: actions/cache@v5
+      with:
+        key: ${{ runner.os }}.nuget.${{ hashFiles('**/*.*proj', '**/*.props') }}
+        path: ${{ env.NUGET_PACKAGES }}
+    - name: Check for TODOs
+      shell: pwsh
+      run: dotnet run --project Cli
+      working-directory: cli
