@@ -69,5 +69,4 @@ jobs:
         path: ${{ env.NUGET_PACKAGES }}
     - name: Check for TODOs
       shell: pwsh
-      run: dotnet run --project Cli
-      working-directory: cli
+      run: dotnet run --project cli/Cli

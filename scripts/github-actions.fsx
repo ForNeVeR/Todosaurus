@@ -98,11 +98,9 @@ let workflows = [
 
         dotNetJob "todos" [
             runsOn "ubuntu-24.04"
-            step(
-                name = "Check for TODOs",
-                shell = "pwsh",
-                workingDirectory = "cli",
-                run = "dotnet run --project Cli"
+            pwsh(
+                "Check for TODOs",
+                "dotnet run --project cli/Cli"
             )
         ]
     ]
