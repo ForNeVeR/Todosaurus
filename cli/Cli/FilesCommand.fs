@@ -21,7 +21,7 @@ let ListEligibleFiles(workingDirectory: AbsolutePath): Task<IReadOnlyList<LocalP
                         return! GitFileProvider.ListFiles workingDirectory
                     else
                         Logger.Warning
-                            "git not found in PATH, falling back to filesystem enumeration"
+                            "git not found in PATH, falling back to file system enumeration."
 
                         return! FileSystemFileProvider.ListAllFiles workingDirectory
                 }

@@ -4,7 +4,6 @@
 
 module Todosaurus.Tests.ScanCommandTests
 
-open System.IO
 open System.Threading.Tasks
 open Todosaurus.Cli
 open Todosaurus.Tests.TestFramework
@@ -66,19 +65,6 @@ let ``Case-insensitive TODO variants are detected``(): Task =
         let scanResult = unwrapOk result
         Assert.Equal(4, scanResult.UnresolvedMatches.Count)
     })
-
-[<Fact>]
-let ``FormatMatch produces GitHub Actions warning format in CI mode``(): unit =
-    let m: ScanCommand.TodoMatch = { File = LocalPath "src/Main.fs"; Line = 42; Text = "// TODO fix this" }
-    let result = ScanCommand.FormatMatch(m, true)
-    Assert.Equal("::warning file=src/Main.fs,line=42,title=Unresolved TODO::// TODO fix this", result)
-
-[<Fact>]
-let ``FormatMatch produces human-readable format in local mode``(): unit =
-    let m: ScanCommand.TodoMatch = { File = LocalPath "src/Main.fs"; Line = 42; Text = "// TODO fix this" }
-    let result = ScanCommand.FormatMatch(m, false)
-    let expectedPath = "src" + string Path.DirectorySeparatorChar + "Main.fs"
-    Assert.Equal($"%s{expectedPath}(42): // TODO fix this", result)
 
 [<Fact>]
 let ``TODO with space before bracket is detected``(): Task =

@@ -37,8 +37,7 @@ let private todoPattern = Regex(@"\b(?i)TODO(?-i)\b:?(?!\[.*?\])", RegexOptions.
 /// Matches TODO items WITH issue numbers (connected TODOs). Captures the issue number in group 1.
 let private connectedTodoPattern = Regex(@"\b(?i)TODO(?-i)\b:?\[#(\d+)\]", RegexOptions.Compiled)
 
-let private IsCi(): bool =
-    Environment.GetEnvironmentVariable("CI") |> isNull |> not
+
 
 let private CountOccurrences (text: string) (substring: string): int =
     let mutable count = 0
@@ -115,20 +114,6 @@ let ScanFile(workingDirectory: AbsolutePath, filePath: LocalPath): Task<Result<S
             }
     }
 
-let FormatMatch(m: TodoMatch, isCi: bool): string =
-    if isCi then
-        let filePath = m.File.Value.Replace(Path.DirectorySeparatorChar, '/')
-        $"::warning file=%s{filePath},line=%d{m.Line},title=Unresolved TODO::%s{m.Text.TrimEnd()}"
-    else
-        $"%s{m.File.Value}(%d{m.Line}): %s{m.Text.TrimEnd()}"
-
-let FormatConnectedMatch(m: ConnectedTodoMatch, isCi: bool, reason: string): string =
-    if isCi then
-        let filePath = m.File.Value.Replace(Path.DirectorySeparatorChar, '/')
-        $"::warning file=%s{filePath},line=%d{m.Line},title=TODO[#%d{m.IssueNumber}] %s{reason}::%s{m.Text.TrimEnd()}"
-    else
-        $"%s{m.File.Value}(%d{m.Line}): TODO[#%d{m.IssueNumber}] %s{reason}: %s{m.Text.TrimEnd()}"
-
 let TrackerOption =
     let opt = Option<string>("--tracker")
     opt.Description <- "GitHub repository (owner/repo or URL) for issue checking"
@@ -137,7 +122,6 @@ let TrackerOption =
 let Scan(workingDirectory: AbsolutePath, tracker: string option, createIssueChecker: unit -> GitHubClient.IIssueChecker): Task<int> =
     task {
         let! files = FilesCommand.ListEligibleFiles workingDirectory
-        let isCi = IsCi()
         let allUnresolved = ResizeArray<TodoMatch>()
         let allConnected = ResizeArray<ConnectedTodoMatch>()
         let mutable hasErrors = false
@@ -148,11 +132,15 @@ let Scan(workingDirectory: AbsolutePath, tracker: string option, createIssueChec
                 allUnresolved.AddRange(scanResult.UnresolvedMatches)
                 allConnected.AddRange(scanResult.ConnectedMatches)
             | Error message ->
-                Logger.Error message
+                Logger.Error("Incorrect file structure", message, SourceInfo(workingDirectory, file, 1))
                 hasErrors <- true
 
         for m in allUnresolved do
-            Logger.Info(FormatMatch(m, isCi))
+            Logger.Warning(
+                "Unresolved TODO",
+                "TODO item has no issue number assigned.",
+                SourceInfo(workingDirectory, m.File, m.Line)
+            )
 
         let mutable hasNonExistent = false
         let mutable hasClosed = false
@@ -186,10 +174,18 @@ let Scan(workingDirectory: AbsolutePath, tracker: string option, createIssueChec
                         match statuses |> Map.tryFind connected.IssueNumber with
                         | Some GitHubClient.NotFound ->
                             hasNonExistent <- true
-                            Logger.Warning(FormatConnectedMatch(connected, isCi, "references non-existent issue"))
+                            Logger.Warning(
+                                "Non-existent issue reference",
+                                $"TODO[#%d{connected.IssueNumber}] references a non-existent issue.",
+                                SourceInfo(workingDirectory, connected.File, connected.Line)
+                            )
                         | Some GitHubClient.Closed ->
                             hasClosed <- true
-                            Logger.Warning(FormatConnectedMatch(connected, isCi, "references closed issue"))
+                            Logger.Warning(
+                                "Closed issue reference",
+                                $"TODO[#%d{connected.IssueNumber}] references a closed issue.",
+                                SourceInfo(workingDirectory, connected.File, connected.Line)
+                            )
                         | _ -> ()
                 with
                 | ex ->
