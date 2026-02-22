@@ -6,6 +6,7 @@ module internal Todosaurus.Tests.TestFramework
 
 open System.IO
 open System.Threading.Tasks
+open Todosaurus.Cli
 open TruePath
 open TruePath.SystemIo
 
@@ -23,4 +24,22 @@ let WithTempDir(action: AbsolutePath -> Task): Task =
             do! action tempDir
         finally
             forceDeleteDirectory tempDir
+    }
+
+type LogResult = {
+    Warnings: ResizeArray<string>
+    Errors: ResizeArray<string>
+}
+
+let RunWithLoggerCollector(action: unit -> Task): Task<LogResult> =
+    task {
+        let result = { Warnings = ResizeArray(); Errors = ResizeArray() }
+        Logger.SetCollectors(Some result.Warnings.Add, Some result.Errors.Add)
+        Logger.SetIsCiOverride(Some false)
+        try
+            do! action()
+            return result
+        finally
+            Logger.SetCollectors(None, None)
+            Logger.SetIsCiOverride(None)
     }

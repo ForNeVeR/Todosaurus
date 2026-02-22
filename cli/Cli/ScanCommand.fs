@@ -107,16 +107,16 @@ let private ProcessLines
                 loop (i + 1) ignoring ignoreStartLine
     loop 0 false 0
 
-let ScanFile(workingDirectory: AbsolutePath, filePath: LocalPath): Task<Result<ScanFileResult, string>> =
+let ScanFile(workingDirectory: AbsolutePath, filePath: LocalPath): Task<Result<ScanFileResult, unit>> =
     task {
         try
             let absolutePath = workingDirectory / filePath.Value
             let! lines = File.ReadAllLinesAsync(absolutePath.Value)
             return ProcessLines workingDirectory filePath lines
-                   |> Result.mapError(fun() -> "See nested error messages.")
         with
         | :? IOException as ex ->
-            return Error $"Cannot read file: %s{ex.Message}"
+            Logger.Error("Cannot read file", ex.Message, SourceInfo(workingDirectory, filePath, 1))
+            return Error()
     }
 
 let TrackerOption =
@@ -136,8 +136,7 @@ let Scan(workingDirectory: AbsolutePath, tracker: string option, createIssueChec
             | Ok scanResult ->
                 allUnresolved.AddRange(scanResult.UnresolvedMatches)
                 allConnected.AddRange(scanResult.ConnectedMatches)
-            | Error message ->
-                Logger.Error("Incorrect file structure", message, SourceInfo(workingDirectory, file, 1))
+            | Error() ->
                 hasErrors <- true
 
         for m in allUnresolved do
