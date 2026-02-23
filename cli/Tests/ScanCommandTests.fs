@@ -32,8 +32,11 @@ let private allOpenChecker(): GitHubClient.IIssueChecker =
         member _.CheckIssue(_owner, _repo, _issueNumber) = task { return GitHubClient.Open }
     }
 
+let private configWithTracker(dir: AbsolutePath): Configuration.TodosaurusConfig =
+    { Configuration.Empty dir with TrackerUrl = Some "https://github.com/owner/repo" }
+
 let private scanSimple(dir: AbsolutePath): Task<int> =
-    ScanCommand.Scan(dir, Some "owner/repo", allOpenChecker)
+    ScanCommand.Scan(dir, configWithTracker dir, allOpenChecker)
 
 // --- ScanFile: unresolved TODO detection ---
 
@@ -387,7 +390,7 @@ let ``Scan returns zero when connected TODOs reference open issues``(): Task =
         let! log = RunWithLoggerCollector(fun () -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#123]: tracked"
             let checker = mockChecker (Map.ofList [ (123, GitHubClient.Open) ])
-            let! exitCode = ScanCommand.Scan(tempDir, Some "owner/repo", fun () -> checker)
+            let! exitCode = ScanCommand.Scan(tempDir, configWithTracker tempDir, fun () -> checker)
             Assert.Equal(0, exitCode)
         })
         Assert.Empty log.Warnings
@@ -400,7 +403,7 @@ let ``Scan returns exit code 3 for non-existent issues``(): Task =
         let! log = RunWithLoggerCollector(fun () -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#999]: tracked"
             let checker = mockChecker (Map.ofList [ (999, GitHubClient.NotFound) ])
-            let! exitCode = ScanCommand.Scan(tempDir, Some "owner/repo", fun () -> checker)
+            let! exitCode = ScanCommand.Scan(tempDir, configWithTracker tempDir, fun () -> checker)
             Assert.Equal(3, exitCode)
         })
         Assert.Equal(1, log.Warnings.Count)
@@ -414,7 +417,7 @@ let ``Scan returns exit code 4 for closed issues``(): Task =
         let! log = RunWithLoggerCollector(fun () -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#10]: tracked"
             let checker = mockChecker (Map.ofList [ (10, GitHubClient.Closed) ])
-            let! exitCode = ScanCommand.Scan(tempDir, Some "owner/repo", fun () -> checker)
+            let! exitCode = ScanCommand.Scan(tempDir, configWithTracker tempDir, fun () -> checker)
             Assert.Equal(4, exitCode)
         })
         Assert.Equal(1, log.Warnings.Count)
@@ -427,7 +430,7 @@ let ``Scan returns exit code 5 when tracker cannot be resolved``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun () -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#123]: tracked"
-            let! exitCode = ScanCommand.Scan(tempDir, None, allOpenChecker)
+            let! exitCode = ScanCommand.Scan(tempDir, Configuration.Empty tempDir, allOpenChecker)
             Assert.Equal(5, exitCode)
         })
         Assert.Equal(1, log.Warnings.Count)
@@ -441,7 +444,7 @@ let ``Exit code 1 takes priority over exit code 3``(): Task =
         let! log = RunWithLoggerCollector(fun () -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO fix this\n// TODO[#999]: tracked"
             let checker = mockChecker (Map.ofList [ (999, GitHubClient.NotFound) ])
-            let! exitCode = ScanCommand.Scan(tempDir, Some "owner/repo", fun () -> checker)
+            let! exitCode = ScanCommand.Scan(tempDir, configWithTracker tempDir, fun () -> checker)
             Assert.Equal(1, exitCode)
         })
         Assert.Equal(2, log.Warnings.Count)
@@ -454,7 +457,7 @@ let ``Exit code 1 takes priority over exit code 4``(): Task =
         let! log = RunWithLoggerCollector(fun () -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO fix this\n// TODO[#10]: tracked"
             let checker = mockChecker (Map.ofList [ (10, GitHubClient.Closed) ])
-            let! exitCode = ScanCommand.Scan(tempDir, Some "owner/repo", fun () -> checker)
+            let! exitCode = ScanCommand.Scan(tempDir, configWithTracker tempDir, fun () -> checker)
             Assert.Equal(1, exitCode)
         })
         Assert.Equal(2, log.Warnings.Count)
@@ -467,7 +470,7 @@ let ``Exit code 3 takes priority over exit code 4``(): Task =
         let! log = RunWithLoggerCollector(fun () -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#999]: not found\n// TODO[#10]: closed"
             let checker = mockChecker (Map.ofList [ (999, GitHubClient.NotFound); (10, GitHubClient.Closed) ])
-            let! exitCode = ScanCommand.Scan(tempDir, Some "owner/repo", fun () -> checker)
+            let! exitCode = ScanCommand.Scan(tempDir, configWithTracker tempDir, fun () -> checker)
             Assert.Equal(3, exitCode)
         })
         Assert.Equal(2, log.Warnings.Count)

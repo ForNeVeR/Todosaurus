@@ -119,14 +119,10 @@ let ScanFile(workingDirectory: AbsolutePath, filePath: LocalPath): Task<Result<S
             return Error()
     }
 
-let TrackerOption =
-    let opt = Option<string>("--tracker")
-    opt.Description <- "GitHub repository (owner/repo or URL) for issue checking"
-    opt
-
-let Scan(workingDirectory: AbsolutePath, tracker: string option, createIssueChecker: unit -> GitHubClient.IIssueChecker): Task<int> =
+let Scan(workingDirectory: AbsolutePath, config: Configuration.TodosaurusConfig, createIssueChecker: unit -> GitHubClient.IIssueChecker): Task<int> =
     task {
-        let! files = FilesCommand.ListEligibleFiles workingDirectory
+        let! allFiles = FilesCommand.ListEligibleFiles workingDirectory
+        let files = Configuration.ApplyExclusions(allFiles, config)
         let allUnresolved = ResizeArray<TodoMatch>()
         let allConnected = ResizeArray<ConnectedTodoMatch>()
         let mutable hasErrors = false
@@ -153,13 +149,9 @@ let Scan(workingDirectory: AbsolutePath, tracker: string option, createIssueChec
         if allConnected.Count > 0 then
             let! repo =
                 task {
-                    match tracker with
-                    | Some t ->
-                        match GitRemote.ParseTrackerArgument t with
-                        | Some r -> return Some r
-                        | None ->
-                            Logger.Warning $"Cannot parse tracker argument: %s{t}"
-                            return None
+                    match config.TrackerUrl with
+                    | Some url ->
+                        return GitRemote.ParseGitHubUrl url
                     | None ->
                         return! GitRemote.DiscoverFromOrigin workingDirectory
                 }
@@ -203,16 +195,22 @@ let Scan(workingDirectory: AbsolutePath, tracker: string option, createIssueChec
         else return 0
     }
 
-let CreateCommand(): Command =
+let CreateCommand(configOption: Option<string>): Command =
     let command = Command("scan", "Scan for unresolved TODO items and report them as GitHub Actions annotations")
-    command.Add(TrackerOption)
+    command.Add(configOption)
     command.SetAction(fun (parseResult: ParseResult) ->
         task {
             let workingDirectory = AbsolutePath.CurrentWorkingDirectory
-            let tracker =
-                match parseResult.GetValue(TrackerOption) with
+            let configPath =
+                match parseResult.GetValue(configOption) with
                 | null -> None
-                | v -> Some v
-            return! Scan(workingDirectory, tracker, GitHubClient.CreateClient)
+                | v -> Some(AbsolutePath(Path.GetFullPath(v, workingDirectory.Value)))
+            let! configResult = Configuration.ReadConfig(configPath, workingDirectory)
+            match configResult with
+            | Error msg ->
+                Logger.Error msg
+                return 2
+            | Ok config ->
+                return! Scan(workingDirectory, config, GitHubClient.CreateClient)
         } : Task<int>)
     command

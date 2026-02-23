@@ -28,6 +28,7 @@ SPDX-License-Identifier: MIT
         <Compile Include="FilesCommandTests.fs" />
         <Compile Include="GitRemoteTests.fs" />
         <Compile Include="GitHubClientTests.fs" />
+        <Compile Include="ConfigurationTests.fs" />
         <Compile Include="ScanCommandTests.fs" />
     </ItemGroup>
 
