@@ -142,6 +142,7 @@ let ``ApplyExclusions with directory glob filters nested files``() =
 
 // --- Scan integration with exclusions ---
 
+// IgnoreTODO-Start
 [<Fact>]
 let ``Scan integration: excluded file with TODO does not affect exit code``(): Task =
     WithTempDir(fun tempDir -> task {
@@ -166,3 +167,4 @@ exclusions = ["ignored.txt"]
         Assert.Empty log.Warnings
         Assert.Empty log.Errors
     })
+// IgnoreTODO-End

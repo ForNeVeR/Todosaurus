@@ -5,13 +5,14 @@
 module Todosaurus.Cli.Program
 
 open System.CommandLine
-open System.IO
 open System.Threading.Tasks
 open TruePath
 
 [<EntryPoint>]
 let main(args: string[]): int =
+    // IgnoreTODO-Start
     let rootCommand = RootCommand("Todosaurus — a tool to process TODO issues in a repository.")
+    // IgnoreTODO-End
     let configOption = Option<string>("--config")
     configOption.Description <- "Path to configuration file (default: todosaurus.toml in working directory)"
     rootCommand.Add(configOption)
@@ -23,7 +24,7 @@ let main(args: string[]): int =
             let configPath =
                 match parseResult.GetValue(configOption) with
                 | null -> None
-                | v -> Some(AbsolutePath(Path.GetFullPath(v, workingDirectory.Value)))
+                | v -> Some(workingDirectory / v)
             let! configResult = Configuration.ReadConfig(configPath, workingDirectory)
             match configResult with
             | Error msg ->

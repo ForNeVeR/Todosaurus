@@ -76,6 +76,7 @@ let ReadConfig(configPath: AbsolutePath option, workingDirectory: AbsolutePath):
                     |> Option.defaultValue ImmutableArray.Empty
 
                 let configDir = resolvedPath.Parent
+                Logger.Info $"Configuration file read: \"%s{resolvedPath.Value}\"."
                 return Ok {
                     TrackerUrl = trackerUrl
                     Exclusions = exclusions

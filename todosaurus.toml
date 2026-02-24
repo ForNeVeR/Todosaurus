@@ -1,0 +1,4 @@
+exclusions = [
+    "**/README.md",
+    "CHANGELOG.md"
+]

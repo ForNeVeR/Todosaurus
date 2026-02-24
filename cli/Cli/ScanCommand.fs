@@ -37,6 +37,8 @@ type ScanFileResult =
         ConnectedMatches = Array.empty
     }
 
+// IgnoreTODO-Start
+
 /// Matches TODO items without issue numbers. Direct port of IntelliJ plugin's ToDoItem.newItemPattern.
 /// See: https://regex101.com/r/lDDqm7/2
 let private todoPattern = Regex(@"\b(?i)TODO(?-i)\b:?(?!\[.*?\])", RegexOptions.Compiled)
@@ -44,6 +46,7 @@ let private todoPattern = Regex(@"\b(?i)TODO(?-i)\b:?(?!\[.*?\])", RegexOptions.
 /// Matches TODO items WITH issue numbers (connected TODOs). Captures the issue number in group 1.
 let private connectedTodoPattern = Regex(@"\b(?i)TODO(?-i)\b:?\[#(\d+)\]", RegexOptions.Compiled)
 
+// IgnoreTODO-End
 
 
 let private CountOccurrences (text: string) (substring: string): int =
@@ -67,7 +70,7 @@ let private ProcessLines
     let rec loop i ignoring ignoreStartLine =
         if i >= lines.Length then
             if ignoring then
-                incorrectStructure ignoreStartLine "Unclosed IgnoreTODO-Start marker."
+                incorrectStructure ignoreStartLine $"Unclosed {Markers.IgnoreToDoStart} marker."
             else
                 Ok {
                     UnresolvedMatches = unresolvedMatches :> IReadOnlyList<_>
@@ -75,21 +78,21 @@ let private ProcessLines
                 }
         else
             let line = lines[i]
-            let startCount = CountOccurrences line "IgnoreTODO-Start"
-            let endCount = CountOccurrences line "IgnoreTODO-End"
+            let startCount = CountOccurrences line Markers.IgnoreToDoStart
+            let endCount = CountOccurrences line Markers.IgnoreToDoEnd
             let markerCount = startCount + endCount
             if markerCount > 1 then
                 incorrectStructure (i + 1) "Multiple IgnoreTODO markers on the same line."
             elif markerCount = 1 && todoPattern.IsMatch(line) then
-                incorrectStructure (i + 1) "IgnoreTODO marker and TODO on the same line."
+                incorrectStructure (i + 1) $"IgnoreTODO marker and {Markers.ToDoItem} on the same line."
             elif startCount = 1 then
                 if ignoring then
-                    incorrectStructure (i + 1) $"Nested IgnoreTODO-Start marker (previous at line %d{ignoreStartLine})."
+                    incorrectStructure (i + 1) $"Nested {Markers.IgnoreToDoStart} marker (previous at line %d{ignoreStartLine})."
                 else
                     loop (i + 1) true (i + 1)
             elif endCount = 1 then
                 if not ignoring then
-                    incorrectStructure (i + 1) "IgnoreTODO-End without a matching IgnoreTODO-Start."
+                    incorrectStructure (i + 1) $"{Markers.IgnoreToDoEnd} without a matching {Markers.IgnoreToDoStart}."
                 else
                     loop (i + 1) false 0
             else
@@ -137,8 +140,8 @@ let Scan(workingDirectory: AbsolutePath, config: Configuration.TodosaurusConfig,
 
         for m in allUnresolved do
             Logger.Warning(
-                "Unresolved TODO",
-                "TODO item has no issue number assigned.",
+                $"Unresolved {Markers.ToDoItem}",
+                $"{Markers.ToDoItem} item has no issue number assigned.",
                 SourceInfo(workingDirectory, m.File, m.Line)
             )
 
@@ -158,7 +161,7 @@ let Scan(workingDirectory: AbsolutePath, config: Configuration.TodosaurusConfig,
 
             match repo with
             | None ->
-                Logger.Warning "Could not determine GitHub repository. Skipping connected TODO issue checks."
+                Logger.Warning $"Could not determine GitHub repository. Skipping connected {Markers.ToDoItem} issue checks."
                 trackerUnresolvable <- true
             | Some repo ->
                 try
@@ -185,7 +188,7 @@ let Scan(workingDirectory: AbsolutePath, config: Configuration.TodosaurusConfig,
                         | _ -> ()
                 with
                 | ex ->
-                    Logger.Warning $"GitHub API error: %s{ex.Message}. Skipping connected TODO issue checks."
+                    Logger.Warning $"GitHub API error: %s{ex.Message}. Skipping connected {Markers.ToDoItem} issue checks."
 
         if hasErrors then return 2
         elif allUnresolved.Count > 0 then return 1
@@ -196,7 +199,7 @@ let Scan(workingDirectory: AbsolutePath, config: Configuration.TodosaurusConfig,
     }
 
 let CreateCommand(configOption: Option<string>): Command =
-    let command = Command("scan", "Scan for unresolved TODO items and report them as GitHub Actions annotations")
+    let command = Command("scan", $"Scan for unresolved {Markers.ToDoItem} items and report them as GitHub Actions annotations")
     command.Add(configOption)
     command.SetAction(fun (parseResult: ParseResult) ->
         task {

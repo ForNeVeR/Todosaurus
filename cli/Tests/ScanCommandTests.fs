@@ -43,6 +43,8 @@ let private scanSimple(dir: AbsolutePath): Task<int> =
 let private assertIntEqual (x: int) (y: int) =
     Assert.Equal<int>(x, y)
 
+// IgnoreTODO-Start
+
 // --- ScanFile: unresolved TODO detection ---
 
 [<Fact>]
@@ -128,7 +130,7 @@ let ``Scan returns zero exit code when no TODOs found``(): Task =
 let ``TODOs inside ignore region are skipped``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun () -> task {
-            do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-Start\n// TODO fix this\n// IgnoreTODO-End"
+            do! (tempDir / "test.txt").WriteAllTextAsync $"// {Markers.IgnoreToDoStart}\n// TODO fix this\n// {Markers.IgnoreToDoEnd}"
             let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
             let scanResult = unwrapOk result
             Assert.Empty scanResult.UnresolvedMatches
@@ -141,7 +143,7 @@ let ``TODOs inside ignore region are skipped``(): Task =
 let ``TODOs outside ignore region are still detected``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun () -> task {
-            do! (tempDir / "test.txt").WriteAllTextAsync "// TODO first\n// IgnoreTODO-Start\n// TODO ignored\n// IgnoreTODO-End\n// TODO second"
+            do! (tempDir / "test.txt").WriteAllTextAsync $"// TODO first\n// {Markers.IgnoreToDoStart}\n// TODO ignored\n// {Markers.IgnoreToDoEnd}\n// TODO second"
             let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
             let scanResult = unwrapOk result
             assertIntEqual 2 scanResult.UnresolvedMatches.Count
@@ -153,55 +155,55 @@ let ``TODOs outside ignore region are still detected``(): Task =
     })
 
 [<Fact>]
-let ``Unclosed IgnoreTODO-Start is an error``(): Task =
+let ``Unclosed {Markers.IgnoreToDoStart} is an error``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun () -> task {
-            do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-Start\n// TODO fix this"
+            do! (tempDir / "test.txt").WriteAllTextAsync $"// {Markers.IgnoreToDoStart}\n// TODO fix this"
             let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
             match result with
             | Error() -> ()
-            | Ok _ -> failwith "Expected an error for unclosed IgnoreTODO-Start"
+            | Ok _ -> failwith $"Expected an error for unclosed {Markers.IgnoreToDoStart}"
         })
         Assert.Empty log.Warnings
         let error = Assert.Single log.Errors
-        Assert.Contains("Unclosed IgnoreTODO-Start", error)
+        Assert.Contains($"Unclosed {Markers.IgnoreToDoStart}", error)
     })
 
 [<Fact>]
-let ``Nested IgnoreTODO-Start is an error``(): Task =
+let ``Nested {Markers.IgnoreToDoStart} is an error``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun () -> task {
-            do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-Start\n// IgnoreTODO-Start\n// IgnoreTODO-End"
+            do! (tempDir / "test.txt").WriteAllTextAsync $"// {Markers.IgnoreToDoStart}\n// {Markers.IgnoreToDoStart}\n// {Markers.IgnoreToDoEnd}"
             let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
             match result with
             | Error() -> ()
-            | Ok _ -> failwith "Expected an error for nested IgnoreTODO-Start"
+            | Ok _ -> failwith $"Expected an error for nested {Markers.IgnoreToDoStart}"
         })
         Assert.Empty log.Warnings
         let error = Assert.Single log.Errors
-        Assert.Contains("Nested IgnoreTODO-Start", error)
+        Assert.Contains($"Nested {Markers.IgnoreToDoStart}", error)
     })
 
 [<Fact>]
-let ``IgnoreTODO-End without matching Start is an error``(): Task =
+let ``{Markers.IgnoreToDoEnd} without matching Start is an error``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun () -> task {
-            do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-End"
+            do! (tempDir / "test.txt").WriteAllTextAsync $"// {Markers.IgnoreToDoEnd}"
             let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
             match result with
             | Error() -> ()
-            | Ok _ -> failwith "Expected an error for IgnoreTODO-End without Start"
+            | Ok _ -> failwith $"Expected an error for {Markers.IgnoreToDoEnd} without Start"
         })
         Assert.Empty log.Warnings
         let error = Assert.Single log.Errors
-        Assert.Contains("IgnoreTODO-End without", error)
+        Assert.Contains($"{Markers.IgnoreToDoEnd} without", error)
     })
 
 [<Fact>]
 let ``Scan returns exit code 2 on marker error``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun () -> task {
-            do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-Start\n// TODO fix this"
+            do! (tempDir / "test.txt").WriteAllTextAsync $"// {Markers.IgnoreToDoStart}\n// TODO fix this"
             let! exitCode = scanSimple tempDir
             assertIntEqual 2 exitCode
         })
@@ -213,7 +215,7 @@ let ``Scan returns exit code 2 on marker error``(): Task =
 let ``Scan returns zero exit code when all TODOs are inside ignore regions``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun () -> task {
-            do! (tempDir / "test.txt").WriteAllTextAsync "clean line\n// IgnoreTODO-Start\n// TODO fix this\n// IgnoreTODO-End\nclean line"
+            do! (tempDir / "test.txt").WriteAllTextAsync $"clean line\n// {Markers.IgnoreToDoStart}\n// TODO fix this\n// {Markers.IgnoreToDoEnd}\nclean line"
             let! exitCode = scanSimple tempDir
             assertIntEqual 0 exitCode
         })
@@ -225,7 +227,7 @@ let ``Scan returns zero exit code when all TODOs are inside ignore regions``(): 
 let ``Multiple markers on the same line is an error``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun () -> task {
-            do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-Start IgnoreTODO-End"
+            do! (tempDir / "test.txt").WriteAllTextAsync $"// {Markers.IgnoreToDoStart} {Markers.IgnoreToDoEnd}"
             let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
             match result with
             | Error() -> ()
@@ -240,7 +242,7 @@ let ``Multiple markers on the same line is an error``(): Task =
 let ``Marker and TODO on the same line is an error``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun () -> task {
-            do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-Start TODO fix"
+            do! (tempDir / "test.txt").WriteAllTextAsync $"// {Markers.IgnoreToDoStart} TODO fix"
             let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
             match result with
             | Error() -> ()
@@ -294,7 +296,7 @@ let ``Multiple resolved TODOs on the same line: no match``(): Task =
 let ``Scan returns exit code 2 when marker and TODO on same line``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun () -> task {
-            do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-Start TODO fix"
+            do! (tempDir / "test.txt").WriteAllTextAsync $"// {Markers.IgnoreToDoStart} TODO fix"
             let! exitCode = scanSimple tempDir
             assertIntEqual 2 exitCode
         })
@@ -378,7 +380,7 @@ let ``TODO with space before bracket is not matched as connected``(): Task =
 let ``Connected TODO inside IgnoreTODO region is skipped``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun () -> task {
-            do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-Start\n// TODO[#99]: ignored\n// IgnoreTODO-End"
+            do! (tempDir / "test.txt").WriteAllTextAsync $"// {Markers.IgnoreToDoStart}\n// TODO[#99]: ignored\n// {Markers.IgnoreToDoEnd}"
             let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
             let scanResult = unwrapOk result
             Assert.Empty scanResult.ConnectedMatches
@@ -486,9 +488,11 @@ let ``Exit code 3 takes priority over exit code 4``(): Task =
 let ``Exit code 2 takes priority over exit code 1``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun () -> task {
-            do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-Start\n// TODO fix this"
+            do! (tempDir / "test.txt").WriteAllTextAsync $"// {Markers.IgnoreToDoStart}\n// TODO fix this"
             let! exitCode = scanSimple tempDir
             assertIntEqual 2 exitCode
         })
         Assert.Empty log.Warnings
     })
+
+// IgnoreTODO-End

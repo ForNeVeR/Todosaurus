@@ -49,7 +49,9 @@ let ListEligibleFiles(workingDirectory: AbsolutePath): Task<IReadOnlyList<LocalP
     }
 
 let CreateCommand(): Command =
+    // IgnoreTODO-Start
     let command = Command("files", "List text files eligible for TODO checking")
+    // IgnoreTODO-End
 
     command.SetAction(fun (_parseResult: ParseResult) ->
         task {
