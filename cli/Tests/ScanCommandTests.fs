@@ -38,6 +38,11 @@ let private configWithTracker(dir: AbsolutePath): Configuration.TodosaurusConfig
 let private scanSimple(dir: AbsolutePath): Task<int> =
     ScanCommand.Scan(dir, configWithTracker dir, allOpenChecker)
 
+// NOTE: this is needed to make compilation significantly quicker (90 sec -> 4 sec), see
+// https://github.com/dotnet/fsharp/issues/18807 for more details.
+let private assertIntEqual (x: int) (y: int) =
+    Assert.Equal<int>(x, y)
+
 // --- ScanFile: unresolved TODO detection ---
 
 [<Fact>]
@@ -47,8 +52,8 @@ let ``Bare TODO in a file is detected``(): Task =
             do! (tempDir / "test.txt").WriteAllTextAsync "line one\n// TODO fix this\nline three"
             let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
             let scanResult = unwrapOk result
-            Assert.Equal(1, scanResult.UnresolvedMatches.Count)
-            Assert.Equal(2, scanResult.UnresolvedMatches[0].Line)
+            assertIntEqual 1 scanResult.UnresolvedMatches.Count
+            assertIntEqual 2 scanResult.UnresolvedMatches[0].Line
             Assert.Contains("TODO", scanResult.UnresolvedMatches[0].Text)
         })
         Assert.Empty log.Warnings
@@ -75,7 +80,7 @@ let ``Case-insensitive TODO variants are detected``(): Task =
             do! (tempDir / "test.txt").WriteAllTextAsync "// todo fix\n// Todo fix\n// ToDo fix\n// TODO fix"
             let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
             let scanResult = unwrapOk result
-            Assert.Equal(4, scanResult.UnresolvedMatches.Count)
+            assertIntEqual 4 scanResult.UnresolvedMatches.Count
         })
         Assert.Empty log.Warnings
         Assert.Empty log.Errors
@@ -88,7 +93,7 @@ let ``TODO with space before bracket is detected``(): Task =
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO [#124]: this has a space"
             let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
             let scanResult = unwrapOk result
-            Assert.Equal(1, scanResult.UnresolvedMatches.Count)
+            assertIntEqual 1 scanResult.UnresolvedMatches.Count
         })
         Assert.Empty log.Warnings
         Assert.Empty log.Errors
@@ -100,9 +105,9 @@ let ``Scan returns non-zero exit code when TODOs found``(): Task =
         let! log = RunWithLoggerCollector(fun () -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO fix this"
             let! exitCode = scanSimple tempDir
-            Assert.Equal(1, exitCode)
+            assertIntEqual 1 exitCode
         })
-        Assert.Equal(1, log.Warnings.Count)
+        assertIntEqual 1 log.Warnings.Count
         Assert.Contains("Unresolved TODO", log.Warnings[0])
         Assert.Empty log.Errors
     })
@@ -113,7 +118,7 @@ let ``Scan returns zero exit code when no TODOs found``(): Task =
         let! log = RunWithLoggerCollector(fun () -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "clean line\nmore clean"
             let! exitCode = scanSimple tempDir
-            Assert.Equal(0, exitCode)
+            assertIntEqual 0 exitCode
         })
         Assert.Empty log.Warnings
         Assert.Empty log.Errors
@@ -139,9 +144,9 @@ let ``TODOs outside ignore region are still detected``(): Task =
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO first\n// IgnoreTODO-Start\n// TODO ignored\n// IgnoreTODO-End\n// TODO second"
             let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
             let scanResult = unwrapOk result
-            Assert.Equal(2, scanResult.UnresolvedMatches.Count)
-            Assert.Equal(1, scanResult.UnresolvedMatches[0].Line)
-            Assert.Equal(5, scanResult.UnresolvedMatches[1].Line)
+            assertIntEqual 2 scanResult.UnresolvedMatches.Count
+            assertIntEqual 1 scanResult.UnresolvedMatches[0].Line
+            assertIntEqual 5 scanResult.UnresolvedMatches[1].Line
         })
         Assert.Empty log.Warnings
         Assert.Empty log.Errors
@@ -198,10 +203,10 @@ let ``Scan returns exit code 2 on marker error``(): Task =
         let! log = RunWithLoggerCollector(fun () -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-Start\n// TODO fix this"
             let! exitCode = scanSimple tempDir
-            Assert.Equal(2, exitCode)
+            assertIntEqual 2 exitCode
         })
         Assert.Empty log.Warnings
-        Assert.Equal(1, log.Errors.Count)
+        assertIntEqual 1 log.Errors.Count
     })
 
 [<Fact>]
@@ -210,7 +215,7 @@ let ``Scan returns zero exit code when all TODOs are inside ignore regions``(): 
         let! log = RunWithLoggerCollector(fun () -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "clean line\n// IgnoreTODO-Start\n// TODO fix this\n// IgnoreTODO-End\nclean line"
             let! exitCode = scanSimple tempDir
-            Assert.Equal(0, exitCode)
+            assertIntEqual 0 exitCode
         })
         Assert.Empty log.Warnings
         Assert.Empty log.Errors
@@ -253,7 +258,7 @@ let ``Multiple unresolved TODOs on the same line are detected as one match``(): 
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO first TODO second"
             let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
             let scanResult = unwrapOk result
-            Assert.Equal(1, scanResult.UnresolvedMatches.Count)
+            assertIntEqual 1 scanResult.UnresolvedMatches.Count
         })
         Assert.Empty log.Warnings
         Assert.Empty log.Errors
@@ -266,7 +271,7 @@ let ``Resolved and unresolved TODO on the same line: unresolved is detected``():
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#123]: tracked TODO fix"
             let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
             let scanResult = unwrapOk result
-            Assert.Equal(1, scanResult.UnresolvedMatches.Count)
+            assertIntEqual 1 scanResult.UnresolvedMatches.Count
         })
         Assert.Empty log.Warnings
         Assert.Empty log.Errors
@@ -291,10 +296,10 @@ let ``Scan returns exit code 2 when marker and TODO on same line``(): Task =
         let! log = RunWithLoggerCollector(fun () -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-Start TODO fix"
             let! exitCode = scanSimple tempDir
-            Assert.Equal(2, exitCode)
+            assertIntEqual 2 exitCode
         })
         Assert.Empty log.Warnings
-        Assert.Equal(1, log.Errors.Count)
+        assertIntEqual 1 log.Errors.Count
     })
 
 // ## ScanFile: connected TODO detection
@@ -306,9 +311,9 @@ let ``Connected TODO extracts issue number``(): Task =
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#123]: fix this"
             let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
             let scanResult = unwrapOk result
-            Assert.Equal(1, scanResult.ConnectedMatches.Count)
-            Assert.Equal(123, scanResult.ConnectedMatches[0].IssueNumber)
-            Assert.Equal(1, scanResult.ConnectedMatches[0].Line)
+            assertIntEqual 1 scanResult.ConnectedMatches.Count
+            assertIntEqual 123 scanResult.ConnectedMatches[0].IssueNumber
+            assertIntEqual 1 scanResult.ConnectedMatches[0].Line
         })
         Assert.Empty log.Warnings
         Assert.Empty log.Errors
@@ -321,8 +326,8 @@ let ``Connected TODO with colon extracts issue number``(): Task =
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO:[#456] fix"
             let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
             let scanResult = unwrapOk result
-            Assert.Equal(1, scanResult.ConnectedMatches.Count)
-            Assert.Equal(456, scanResult.ConnectedMatches[0].IssueNumber)
+            assertIntEqual 1 scanResult.ConnectedMatches.Count
+            assertIntEqual 456 scanResult.ConnectedMatches[0].IssueNumber
         })
         Assert.Empty log.Warnings
         Assert.Empty log.Errors
@@ -335,9 +340,9 @@ let ``Multiple connected TODOs on same line``(): Task =
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#1]: a TODO[#2]: b"
             let! result = ScanCommand.ScanFile(tempDir, LocalPath "test.txt")
             let scanResult = unwrapOk result
-            Assert.Equal(2, scanResult.ConnectedMatches.Count)
-            Assert.Equal(1, scanResult.ConnectedMatches[0].IssueNumber)
-            Assert.Equal(2, scanResult.ConnectedMatches[1].IssueNumber)
+            assertIntEqual 2 scanResult.ConnectedMatches.Count
+            assertIntEqual 1 scanResult.ConnectedMatches[0].IssueNumber
+            assertIntEqual 2 scanResult.ConnectedMatches[1].IssueNumber
         })
         Assert.Empty log.Warnings
         Assert.Empty log.Errors
@@ -391,7 +396,7 @@ let ``Scan returns zero when connected TODOs reference open issues``(): Task =
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#123]: tracked"
             let checker = mockChecker (Map.ofList [ (123, GitHubClient.Open) ])
             let! exitCode = ScanCommand.Scan(tempDir, configWithTracker tempDir, fun () -> checker)
-            Assert.Equal(0, exitCode)
+            assertIntEqual 0 exitCode
         })
         Assert.Empty log.Warnings
         Assert.Empty log.Errors
@@ -404,9 +409,9 @@ let ``Scan returns exit code 3 for non-existent issues``(): Task =
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#999]: tracked"
             let checker = mockChecker (Map.ofList [ (999, GitHubClient.NotFound) ])
             let! exitCode = ScanCommand.Scan(tempDir, configWithTracker tempDir, fun () -> checker)
-            Assert.Equal(3, exitCode)
+            assertIntEqual 3 exitCode
         })
-        Assert.Equal(1, log.Warnings.Count)
+        assertIntEqual 1 log.Warnings.Count
         Assert.Contains("Non-existent issue", log.Warnings[0])
         Assert.Empty log.Errors
     })
@@ -418,9 +423,9 @@ let ``Scan returns exit code 4 for closed issues``(): Task =
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#10]: tracked"
             let checker = mockChecker (Map.ofList [ (10, GitHubClient.Closed) ])
             let! exitCode = ScanCommand.Scan(tempDir, configWithTracker tempDir, fun () -> checker)
-            Assert.Equal(4, exitCode)
+            assertIntEqual 4 exitCode
         })
-        Assert.Equal(1, log.Warnings.Count)
+        assertIntEqual 1 log.Warnings.Count
         Assert.Contains("Closed issue", log.Warnings[0])
         Assert.Empty log.Errors
     })
@@ -431,9 +436,9 @@ let ``Scan returns exit code 5 when tracker cannot be resolved``(): Task =
         let! log = RunWithLoggerCollector(fun () -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#123]: tracked"
             let! exitCode = ScanCommand.Scan(tempDir, Configuration.Empty tempDir, allOpenChecker)
-            Assert.Equal(5, exitCode)
+            assertIntEqual 5 exitCode
         })
-        Assert.Equal(1, log.Warnings.Count)
+        assertIntEqual 1 log.Warnings.Count
         Assert.Contains("Could not determine", log.Warnings[0])
         Assert.Empty log.Errors
     })
@@ -445,9 +450,9 @@ let ``Exit code 1 takes priority over exit code 3``(): Task =
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO fix this\n// TODO[#999]: tracked"
             let checker = mockChecker (Map.ofList [ (999, GitHubClient.NotFound) ])
             let! exitCode = ScanCommand.Scan(tempDir, configWithTracker tempDir, fun () -> checker)
-            Assert.Equal(1, exitCode)
+            assertIntEqual 1 exitCode
         })
-        Assert.Equal(2, log.Warnings.Count)
+        assertIntEqual 2 log.Warnings.Count
         Assert.Empty log.Errors
     })
 
@@ -458,9 +463,9 @@ let ``Exit code 1 takes priority over exit code 4``(): Task =
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO fix this\n// TODO[#10]: tracked"
             let checker = mockChecker (Map.ofList [ (10, GitHubClient.Closed) ])
             let! exitCode = ScanCommand.Scan(tempDir, configWithTracker tempDir, fun () -> checker)
-            Assert.Equal(1, exitCode)
+            assertIntEqual 1 exitCode
         })
-        Assert.Equal(2, log.Warnings.Count)
+        assertIntEqual 2 log.Warnings.Count
         Assert.Empty log.Errors
     })
 
@@ -471,9 +476,9 @@ let ``Exit code 3 takes priority over exit code 4``(): Task =
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#999]: not found\n// TODO[#10]: closed"
             let checker = mockChecker (Map.ofList [ (999, GitHubClient.NotFound); (10, GitHubClient.Closed) ])
             let! exitCode = ScanCommand.Scan(tempDir, configWithTracker tempDir, fun () -> checker)
-            Assert.Equal(3, exitCode)
+            assertIntEqual 3 exitCode
         })
-        Assert.Equal(2, log.Warnings.Count)
+        assertIntEqual 2 log.Warnings.Count
         Assert.Empty log.Errors
     })
 
@@ -483,8 +488,7 @@ let ``Exit code 2 takes priority over exit code 1``(): Task =
         let! log = RunWithLoggerCollector(fun () -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "// IgnoreTODO-Start\n// TODO fix this"
             let! exitCode = scanSimple tempDir
-            Assert.Equal(2, exitCode)
+            assertIntEqual 2 exitCode
         })
         Assert.Empty log.Warnings
-        Assert.Equal(1, log.Errors.Count)
     })
