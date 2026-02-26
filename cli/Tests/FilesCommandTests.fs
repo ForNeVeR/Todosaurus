@@ -76,13 +76,43 @@ let ``Git repo lists tracked and untracked-not-ignored text files, excludes bina
         do! runGit tempDir [ "add"; ".gitignore" ]
         do! runGit tempDir [ "commit"; "-m"; "add gitignore" ]
 
-        let! files = FilesCommand.ListEligibleFiles tempDir
-        let names = files |> Seq.map _.Value
-        Assert.Contains(".gitignore", names)
-        Assert.Contains("tracked.txt", names)
-        Assert.Contains("new-file.txt", names)
-        Assert.DoesNotContain("tracked.bin", names)
-        Assert.DoesNotContain("ignored.txt", names)
+        Env.SetIsCiOverride(Some false)
+        try
+            let! files = FilesCommand.ListEligibleFiles tempDir
+            let names = files |> Seq.map _.Value
+            Assert.Contains(".gitignore", names)
+            Assert.Contains("tracked.txt", names)
+            Assert.Contains("new-file.txt", names)
+            Assert.DoesNotContain("tracked.bin", names)
+            Assert.DoesNotContain("ignored.txt", names)
+        finally
+            Env.SetIsCiOverride(None)
+    })
+
+[<Fact>]
+let ``CI mode excludes untracked files from Git repo scan``(): Task =
+    WithTempDir(fun tempDir -> task {
+        assertNoGitDir tempDir
+        do! runGit tempDir [ "init" ]
+        do! runGit tempDir [ "config"; "user.email"; "test@test.com" ]
+        do! runGit tempDir [ "config"; "user.name"; "Test" ]
+
+        // Tracked file:
+        do! (tempDir / "tracked.txt").WriteAllTextAsync "tracked"
+        do! runGit tempDir [ "add"; "tracked.txt" ]
+        do! runGit tempDir [ "commit"; "-m"; "initial" ]
+
+        // Untracked-not-ignored file (should be excluded in CI mode):
+        do! (tempDir / "untracked.txt").WriteAllTextAsync "untracked"
+
+        Env.SetIsCiOverride(Some true)
+        try
+            let! files = FilesCommand.ListEligibleFiles tempDir
+            let names = files |> Seq.map _.Value
+            Assert.Contains("tracked.txt", names)
+            Assert.DoesNotContain("untracked.txt", names)
+        finally
+            Env.SetIsCiOverride None
     })
 
 [<Fact>]

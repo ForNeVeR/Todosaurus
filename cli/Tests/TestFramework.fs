@@ -35,11 +35,11 @@ let RunWithLoggerCollector(action: unit -> Task): Task<LogResult> =
     task {
         let result = { Warnings = ResizeArray(); Errors = ResizeArray() }
         Logger.SetCollectors(Some result.Warnings.Add, Some result.Errors.Add)
-        Logger.SetIsCiOverride(Some false)
+        Env.SetIsCiOverride(Some false)
         try
             do! action()
             return result
         finally
             Logger.SetCollectors(None, None)
-            Logger.SetIsCiOverride(None)
+            Env.SetIsCiOverride(None)
     }

@@ -88,6 +88,7 @@ If neither source is available and connected TODOs exist, the command exits with
 Todosaurus reads the `CI` environment variable to determine if it's running in a CI environment. Certain aspects of behavior depend on it:
 1. In the CI environment, `GITHUB_WORKSPACE` is mandatory.
 2. In the CI environment, the output format is changed to [GitHub Actions workflow command][gh-workflow-commands] syntax.
+3. In the CI environment, only Git-tracked files are scanned (untracked files are excluded from file discovery). See [file discovery](#file-discovery) for details. This is done to not signal on any CI-only build artifacts that shouldn't be analyzed.
 
 #### `GITHUB_TOKEN`, `GH_TOKEN`: GitHub Authentication
 Todosaurus reads a GitHub token from environment variables (checked in order):
@@ -136,7 +137,9 @@ jobs:
 The default `GITHUB_TOKEN` provided by GitHub Actions has read access to the repository's issues, which is sufficient for connected TODO checking. No additional secrets or permissions are required.
 
 ### File discovery
-- **Anywhere inside of a Git repository** (if a `.git` folder detected): runs `git ls-files` to list tracked files and untracked files that are not ignored by `.gitignore`. This means newly created files appear even before they are staged, but files matching `.gitignore` patterns are excluded.
+- **Anywhere inside of a Git repository** (if a `.git` folder detected): runs `git ls-files` to list files for scanning. The set of files depends on the environment:
+  - **In CI mode** (when the `CI` environment variable is set): only Git-tracked files (files in the index) are scanned. This avoids false positives from generated or cached files that are not tracked by Git and not covered by `.gitignore` (e.g., package caches restored during CI builds, build artifacts, etc.).
+  - **Locally** (when `CI` is not set): tracked files and untracked files that are not ignored by `.gitignore` are both scanned. This means newly created files appear even before they are staged, but files matching `.gitignore` patterns are excluded.
   - **Git executable not found**: if the `git` command is not available on `PATH`, a warning is printed to stderr and the command falls back to recursive filesystem enumeration.
 - **Outside of a Git repository**: recursively enumerates all the files under the current directory.
 

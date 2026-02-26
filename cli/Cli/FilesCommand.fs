@@ -18,7 +18,8 @@ let ListEligibleFiles(workingDirectory: AbsolutePath): Task<IReadOnlyList<LocalP
                     let! gitAvailable = GitFileProvider.IsGitAvailable()
 
                     if gitAvailable then
-                        return! GitFileProvider.ListFiles workingDirectory
+                        let includeUntracked = not <| Env.IsCi()
+                        return! GitFileProvider.ListFiles(workingDirectory, includeUntracked)
                     else
                         Logger.Warning
                             "git not found in PATH, falling back to file system enumeration."

@@ -19,14 +19,15 @@ let IsGitAvailable(): Task<bool> =
             return false
     }
 
-let ListFiles(directory: AbsolutePath): Task<IReadOnlyList<AbsolutePath>> =
+let ListFiles(directory: AbsolutePath, includeUntracked: bool): Task<IReadOnlyList<AbsolutePath>> =
     task {
-        let! result =
-            Shell.RunProcess(
-                directory,
-                LocalPath "git",
+        let args =
+            if includeUntracked then
                 [ "ls-files"; "-z"; "--cached"; "--others"; "--exclude-standard" ]
-            )
+            else
+                [ "ls-files"; "-z"; "--cached" ]
+
+        let! result = Shell.RunProcess(directory, LocalPath "git", args)
 
         return
             result.StandardOutput.Split('\000', StringSplitOptions.RemoveEmptyEntries)

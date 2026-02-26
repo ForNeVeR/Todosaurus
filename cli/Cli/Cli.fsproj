@@ -33,6 +33,7 @@ SPDX-License-Identifier: MIT
 
     <ItemGroup>
         <Compile Include="AssemblyInfo.fs" />
+        <Compile Include="Env.fs" />
         <Compile Include="Logger.fs" />
         <Compile Include="TextFileFilter.fs" />
         <Compile Include="Shell.fs" />
