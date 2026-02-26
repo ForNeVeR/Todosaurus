@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -19,7 +19,9 @@ class TodosaurusWizardBuilderTests {
     @Test
     fun `Should link steps properly`() {
         // Arrange
+        // IgnoreTODO-Start
         val model = TodosaurusWizardContext(ToDoItem.fromRange(FakeRangeMarker("TODO"), TodosaurusSettings.State.defaultState))
+        // IgnoreTODO-End
         val sut = TodosaurusWizardBuilder(FakeProject(), model, CoroutineScope(Dispatchers.IO))
         val firstStep = FakeWizardStep("1")
         val secondStep = FakeWizardStep("2")

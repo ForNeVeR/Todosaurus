@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.ValueSource
 
 class IsReportedTests {
 
+    // IgnoreTODO-Start
     @ParameterizedTest
     @ValueSource(strings = [
         "TODO[#2342]:",
@@ -25,4 +26,5 @@ class IsReportedTests {
         // Act & Assert
         assertInstanceOf<ToDoItem.Reported>(sut)
     }
+    // IgnoreTODO-End
 }

@@ -1,9 +1,10 @@
-// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
 package me.fornever.todosaurus.core.issues
 
+// IgnoreTODO-Start
 import com.intellij.ide.todo.TodoConfiguration
 import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.editor.Document
@@ -13,11 +14,14 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.util.concurrency.annotations.RequiresWriteLock
 import me.fornever.todosaurus.core.settings.TodosaurusSettings
+// IgnoreTODO-End
 
 sealed class ToDoItem(val text: String, protected val todosaurusSettings: TodosaurusSettings.State) {
     companion object {
+        // IgnoreTODO-Start
         private val newItemPattern: Regex
             = Regex("\\b(?i)TODO(?-i)\\b:?(?!\\[.*?])") // https://regex101.com/r/lDDqm7/2
+        // IgnoreTODO-End
 
         fun containsToDo(psiElement: PsiElement): Boolean {
             if (psiElement !is PsiComment)
@@ -136,8 +140,11 @@ sealed class ToDoItem(val text: String, protected val todosaurusSettings: Todosa
             return Reported(newText, issueNumber, todosaurusSettings)
         }
 
-        private fun formReportedItemPattern(issueNumber: String): String
+
+        private fun formReportedItemPattern(issueNumber: String): String =
         // TODO[#134]: Allow to customize template for issue number. This is difficult task because the "newItemPattern" is now linked to a regular [.*?] pattern
-            = "TODO${todosaurusSettings.numberPattern}".replace(TodosaurusSettings.ISSUE_NUMBER_REPLACEMENT, issueNumber)
+            // IgnoreTODO-Start
+            "TODO${todosaurusSettings.numberPattern}".replace(TodosaurusSettings.ISSUE_NUMBER_REPLACEMENT, issueNumber)
+            // IgnoreTODO-End
     }
 }

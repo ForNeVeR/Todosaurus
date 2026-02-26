@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -15,19 +15,22 @@ import org.junit.jupiter.params.provider.MethodSource
 @TestApplication
 class ToReportedTests {
     companion object {
+        // IgnoreTODO-Start
         @JvmStatic
-        fun newItems()
-            = arrayOf(
-                "TODO",
-                "todo",
-                "text Todo",
-                "ToDo",
-                "Todo:text",
-                "ToDo Text",
-                "Todo:Text",
-                "TODO    Text")
+        fun newItems() = arrayOf(
+            "TODO",
+            "todo",
+            "text Todo",
+            "ToDo",
+            "Todo:text",
+            "ToDo Text",
+            "Todo:Text",
+            "TODO    Text"
+        )
+        // IgnoreTODO-End
     }
 
+    // IgnoreTODO-Start
     @ParameterizedTest
     @MethodSource("newItems")
     fun `Should mark ToDo item as reported`(newItem: String) {
@@ -44,6 +47,7 @@ class ToReportedTests {
         // Assert
         assertTrue(sut.toDoRange.document.text.contains(expected))
     }
+    // IgnoreTODO-End
 
     @ParameterizedTest
     @MethodSource("newItems")

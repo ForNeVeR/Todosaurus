@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -95,9 +95,11 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
 
             @Suppress("UnstableApiUsage")
             writeAction {
+                // IgnoreTODO-Start
                 executeCommand(project, "Update TODO Item") {
                     model.toDoItem.toReported(newIssue.number)
                 }
+                // IgnoreTODO-End
             }
 
             model.issueOptions.forEach {

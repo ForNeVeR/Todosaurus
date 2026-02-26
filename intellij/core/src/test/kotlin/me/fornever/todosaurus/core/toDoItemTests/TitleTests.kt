@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource
 
 class TitleTests {
     companion object {
+        // IgnoreTODO-Start
         @JvmStatic
         fun titles() = arrayOf(
             Arguments.of("TODO", ""),
@@ -28,6 +29,7 @@ class TitleTests {
             Arguments.of("TODO\nText", ""),
             Arguments.of("/* TODO: Text", "Text")
         )
+        // IgnoreTODO-End
     }
 
     @ParameterizedTest

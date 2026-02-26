@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -16,6 +16,7 @@ import org.junit.jupiter.params.provider.MethodSource
 class IssueNumberTests {
     companion object {
         @JvmStatic
+        // IgnoreTODO-Start
         private fun items()
             = arrayOf(
                 Arguments.of("TODO[#111]:", "111"),
@@ -37,6 +38,7 @@ class IssueNumberTests {
                 Arguments.of("Todo[13c1]:text", "13c1"),
                 Arguments.of("ToDo[1b3c2]: Text", "1b3c2")
             )
+        // IgnoreTODO-End
     }
 
     @ParameterizedTest

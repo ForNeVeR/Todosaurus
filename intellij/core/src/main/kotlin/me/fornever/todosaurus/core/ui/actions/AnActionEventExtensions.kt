@@ -1,9 +1,10 @@
-// SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
 package me.fornever.todosaurus.core.ui.actions
 
+// IgnoreTODO-Start
 import com.intellij.ide.todo.TodoPanel
 import com.intellij.ide.todo.nodes.TodoItemNode
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -11,6 +12,7 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys
 import com.intellij.openapi.editor.RangeMarker
 import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.ui.tree.TreeUtil
+// IgnoreTODO-End
 
 fun AnActionEvent.getToDoTextRange(): RangeMarker? {
     val tree = getData(PlatformDataKeys.CONTEXT_COMPONENT) as? Tree

@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -15,6 +15,7 @@ import org.junit.jupiter.params.provider.ValueSource
 @TestApplication
 class IsNewTests {
 
+    // IgnoreTODO-Start
     @ParameterizedTest
     @ValueSource(strings = [
         "TODO",
@@ -37,4 +38,5 @@ class IsNewTests {
         // Act & Assert
         assertTrue(sut is ToDoItem.New)
     }
+    // IgnoreTODO-End
 }

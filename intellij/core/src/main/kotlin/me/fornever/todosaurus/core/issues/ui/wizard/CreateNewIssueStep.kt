@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -287,7 +287,9 @@ class CreateNewIssueStep(
                 EditorFactory.getInstance().releaseEditor(todoPreviewer)
             }
             catch (throwable: Throwable) {
+                // IgnoreTODO-Start
                 thisLogger().error("Unable to release editor instance for TODO previewer", throwable)
+                // IgnoreTODO-End
             }
         }
     }
