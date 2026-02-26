@@ -46,7 +46,7 @@ jobs:
       shell: pwsh
       run: dotnet pack ./cli/Todosaurus.slnx --configuration Release -p:Version=${{ steps.version.outputs.version }}
     - name: Upload artifacts
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: _nuget
         path: |-
@@ -87,7 +87,7 @@ jobs:
       run: ./gradlew buildPlugin
       working-directory: intellij
     - name: Upload the artifact
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: _intellij
         path: intellij/build/distributions/Todosaurus-${{ steps.version.outputs.version }}.zip
@@ -132,17 +132,17 @@ jobs:
       shell: pwsh
       run: Expand-Archive -LiteralPath "intellij/Todosaurus-${{ steps.version.outputs.version }}.zip" -DestinationPath "intellij/unpacked"
     - name: Upload the NuGet artifact
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: nuget
         path: nuget/
     - name: Upload the IntelliJ plugin
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: Todosaurus-${{ steps.version.outputs.version }}
         path: intellij/unpacked
     - name: Upload the changelog
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: changelog-section.md
         path: ./changelog-section.md
