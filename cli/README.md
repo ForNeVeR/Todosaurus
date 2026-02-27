@@ -122,8 +122,6 @@ name: TODOs
 on: [push, pull_request]
 
 jobs:
-  permissions:
-    contents: read
   check:
     runs-on: ubuntu-latest
     steps:

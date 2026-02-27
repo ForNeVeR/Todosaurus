@@ -70,3 +70,5 @@ jobs:
     - name: Check for TODOs
       shell: pwsh
       run: dotnet run --project cli/Cli -- --strict
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

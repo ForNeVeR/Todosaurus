@@ -98,9 +98,13 @@ let workflows = [
 
         dotNetJob "todos" [
             runsOn "ubuntu-24.04"
-            pwsh(
-                "Check for TODOs",
-                "dotnet run --project cli/Cli -- --strict"
+            step(
+                name = "Check for TODOs",
+                shell = "pwsh",
+                run = "dotnet run --project cli/Cli -- --strict",
+                env = Map.ofList [
+                    "GITHUB_TOKEN", "${{ secrets.GITHUB_TOKEN }}"
+                ]
             )
         ]
     ]
