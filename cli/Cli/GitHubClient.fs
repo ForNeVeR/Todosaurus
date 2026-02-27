@@ -16,7 +16,7 @@ type IssueStatus =
 type IIssueChecker =
     abstract CheckIssue: owner: string * repo: string * issueNumber: int -> Task<IssueStatus>
 
-let CreateClient(): IIssueChecker =
+let CreateClient(ctx: LoggerContext): IIssueChecker =
     let client = GitHubClient(ProductHeaderValue("Todosaurus-CLI"))
 
     let token =
@@ -36,7 +36,7 @@ let CreateClient(): IIssueChecker =
     | Some t ->
         client.Credentials <- Credentials(t)
     | None ->
-        Logger.Warning "No GitHub token found (checked GITHUB_TOKEN and GH_TOKEN). API rate limits will be restrictive."
+        Logger.Warning(ctx, "No GitHub token found (checked GITHUB_TOKEN and GH_TOKEN). API rate limits will be restrictive.")
 
     { new IIssueChecker with
         member _.CheckIssue(owner, repo, issueNumber) =

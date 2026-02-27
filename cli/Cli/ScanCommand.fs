@@ -58,6 +58,7 @@ let private CountOccurrences (text: string) (substring: string): int =
     count
 
 let private ProcessLines
+    (ctx: LoggerContext)
     (cwd: AbsolutePath)
     (filePath: LocalPath)
     (lines: string array)
@@ -65,7 +66,7 @@ let private ProcessLines
     let unresolvedMatches = ResizeArray()
     let connectedMatches = ResizeArray()
     let incorrectStructure line message =
-        Logger.Error("Incorrect file structure", message, SourceInfo(cwd, filePath, line))
+        Logger.Error(ctx, "Incorrect file structure", message, SourceInfo(cwd, filePath, line))
         Error()
     let rec loop i ignoring ignoreStartLine =
         if i >= lines.Length then
@@ -110,27 +111,27 @@ let private ProcessLines
                 loop (i + 1) ignoring ignoreStartLine
     loop 0 false 0
 
-let ScanFile(workingDirectory: AbsolutePath, filePath: LocalPath): Task<Result<ScanFileResult, unit>> =
+let ScanFile(ctx: LoggerContext, workingDirectory: AbsolutePath, filePath: LocalPath): Task<Result<ScanFileResult, unit>> =
     task {
         try
             let absolutePath = workingDirectory / filePath.Value
             let! lines = File.ReadAllLinesAsync(absolutePath.Value)
-            return ProcessLines workingDirectory filePath lines
+            return ProcessLines ctx workingDirectory filePath lines
         with
         | :? IOException as ex ->
-            Logger.Error("Cannot read file", ex.Message, SourceInfo(workingDirectory, filePath, 1))
+            Logger.Error(ctx, "Cannot read file", ex.Message, SourceInfo(workingDirectory, filePath, 1))
             return Error()
     }
 
-let Scan(workingDirectory: AbsolutePath, config: Configuration.TodosaurusConfig, createIssueChecker: unit -> GitHubClient.IIssueChecker): Task<int> =
+let Scan(ctx: LoggerContext, workingDirectory: AbsolutePath, config: Configuration.TodosaurusConfig, createIssueChecker: unit -> GitHubClient.IIssueChecker): Task<int> =
     task {
-        let! allFiles = FilesCommand.ListEligibleFiles workingDirectory
+        let! allFiles = FilesCommand.ListEligibleFiles(ctx, workingDirectory)
         let files = Configuration.ApplyExclusions(allFiles, config)
         let allUnresolved = ResizeArray<TodoMatch>()
         let allConnected = ResizeArray<ConnectedTodoMatch>()
         let mutable hasErrors = false
         for file in files do
-            let! result = ScanFile(workingDirectory, file)
+            let! result = ScanFile(ctx, workingDirectory, file)
             match result with
             | Ok scanResult ->
                 allUnresolved.AddRange(scanResult.UnresolvedMatches)
@@ -139,7 +140,7 @@ let Scan(workingDirectory: AbsolutePath, config: Configuration.TodosaurusConfig,
                 hasErrors <- true
 
         for m in allUnresolved do
-            Logger.Warning(
+            Logger.Warning(ctx,
                 $"Unresolved {Markers.ToDoItem}",
                 $"{Markers.ToDoItem} item has no issue number assigned.",
                 SourceInfo(workingDirectory, m.File, m.Line)
@@ -161,7 +162,7 @@ let Scan(workingDirectory: AbsolutePath, config: Configuration.TodosaurusConfig,
 
             match repo with
             | None ->
-                Logger.Warning $"Could not determine GitHub repository. Skipping connected {Markers.ToDoItem} issue checks."
+                Logger.Warning(ctx, $"Could not determine GitHub repository. Skipping connected {Markers.ToDoItem} issue checks.")
                 trackerUnresolvable <- true
             | Some repo ->
                 try
@@ -173,14 +174,14 @@ let Scan(workingDirectory: AbsolutePath, config: Configuration.TodosaurusConfig,
                         match statuses |> Map.tryFind connected.IssueNumber with
                         | Some GitHubClient.NotFound ->
                             hasNonExistent <- true
-                            Logger.Warning(
+                            Logger.Warning(ctx,
                                 "Non-existent issue reference",
                                 $"TODO[#%d{connected.IssueNumber}] references a non-existent issue.",
                                 SourceInfo(workingDirectory, connected.File, connected.Line)
                             )
                         | Some GitHubClient.Closed ->
                             hasClosed <- true
-                            Logger.Warning(
+                            Logger.Warning(ctx,
                                 "Closed issue reference",
                                 $"TODO[#%d{connected.IssueNumber}] references a closed issue.",
                                 SourceInfo(workingDirectory, connected.File, connected.Line)
@@ -188,7 +189,7 @@ let Scan(workingDirectory: AbsolutePath, config: Configuration.TodosaurusConfig,
                         | _ -> ()
                 with
                 | ex ->
-                    Logger.Warning $"GitHub API error: %s{ex.Message}. Skipping connected {Markers.ToDoItem} issue checks."
+                    Logger.Warning(ctx, $"GitHub API error: %s{ex.Message}. Skipping connected {Markers.ToDoItem} issue checks.")
 
         if hasErrors then return 2
         elif allUnresolved.Count > 0 then return 1
@@ -198,22 +199,42 @@ let Scan(workingDirectory: AbsolutePath, config: Configuration.TodosaurusConfig,
         else return 0
     }
 
-let CreateCommand(configOption: Option<string>): Command =
+let RunScan(
+    workingDirectory: AbsolutePath,
+    configValue: string | null,
+    strict: bool,
+    createIssueChecker: LoggerContext -> GitHubClient.IIssueChecker
+): Task<int> = task {
+    let ctx = LoggerContext.Create()
+    let configPath =
+        match configValue with
+        | null -> None
+        | v -> Some(AbsolutePath(Path.GetFullPath(v, workingDirectory.Value)))
+    let! configResult = Configuration.ReadConfig(configPath, workingDirectory)
+    match configResult with
+    | Error msg ->
+        Logger.Error(ctx, msg)
+        return 2
+    | Ok config ->
+        let! exitCode = Scan(ctx, workingDirectory, config, fun () -> createIssueChecker ctx)
+        if exitCode = 0 && strict && ctx.WarningCount > 0 then
+            Logger.Error(ctx, $"Strict mode: %d{ctx.WarningCount} warning(s) detected, failing.")
+            return 6
+        else
+            return exitCode
+}
+
+let CreateCommand(configOption: Option<string>, strictOption: Option<bool>): Command =
     let command = Command("scan", $"Scan for unresolved {Markers.ToDoItem} items and report them as GitHub Actions annotations")
     command.Add(configOption)
+    command.Add(strictOption)
     command.SetAction(fun (parseResult: ParseResult) ->
-        task {
-            let workingDirectory = AbsolutePath.CurrentWorkingDirectory
-            let configPath =
-                match parseResult.GetValue(configOption) with
-                | null -> None
-                | v -> Some(AbsolutePath(Path.GetFullPath(v, workingDirectory.Value)))
-            let! configResult = Configuration.ReadConfig(configPath, workingDirectory)
-            match configResult with
-            | Error msg ->
-                Logger.Error msg
-                return 2
-            | Ok config ->
-                return! Scan(workingDirectory, config, GitHubClient.CreateClient)
-        } : Task<int>)
+        RunScan(
+            AbsolutePath.CurrentWorkingDirectory,
+            parseResult.GetValue(configOption),
+            #nowarn 3265 // F# nullable value type limitation with System.CommandLine GetValue<bool>
+            parseResult.GetValue(strictOption),
+            #warnon 3265
+            GitHubClient.CreateClient
+        ) : Task<int>)
     command

@@ -28,7 +28,8 @@ let ``Non-Git directory with text file lists it``(): Task =
     WithTempDir(fun tempDir -> task {
         assertNoGitDir tempDir
         do! (tempDir / "hello.txt").WriteAllTextAsync "Hello"
-        let! files = FilesCommand.ListEligibleFiles tempDir
+        let ctx = LoggerContext.Create()
+        let! files = FilesCommand.ListEligibleFiles(ctx, tempDir)
         Assert.Equal<LocalPath>([| LocalPath "hello.txt" |], files)
     })
 
@@ -37,7 +38,8 @@ let ``Non-Git directory with binary file excludes it``(): Task =
     WithTempDir(fun tempDir -> task {
         assertNoGitDir tempDir
         do! (tempDir / "data.bin").WriteAllBytesAsync [| 0x00uy; 0x01uy; 0x02uy |]
-        let! files = FilesCommand.ListEligibleFiles tempDir
+        let ctx = LoggerContext.Create()
+        let! files = FilesCommand.ListEligibleFiles(ctx, tempDir)
         Assert.Empty files
     })
 
@@ -48,7 +50,8 @@ let ``Non-Git directory with mixed files lists only text``(): Task =
         do! (tempDir / "readme.txt").WriteAllTextAsync "Read me"
         do! (tempDir / "image.bin").WriteAllBytesAsync [| 0x89uy; 0x50uy; 0x00uy |]
         do! (tempDir / "code.fs").WriteAllTextAsync "let x = 1"
-        let! files = FilesCommand.ListEligibleFiles tempDir
+        let ctx = LoggerContext.Create()
+        let! files = FilesCommand.ListEligibleFiles(ctx, tempDir)
         let names = files |> Seq.map _.Value
         Assert.Equal<string>([ "code.fs"; "readme.txt" ], names)
     })
@@ -76,9 +79,10 @@ let ``Git repo lists tracked and untracked-not-ignored text files, excludes bina
         do! runGit tempDir [ "add"; ".gitignore" ]
         do! runGit tempDir [ "commit"; "-m"; "add gitignore" ]
 
+        let ctx = LoggerContext.Create()
         Env.SetIsCiOverride(Some false)
         try
-            let! files = FilesCommand.ListEligibleFiles tempDir
+            let! files = FilesCommand.ListEligibleFiles(ctx, tempDir)
             let names = files |> Seq.map _.Value
             Assert.Contains(".gitignore", names)
             Assert.Contains("tracked.txt", names)
@@ -105,9 +109,10 @@ let ``CI mode excludes untracked files from Git repo scan``(): Task =
         // Untracked-not-ignored file (should be excluded in CI mode):
         do! (tempDir / "untracked.txt").WriteAllTextAsync "untracked"
 
+        let ctx = LoggerContext.Create()
         Env.SetIsCiOverride(Some true)
         try
-            let! files = FilesCommand.ListEligibleFiles tempDir
+            let! files = FilesCommand.ListEligibleFiles(ctx, tempDir)
             let names = files |> Seq.map _.Value
             Assert.Contains("tracked.txt", names)
             Assert.DoesNotContain("untracked.txt", names)
@@ -123,7 +128,8 @@ let ``Nested directories produce relative paths``(): Task =
         subDir.CreateDirectory()
         do! (subDir / "nested.txt").WriteAllTextAsync "nested"
         do! (tempDir / "root.txt").WriteAllTextAsync "root"
-        let! files = FilesCommand.ListEligibleFiles tempDir
+        let ctx = LoggerContext.Create()
+        let! files = FilesCommand.ListEligibleFiles(ctx, tempDir)
         Assert.Equal(2, files.Count)
         Assert.Contains(LocalPath "root.txt", files)
         // Path separator may vary by OS

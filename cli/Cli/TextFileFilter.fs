@@ -12,7 +12,7 @@ open TruePath.SystemIo
 
 let private bufferSize = 8000
 
-let IsTextFile(path: AbsolutePath): Task<bool> =
+let IsTextFile(ctx: LoggerContext, path: AbsolutePath): Task<bool> =
     task {
         try
             use stream = path.OpenRead()
@@ -24,9 +24,9 @@ let IsTextFile(path: AbsolutePath): Task<bool> =
                 return not (Array.exists (fun b -> b = 0uy) buffer[..bytesRead - 1])
         with
         | :? IOException as ex ->
-            Logger.Warning $"Cannot read file %s{path.Value}: %s{ex.Message}"
+            Logger.Warning(ctx, $"Cannot read file %s{path.Value}: %s{ex.Message}")
             return false
         | :? UnauthorizedAccessException as ex ->
-            Logger.Warning $"Cannot read file %s{path.Value}: %s{ex.Message}"
+            Logger.Warning(ctx, $"Cannot read file %s{path.Value}: %s{ex.Message}")
             return false
     }

@@ -146,7 +146,7 @@ let ``ApplyExclusions with directory glob filters nested files``() =
 [<Fact>]
 let ``Scan integration: excluded file with TODO does not affect exit code``(): Task =
     WithTempDir(fun tempDir -> task {
-        let! log = RunWithLoggerCollector(fun () -> task {
+        let! log = RunWithLoggerCollector(fun ctx -> task {
             let configPath = tempDir / "todosaurus.toml"
             do! configPath.WriteAllTextAsync """
 exclusions = ["ignored.txt"]
@@ -161,7 +161,7 @@ exclusions = ["ignored.txt"]
             let checker = { new GitHubClient.IIssueChecker with
                 member _.CheckIssue(_, _, _) = task { return GitHubClient.Open }
             }
-            let! exitCode = ScanCommand.Scan(tempDir, config, fun () -> checker)
+            let! exitCode = ScanCommand.Scan(ctx, tempDir, config, fun () -> checker)
             Assert.Equal(0, exitCode)
         })
         Assert.Empty log.Warnings

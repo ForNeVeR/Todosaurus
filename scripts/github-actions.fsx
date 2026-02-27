@@ -100,7 +100,7 @@ let workflows = [
             runsOn "ubuntu-24.04"
             pwsh(
                 "Check for TODOs",
-                "dotnet run --project cli/Cli"
+                "dotnet run --project cli/Cli -- --strict"
             )
         ]
     ]

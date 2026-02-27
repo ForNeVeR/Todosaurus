@@ -27,19 +27,25 @@ let WithTempDir(action: AbsolutePath -> Task): Task =
     }
 
 type LogResult = {
+    Context: LoggerContext
     Warnings: ResizeArray<string>
     Errors: ResizeArray<string>
 }
 
-let RunWithLoggerCollector(action: unit -> Task): Task<LogResult> =
+let RunWithLoggerCollector(action: LoggerContext -> Task): Task<LogResult> =
     task {
-        let result = { Warnings = ResizeArray(); Errors = ResizeArray() }
-        Logger.SetCollectors(Some result.Warnings.Add, Some result.Errors.Add)
+        let warnings = ResizeArray()
+        let errors = ResizeArray()
+        let ctx = {
+            WarningCount = 0
+            ErrorCount = 0
+            OnWarning = Some warnings.Add
+            OnError = Some errors.Add
+        }
         Env.SetIsCiOverride(Some false)
         try
-            do! action()
-            return result
+            do! action ctx
+            return { Context = ctx; Warnings = warnings; Errors = errors }
         finally
-            Logger.SetCollectors(None, None)
             Env.SetIsCiOverride(None)
     }

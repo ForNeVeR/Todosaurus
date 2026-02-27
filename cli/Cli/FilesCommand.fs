@@ -9,7 +9,7 @@ open System.CommandLine
 open System.Threading.Tasks
 open TruePath
 
-let ListEligibleFiles(workingDirectory: AbsolutePath): Task<IReadOnlyList<LocalPath>> =
+let ListEligibleFiles(ctx: LoggerContext, workingDirectory: AbsolutePath): Task<IReadOnlyList<LocalPath>> =
     task {
         let! files =
             match GitDiscovery.FindGitRepoRoot workingDirectory with
@@ -21,8 +21,8 @@ let ListEligibleFiles(workingDirectory: AbsolutePath): Task<IReadOnlyList<LocalP
                         let includeUntracked = not <| Env.IsCi()
                         return! GitFileProvider.ListFiles(workingDirectory, includeUntracked)
                     else
-                        Logger.Warning
-                            "git not found in PATH, falling back to file system enumeration."
+                        Logger.Warning(ctx,
+                            "git not found in PATH, falling back to file system enumeration.")
 
                         return! FileSystemFileProvider.ListAllFiles workingDirectory
                 }
@@ -33,7 +33,7 @@ let ListEligibleFiles(workingDirectory: AbsolutePath): Task<IReadOnlyList<LocalP
                 let results = ResizeArray<AbsolutePath>()
 
                 for file in files do
-                    let! isText = TextFileFilter.IsTextFile file
+                    let! isText = TextFileFilter.IsTextFile(ctx, file)
 
                     if isText then
                         results.Add(file)
@@ -56,8 +56,9 @@ let CreateCommand(): Command =
 
     command.SetAction(fun (_parseResult: ParseResult) ->
         task {
+            let ctx = LoggerContext.Create()
             let workingDirectory = AbsolutePath.CurrentWorkingDirectory
-            let! files = ListEligibleFiles workingDirectory
+            let! files = ListEligibleFiles(ctx, workingDirectory)
 
             for file in files do
                 Logger.Info(file.Value)

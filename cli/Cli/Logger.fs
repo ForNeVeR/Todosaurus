@@ -4,19 +4,25 @@
 
 namespace Todosaurus.Cli
 
-open System.Threading
 open TruePath
 
 type SourceInfo = SourceInfo of workingDirectory: AbsolutePath * file: LocalPath * line: int
+
+type internal LoggerContext = {
+    mutable WarningCount: int
+    mutable ErrorCount: int
+    OnWarning: (string -> unit) option
+    OnError: (string -> unit) option
+}
+
+module internal LoggerContext =
+    let Create() = { WarningCount = 0; ErrorCount = 0; OnWarning = None; OnError = None }
 
 /// <remarks>
 /// For warnings/errors containing source info, on GitHub we will use special syntax:
 /// https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands
 /// </remarks>
 type internal Logger =
-
-    static let warningCollector = AsyncLocal<(string -> unit) option>()
-    static let errorCollector = AsyncLocal<(string -> unit) option>()
 
     static let SourceLocation(path: LocalPath) = path.RelativeTo Env.CiWorkspace.Value
     static let FormatCiMessage (title: string) (message: string) (sourceInfo: SourceInfo) =
@@ -27,17 +33,13 @@ type internal Logger =
         let (SourceInfo(cwd, file, line)) = sourceInfo
         $"%s{(file.RelativeTo cwd).Value}:%s{string line}: %s{title}: %s{message}"
 
-    static member internal SetCollectors
-        (onWarning: (string -> unit) option, onError: (string -> unit) option): unit =
-        warningCollector.Value <- onWarning
-        errorCollector.Value <- onError
-
     static member Info(message: string): unit =
         printfn $"%s{message}"
 
     /// Prints a warning.
-    static member Warning(message: string): unit =
-        match warningCollector.Value with
+    static member Warning(ctx: LoggerContext, message: string): unit =
+        ctx.WarningCount <- ctx.WarningCount + 1
+        match ctx.OnWarning with
         | Some collect -> collect message
         | None ->
             if Env.IsCi()
@@ -45,8 +47,9 @@ type internal Logger =
             else eprintfn $"WARNING: %s{message}"
 
     /// Prints a warning with a source location.
-    static member Warning(title: string, message: string, sourceInfo: SourceInfo): unit =
-        match warningCollector.Value with
+    static member Warning(ctx: LoggerContext, title: string, message: string, sourceInfo: SourceInfo): unit =
+        ctx.WarningCount <- ctx.WarningCount + 1
+        match ctx.OnWarning with
         | Some collect -> collect(FormatLocalMessage title message sourceInfo)
         | None ->
             if Env.IsCi()
@@ -54,8 +57,9 @@ type internal Logger =
             else eprintfn $"WARNING: %s{FormatLocalMessage title message sourceInfo}"
 
     /// Prints an error message.
-    static member Error(message: string): unit =
-        match errorCollector.Value with
+    static member Error(ctx: LoggerContext, message: string): unit =
+        ctx.ErrorCount <- ctx.ErrorCount + 1
+        match ctx.OnError with
         | Some collect -> collect message
         | None ->
             if Env.IsCi()
@@ -63,8 +67,9 @@ type internal Logger =
             else eprintfn $"ERROR: %s{message}"
 
     /// Prints an error with a source location.
-    static member Error(title: string, message: string, sourceInfo: SourceInfo): unit =
-        match errorCollector.Value with
+    static member Error(ctx: LoggerContext, title: string, message: string, sourceInfo: SourceInfo): unit =
+        ctx.ErrorCount <- ctx.ErrorCount + 1
+        match ctx.OnError with
         | Some collect -> collect(FormatLocalMessage title message sourceInfo)
         | None ->
             if Env.IsCi()

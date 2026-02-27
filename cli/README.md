@@ -33,6 +33,7 @@ dotnet todosaurus [global-switches…] [command] [command-switches…]
 
 Global switches:
 - `--config <path>` — path to configuration file (default: `todosaurus.toml` in working directory);
+- `--strict` — treat warnings as errors; when any warning is emitted during the scan and the scan would otherwise succeed, exit with code **6** instead of **0**. Recommended for CI;
 - `--help | -h | -?` — print the help;
 - `--version` — print the program version.
 
@@ -108,9 +109,10 @@ When running in the CI environment, Todosaurus will use `GITHUB_WORKSPACE` to fi
 | 3    | Connected TODOs reference non-existent issues                       |
 | 4    | Connected TODOs reference closed issues                             |
 | 5    | Connected TODOs found but GitHub repository could not be determined |
+| 6    | Strict mode: warnings were emitted (only with `--strict`)           |
 | 0    | All clear — no issues found                                         |
 
-When multiple conditions are present, the highest-priority code is returned (priority: **2** > **1** > **3** > **4** > **5** > **0**).
+When multiple conditions are present, the highest-priority code is returned (priority: **2** > **1** > **3** > **4** > **5** > **6** > **0**).
 
 ### GitHub Actions setup
 To use Todosaurus with connected TODO checking in a GitHub Actions workflow:
@@ -131,8 +133,10 @@ jobs:
       - name: Check TODOs
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        run: dotnet todosaurus scan
+        run: dotnet todosaurus scan --strict
 ```
+
+The `--strict` flag ensures that warnings (such as rate-limit notices or unresolvable tracker URLs) cause the workflow step to fail, rather than silently passing. This is recommended for CI to catch configuration issues early.
 
 The default `GITHUB_TOKEN` provided by GitHub Actions has read access to the repository's issues, which is sufficient for connected TODO checking. No additional secrets or permissions are required.
 
