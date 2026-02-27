@@ -228,7 +228,7 @@ let workflows = [
                 usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
                     "name", "${{ steps.artifact.outputs.filename }}"
-                    "path", "./build/distributions/content/*/*"
+                    "path", "intellij/build/distributions/content/*/*"
                 ]
             )
         ]

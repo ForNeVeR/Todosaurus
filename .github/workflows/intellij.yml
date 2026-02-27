@@ -52,7 +52,7 @@ jobs:
       uses: actions/upload-artifact@v6
       with:
         name: ${{ steps.artifact.outputs.filename }}
-        path: ./build/distributions/content/*/*
+        path: intellij/build/distributions/content/*/*
   test:
     name: Test
     needs:

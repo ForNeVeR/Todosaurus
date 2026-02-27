@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-/// Exit codes for the Todosaurus CLI, sorted by priority (0 = lowest, 6 = highest).
+/// Exit codes for the Todosaurus CLI, sorted by priority (0 = lowest, 7 = highest).
 module Todosaurus.Cli.ExitCodes
 
 /// All clear — no issues found.

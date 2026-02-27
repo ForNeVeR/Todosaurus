@@ -30,7 +30,7 @@ function Update-PropertiesFile($relativePath, $propName) {
 function Update-PropsFile($relativePath, $propName) {
     $file = Resolve-Path "$RepoRoot/$relativePath"
 
-    # NOTE: I really tried to play nice and load the file via [xml], but didn't found a way to preserve the
+    # NOTE: I really tried to play nice and load the file via [xml], but didn't find a way to preserve the
     #       formatting. PreserveWhitespace = $true helps a lot, but still doesn't preserve the line breaks between
     #       attributes on the same node.
     $oldContent = [IO.File]::ReadAllText($file)

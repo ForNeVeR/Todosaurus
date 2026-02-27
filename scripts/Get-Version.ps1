@@ -53,7 +53,7 @@ if ($RefName -match '^refs/tags/v') {
     }
 
     $version = $dotNetVersion
-    Write-Host "Pushed ref is a not version tag, got version from the metadata: $version"
+    Write-Host "Pushed ref is not a version tag, got version from the metadata: $version"
 }
 
 Write-Output $version
