@@ -16,7 +16,7 @@ type internal LoggerContext = {
 }
 
 module internal LoggerContext =
-    let Create() = { WarningCount = 0; ErrorCount = 0; OnWarning = None; OnError = None }
+    let Create(): LoggerContext = { WarningCount = 0; ErrorCount = 0; OnWarning = None; OnError = None }
 
 /// <remarks>
 /// For warnings/errors containing source info, on GitHub we will use special syntax:
