@@ -98,6 +98,12 @@ Todosaurus reads a GitHub token from environment variables (checked in order):
 
 Without a token, only public repositories can be checked, subject to [GitHub's unauthenticated rate limit][gh-rate-limits] of 60 requests per hour.
 
+Locally, you might be interested in using the following script:
+```pwsh
+$env:GH_TOKEN = gh auth token
+todosaurus …
+```
+
 #### `GITHUB_WORKSPACE`
 When running in the CI environment, Todosaurus will use `GITHUB_WORKSPACE` to find the path to the repository root. 
 
