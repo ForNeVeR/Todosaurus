@@ -107,7 +107,7 @@ let ``Scan returns non-zero exit code when TODOs found``(): Task =
         let! log = RunWithLoggerCollector(fun ctx -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO fix this"
             let! exitCode = scanSimple(ctx, tempDir)
-            assertIntEqual 1 exitCode
+            assertIntEqual 5 exitCode
         })
         assertIntEqual 1 log.Warnings.Count
         Assert.Contains("Unresolved TODO", log.Warnings[0])
@@ -200,12 +200,12 @@ let ``{Markers.IgnoreToDoEnd} without matching Start is an error``(): Task =
     })
 
 [<Fact>]
-let ``Scan returns exit code 2 on marker error``(): Task =
+let ``Scan returns exit code 6 on marker error``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun ctx -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync $"// {Markers.IgnoreToDoStart}\n// TODO fix this"
             let! exitCode = scanSimple(ctx, tempDir)
-            assertIntEqual 2 exitCode
+            assertIntEqual 6 exitCode
         })
         Assert.Empty log.Warnings
         assertIntEqual 1 log.Errors.Count
@@ -293,12 +293,12 @@ let ``Multiple resolved TODOs on the same line: no match``(): Task =
     })
 
 [<Fact>]
-let ``Scan returns exit code 2 when marker and TODO on same line``(): Task =
+let ``Scan returns exit code 6 when marker and TODO on same line``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun ctx -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync $"// {Markers.IgnoreToDoStart} TODO fix"
             let! exitCode = scanSimple(ctx, tempDir)
-            assertIntEqual 2 exitCode
+            assertIntEqual 6 exitCode
         })
         Assert.Empty log.Warnings
         assertIntEqual 1 log.Errors.Count
@@ -405,13 +405,13 @@ let ``Scan returns zero when connected TODOs reference open issues``(): Task =
     })
 
 [<Fact>]
-let ``Scan returns exit code 3 for non-existent issues``(): Task =
+let ``Scan returns exit code 4 for non-existent issues``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun ctx -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#999]: tracked"
             let checker = mockChecker (Map.ofList [ (999, GitHubClient.NotFound) ])
             let! exitCode = ScanCommand.Scan(ctx, tempDir, configWithTracker tempDir, fun () -> checker)
-            assertIntEqual 3 exitCode
+            assertIntEqual 4 exitCode
         })
         assertIntEqual 1 log.Warnings.Count
         Assert.Contains("Non-existent issue", log.Warnings[0])
@@ -419,13 +419,13 @@ let ``Scan returns exit code 3 for non-existent issues``(): Task =
     })
 
 [<Fact>]
-let ``Scan returns exit code 4 for closed issues``(): Task =
+let ``Scan returns exit code 3 for closed issues``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun ctx -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#10]: tracked"
             let checker = mockChecker (Map.ofList [ (10, GitHubClient.Closed) ])
             let! exitCode = ScanCommand.Scan(ctx, tempDir, configWithTracker tempDir, fun () -> checker)
-            assertIntEqual 4 exitCode
+            assertIntEqual 3 exitCode
         })
         assertIntEqual 1 log.Warnings.Count
         Assert.Contains("Closed issue", log.Warnings[0])
@@ -433,12 +433,12 @@ let ``Scan returns exit code 4 for closed issues``(): Task =
     })
 
 [<Fact>]
-let ``Scan returns exit code 5 when tracker cannot be resolved``(): Task =
+let ``Scan returns exit code 2 when tracker cannot be resolved``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun ctx -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#123]: tracked"
             let! exitCode = ScanCommand.Scan(ctx, tempDir, Configuration.Empty tempDir, allOpenChecker)
-            assertIntEqual 5 exitCode
+            assertIntEqual 2 exitCode
         })
         assertIntEqual 1 log.Warnings.Count
         Assert.Contains("Could not determine", log.Warnings[0])
@@ -446,51 +446,51 @@ let ``Scan returns exit code 5 when tracker cannot be resolved``(): Task =
     })
 
 [<Fact>]
-let ``Exit code 1 takes priority over exit code 3``(): Task =
+let ``Exit code 5 takes priority over exit code 4``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun ctx -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO fix this\n// TODO[#999]: tracked"
             let checker = mockChecker (Map.ofList [ (999, GitHubClient.NotFound) ])
             let! exitCode = ScanCommand.Scan(ctx, tempDir, configWithTracker tempDir, fun () -> checker)
-            assertIntEqual 1 exitCode
+            assertIntEqual 5 exitCode
         })
         assertIntEqual 2 log.Warnings.Count
         Assert.Empty log.Errors
     })
 
 [<Fact>]
-let ``Exit code 1 takes priority over exit code 4``(): Task =
+let ``Exit code 5 takes priority over exit code 3``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun ctx -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO fix this\n// TODO[#10]: tracked"
             let checker = mockChecker (Map.ofList [ (10, GitHubClient.Closed) ])
             let! exitCode = ScanCommand.Scan(ctx, tempDir, configWithTracker tempDir, fun () -> checker)
-            assertIntEqual 1 exitCode
+            assertIntEqual 5 exitCode
         })
         assertIntEqual 2 log.Warnings.Count
         Assert.Empty log.Errors
     })
 
 [<Fact>]
-let ``Exit code 3 takes priority over exit code 4``(): Task =
+let ``Exit code 4 takes priority over exit code 3``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun ctx -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#999]: not found\n// TODO[#10]: closed"
             let checker = mockChecker (Map.ofList [ (999, GitHubClient.NotFound); (10, GitHubClient.Closed) ])
             let! exitCode = ScanCommand.Scan(ctx, tempDir, configWithTracker tempDir, fun () -> checker)
-            assertIntEqual 3 exitCode
+            assertIntEqual 4 exitCode
         })
         assertIntEqual 2 log.Warnings.Count
         Assert.Empty log.Errors
     })
 
 [<Fact>]
-let ``Exit code 2 takes priority over exit code 1``(): Task =
+let ``Exit code 6 takes priority over exit code 5``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun ctx -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync $"// {Markers.IgnoreToDoStart}\n// TODO fix this"
             let! exitCode = scanSimple(ctx, tempDir)
-            assertIntEqual 2 exitCode
+            assertIntEqual 6 exitCode
         })
         Assert.Empty log.Warnings
     })

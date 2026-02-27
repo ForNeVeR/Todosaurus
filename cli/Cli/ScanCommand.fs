@@ -191,12 +191,13 @@ let Scan(ctx: LoggerContext, workingDirectory: AbsolutePath, config: Configurati
                 | ex ->
                     Logger.Warning(ctx, $"GitHub API error: %s{ex.Message}. Skipping connected {Markers.ToDoItem} issue checks.")
 
-        if hasErrors then return 2
-        elif allUnresolved.Count > 0 then return 1
-        elif hasNonExistent then return 3
-        elif hasClosed then return 4
-        elif trackerUnresolvable then return 5
-        else return 0
+        return
+            if hasErrors then ExitCodes.MarkerErrors
+            elif allUnresolved.Count > 0 then ExitCodes.UnresolvedTodos
+            elif hasNonExistent then ExitCodes.NonExistentIssues
+            elif hasClosed then ExitCodes.ClosedIssues
+            elif trackerUnresolvable then ExitCodes.TrackerUnresolvable
+            else ExitCodes.Success
     }
 
 let RunScan(
@@ -214,12 +215,12 @@ let RunScan(
     match configResult with
     | Error msg ->
         Logger.Error(ctx, msg)
-        return 2
+        return ExitCodes.ConfigError
     | Ok config ->
         let! exitCode = Scan(ctx, workingDirectory, config, fun () -> createIssueChecker ctx)
-        if exitCode = 0 && strict && ctx.WarningCount > 0 then
+        if exitCode = ExitCodes.Success && strict && ctx.WarningCount > 0 then
             Logger.Error(ctx, $"Strict mode: %d{ctx.WarningCount} warning(s) detected, failing.")
-            return 6
+            return ExitCodes.StrictModeWarnings
         else
             return exitCode
 }

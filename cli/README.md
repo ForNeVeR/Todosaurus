@@ -33,7 +33,7 @@ dotnet todosaurus [global-switches…] [command] [command-switches…]
 
 Global switches:
 - `--config <path>` — path to configuration file (default: `todosaurus.toml` in working directory);
-- `--strict` — treat warnings as errors; when any warning is emitted during the scan and the scan would otherwise succeed, exit with code **6** instead of **0**. Recommended for CI;
+- `--strict` — treat warnings as errors; when any warning is emitted during the scan and the scan would otherwise succeed, exit with code **1** instead of **0**. Recommended for CI;
 - `--help | -h | -?` — print the help;
 - `--version` — print the program version.
 
@@ -82,7 +82,7 @@ If `tracker.url` is not configured, Todosaurus determines the repository automat
 1. Reads the URL of the `origin` Git remote (`git remote get-url origin`).
 2. Parses the GitHub owner and repository name from the URL.
 
-If neither source is available and connected TODOs exist, the command exits with code **5**.
+If neither source is available and connected TODOs exist, the command exits with code **2**.
 
 ### Environment Variables
 #### `CI`
@@ -110,15 +110,16 @@ When running in the CI environment, Todosaurus will use `GITHUB_WORKSPACE` to fi
 ### Exit Codes
 | Code | Meaning                                                             |
 |------|---------------------------------------------------------------------|
-| 2    | IgnoreTODO marker errors                                            |
-| 1    | Unresolved TODOs found (no issue number)                            |
-| 3    | Connected TODOs reference non-existent issues                       |
-| 4    | Connected TODOs reference closed issues                             |
-| 5    | Connected TODOs found but GitHub repository could not be determined |
-| 6    | Strict mode: warnings were emitted (only with `--strict`)           |
 | 0    | All clear — no issues found                                         |
+| 1    | Strict mode: warnings were emitted (only with `--strict`)           |
+| 2    | Connected TODOs found but GitHub repository could not be determined |
+| 3    | Connected TODOs reference closed issues                             |
+| 4    | Connected TODOs reference non-existent issues                       |
+| 5    | Unresolved TODOs found (no issue number)                            |
+| 6    | IgnoreTODO marker errors                                            |
+| 7    | Configuration file error.                                           |
 
-When multiple conditions are present, the highest-priority code is returned (priority: **2** > **1** > **3** > **4** > **5** > **6** > **0**).
+When multiple conditions are present, the highest-priority code is returned (priority equals code value: **7** > **0**).
 
 ### GitHub Actions setup
 To use Todosaurus with connected TODO checking in a GitHub Actions workflow:

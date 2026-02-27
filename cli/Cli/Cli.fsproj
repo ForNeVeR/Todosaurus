@@ -45,6 +45,7 @@ SPDX-License-Identifier: MIT
         <Compile Include="GitHubClient.fs" />
         <Compile Include="Configuration.fs" />
         <Compile Include="Markers.fs" />
+        <Compile Include="ExitCodes.fs" />
         <Compile Include="ScanCommand.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>

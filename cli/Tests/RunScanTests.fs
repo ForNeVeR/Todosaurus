@@ -40,30 +40,30 @@ let ``RunScan with explicit config path resolves relative to working directory``
     })
 
 [<Fact>]
-let ``RunScan with missing explicit config returns exit code 2``(): Task =
+let ``RunScan with missing explicit config returns exit code 7``(): Task =
     WithTempDir(fun tempDir -> task {
         let! exitCode = ScanCommand.RunScan(tempDir, "nonexistent.toml", false, allOpenChecker)
-        assertIntEqual 2 exitCode
+        assertIntEqual 7 exitCode
     })
 
 [<Fact>]
 let ``RunScan without strict mode does not override exit codes``(): Task =
     WithTempDir(fun tempDir -> task {
         do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#123]: tracked"
-        // No todosaurus.toml, no git remote -> tracker unresolvable -> warning + exit 5
+        // No todosaurus.toml, no git remote -> tracker unresolvable -> warning + exit 2
         let! exitCode = ScanCommand.RunScan(tempDir, null, false, allOpenChecker)
-        assertIntEqual 5 exitCode
+        assertIntEqual 2 exitCode
     })
 
 [<Fact>]
 let ``RunScan with strict mode returns exit code 6 when warnings present and scan otherwise clean``(): Task =
     WithTempDir(fun tempDir -> task {
         do! (tempDir / "test.txt").WriteAllTextAsync "// TODO[#123]: tracked"
-        // No todosaurus.toml, no git remote -> tracker unresolvable -> warning + exit 5
-        // Exit code 5 is non-zero, so strict mode should not override it to 6
+        // No todosaurus.toml, no git remote -> tracker unresolvable -> warning + exit 2
+        // Exit code 2 is non-zero, so strict mode should not override it to 1
         // (strict only triggers when exitCode = 0)
         let! exitCode = ScanCommand.RunScan(tempDir, null, true, allOpenChecker)
-        assertIntEqual 5 exitCode
+        assertIntEqual 2 exitCode
     })
 
 [<Fact>]
@@ -82,7 +82,7 @@ url = "https://github.com/owner/repo"
 """
         do! (tempDir / "tracked.txt").WriteAllTextAsync "// TODO[#1]: tracked"
         let! exitCode = ScanCommand.RunScan(tempDir, null, true, warningChecker)
-        assertIntEqual 6 exitCode
+        assertIntEqual 1 exitCode
     })
 
 [<Fact>]
@@ -90,8 +90,8 @@ let ``RunScan strict mode does not override higher-priority exit codes``(): Task
     WithTempDir(fun tempDir -> task {
         do! (tempDir / "test.txt").WriteAllTextAsync "// TODO fix this"
         let! exitCode = ScanCommand.RunScan(tempDir, null, true, allOpenChecker)
-        // Exit code 1 (unresolved TODOs) takes priority
-        assertIntEqual 1 exitCode
+        // Exit code 5 (unresolved TODOs) takes priority
+        assertIntEqual 5 exitCode
     })
 
 // IgnoreTODO-End
