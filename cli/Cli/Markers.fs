@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-module Todosaurus.Cli.Markers
+module internal Todosaurus.Cli.Markers
 
 [<Literal>]
 let IgnoreToDoStart: string = "IgnoreTODO-Start"
