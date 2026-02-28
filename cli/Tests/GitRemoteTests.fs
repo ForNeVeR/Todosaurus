@@ -24,19 +24,3 @@ let ``ParseGitHubUrl extracts owner and repo``(url: string, expectedOwner: strin
 let ``ParseGitHubUrl returns None for non-GitHub URL``(): unit =
     let result = GitRemote.ParseGitHubUrl "https://gitlab.com/user/project.git"
     Assert.True result.IsNone
-
-[<Theory>]
-[<InlineData("ForNeVeR/Todosaurus", "ForNeVeR", "Todosaurus")>]
-[<InlineData("https://github.com/ForNeVeR/Todosaurus.git", "ForNeVeR", "Todosaurus")>]
-let ``ParseTrackerArgument handles both formats``(input: string, expectedOwner: string, expectedRepo: string): unit =
-    let result = GitRemote.ParseTrackerArgument input
-    match result with
-    | Some repo ->
-        Assert.Equal(expectedOwner, repo.Owner)
-        Assert.Equal(expectedRepo, repo.Repo)
-    | None -> failwith $"Expected Some but got None for input: %s{input}"
-
-[<Fact>]
-let ``ParseTrackerArgument returns None for invalid input``(): unit =
-    let result = GitRemote.ParseTrackerArgument "not-valid"
-    Assert.True result.IsNone

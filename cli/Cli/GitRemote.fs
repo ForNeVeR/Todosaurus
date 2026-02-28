@@ -31,21 +31,6 @@ let ParseGitHubUrl(url: string): GitHubRepo option =
         None
 
 /// <summary>
-/// Parse an explicit tracker argument. Accepts either:
-/// <list type="bullet">
-///   <item>"owner/repo" format,</item>
-///   <item>a full GitHub URL.</item>
-/// </list>
-/// </summary>
-let ParseTrackerArgument(tracker: string): GitHubRepo option =
-    let slashPattern = @"^([A-Za-z0-9._-]+)/([A-Za-z0-9._-]+)$"
-    let m = Regex.Match(tracker, slashPattern)
-    if m.Success then
-        Some { Owner = m.Groups[1].Value; Repo = m.Groups[2].Value }
-    else
-        ParseGitHubUrl tracker
-
-/// <summary>
 /// Run <c>git remote get-url origin</c> and parse the result.
 /// </summary>
 let DiscoverFromOrigin(workingDirectory: AbsolutePath): Task<GitHubRepo option> =
