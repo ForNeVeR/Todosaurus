@@ -13,6 +13,7 @@ type IssueStatus =
     | Closed
     | NotFound
 
+[<Interface>]
 type IIssueChecker =
     abstract CheckIssue: owner: string * repo: string * issueNumber: int -> Task<IssueStatus>
 
