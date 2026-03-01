@@ -141,6 +141,8 @@ jobs:
         run: dotnet todosaurus scan --strict
 ```
 
+(You might want to add `--version` to the `dotnet tool install` command to specify a particular version and avoid siutations when an incompatible update gets instaled on your CI runner.)
+
 The `--strict` flag ensures that warnings (such as rate-limit notices or unresolvable tracker URLs) cause the workflow step to fail, rather than silently passing. This is recommended for CI to catch configuration issues early.
 
 The default `GITHUB_TOKEN` provided by GitHub Actions has read access to the repository's issues, which is sufficient for connected TODO checking. No additional secrets or permissions are required.
