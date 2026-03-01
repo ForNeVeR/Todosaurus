@@ -155,7 +155,7 @@ let ``TODOs outside ignore region are still detected``(): Task =
     })
 
 [<Fact>]
-let ``Unclosed {Markers.IgnoreToDoStart} is an error``(): Task =
+let ``Unclosed IgnoreTODO start is an error``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun ctx -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync $"// {Markers.IgnoreToDoStart}\n// TODO fix this"
@@ -170,7 +170,7 @@ let ``Unclosed {Markers.IgnoreToDoStart} is an error``(): Task =
     })
 
 [<Fact>]
-let ``Nested {Markers.IgnoreToDoStart} is an error``(): Task =
+let ``Nested IgnoreTODO start is an error``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun ctx -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync $"// {Markers.IgnoreToDoStart}\n// {Markers.IgnoreToDoStart}\n// {Markers.IgnoreToDoEnd}"
@@ -185,7 +185,7 @@ let ``Nested {Markers.IgnoreToDoStart} is an error``(): Task =
     })
 
 [<Fact>]
-let ``{Markers.IgnoreToDoEnd} without matching Start is an error``(): Task =
+let ``IgnoreTODO end without a matching Start is an error``(): Task =
     WithTempDir(fun tempDir -> task {
         let! log = RunWithLoggerCollector(fun ctx -> task {
             do! (tempDir / "test.txt").WriteAllTextAsync $"// {Markers.IgnoreToDoEnd}"
