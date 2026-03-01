@@ -53,7 +53,7 @@ Regions of a file can be excluded from scanning using marker comments:
 ```
 Lines between `IgnoreTODO-Start` and `IgnoreTODO-End` are skipped. The marker lines themselves are not scanned for TODOs.
 
-The following are **errors** (exit code 2 in the CLI):
+The following are **errors** (non-zero exit code in the CLI):
 - Unclosed `IgnoreTODO-Start` (no matching `IgnoreTODO-End` before end of file)
 - Nested `IgnoreTODO-Start` (opening a new region while one is already open)
 - `IgnoreTODO-End` without a matching `IgnoreTODO-Start`
@@ -62,7 +62,6 @@ The following are **errors** (exit code 2 in the CLI):
 
 Documentation
 -------------
-- [TODO Format Specification][docs.todo-format]
 - [Changelog][docs.changelog]
 - [IntelliJ Plugin][docs.intellij]
 - [CLI][docs.cli]
@@ -80,7 +79,6 @@ The license indication in the project's sources is compliant with the [REUSE spe
 [andivionian-status-classifier]: https://andivionian.fornever.me/v1/#status-enfer-
 [badge.plugin]: https://img.shields.io/jetbrains/plugin/v/23838.svg
 [docs.changelog]: CHANGELOG.md
-[docs.todo-format]: #todo-format-specification
 [docs.cli]: cli/README.md
 [docs.contributing.cli]: cli/CONTRIBUTING.md
 [docs.contributing.intellij]: intellij/CONTRIBUTING.md
