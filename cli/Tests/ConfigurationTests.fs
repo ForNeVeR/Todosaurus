@@ -12,7 +12,7 @@ open TruePath
 open TruePath.SystemIo
 open Xunit
 
-// --- ReadConfig tests ---
+// ## ReadConfig tests
 
 [<Fact>]
 let ``ReadConfig with no config file returns empty config``(): Task =
@@ -111,7 +111,7 @@ url = "owner/repo"
         | Ok _ -> failwith "Expected Error but got Ok"
     })
 
-// --- ApplyExclusions tests ---
+// ## ApplyExclusions tests
 
 [<Fact>]
 let ``ApplyExclusions with empty list returns all files``() =
@@ -140,7 +140,7 @@ let ``ApplyExclusions with directory glob filters nested files``() =
     let result = Configuration.ApplyExclusions(files, config)
     Assert.Equal([ LocalPath "src/a.fs" ], result)
 
-// --- Scan integration with exclusions ---
+// ## Scan integration with exclusions
 
 // IgnoreTODO-Start
 [<Fact>]

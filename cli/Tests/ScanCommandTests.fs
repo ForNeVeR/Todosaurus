@@ -45,7 +45,7 @@ let private assertIntEqual (x: int) (y: int) =
 
 // IgnoreTODO-Start
 
-// --- ScanFile: unresolved TODO detection ---
+// ## ScanFile: unresolved TODO detection
 
 [<Fact>]
 let ``Bare TODO in a file is detected``(): Task =
