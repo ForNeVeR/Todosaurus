@@ -7,6 +7,14 @@ SPDX-License-Identifier: MIT
 Changelog
 =========
 
+## [Unreleased]
+### Added
+- **New component:** Todosaurus now also provides a CLI in form of a .NET global tool.
+
+   The CLI includes the following features:
+   - verify that there are no not-connected TODOs,
+   - verify that the connected TODOs are existent and open.
+
 ## [1.9.0] - 2026-02-10
 ### Changed
 - **(Requirement update!)** Update the compatible IntelliJ version range to \[2025.3; 2026.1\].
