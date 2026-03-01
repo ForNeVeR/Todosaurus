@@ -6,6 +6,7 @@ module Todosaurus.Cli.Program
 
 open System.CommandLine
 open System.Threading.Tasks
+open TruePath
 
 let internal ConfigOption = Option<string>("--config")
 let internal StrictOption = Option<bool>("--strict")
@@ -21,9 +22,13 @@ let internal CreateRootCommand(): RootCommand =
     rootCommand.Add(FilesCommand.CreateCommand())
     rootCommand.Add(ScanCommand.CreateCommand(ConfigOption, StrictOption))
     rootCommand.SetAction(fun (parseResult: ParseResult) ->
+        let configFile =
+            parseResult.GetValue ConfigOption
+            |> Option.ofObj
+            |> Option.map AbsolutePath
         ScanCommand.RunScan(
-            TruePath.AbsolutePath.CurrentWorkingDirectory,
-            parseResult.GetValue(ConfigOption),
+            AbsolutePath.CurrentWorkingDirectory,
+            configFile,
             #nowarn 3265 // F# nullable value type limitation with System.CommandLine GetValue<bool>
             parseResult.GetValue(StrictOption),
             #warnon 3265

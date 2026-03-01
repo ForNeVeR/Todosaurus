@@ -202,16 +202,12 @@ let Scan(ctx: LoggerContext, workingDirectory: AbsolutePath, config: Configurati
 
 let RunScan(
     workingDirectory: AbsolutePath,
-    configValue: string | null,
+    configFile: AbsolutePath option,
     strict: bool,
     createIssueChecker: LoggerContext -> GitHubClient.IIssueChecker
 ): Task<int> = task {
     let ctx = LoggerContext.Create()
-    let configPath =
-        match configValue with
-        | null -> None
-        | v -> Some(AbsolutePath(Path.GetFullPath(v, workingDirectory.Value)))
-    let! configResult = Configuration.ReadConfig(configPath, workingDirectory)
+    let! configResult = Configuration.ReadConfig(configFile, workingDirectory)
     match configResult with
     | Error msg ->
         Logger.Error(ctx, msg)
@@ -230,9 +226,13 @@ let CreateCommand(configOption: Option<string>, strictOption: Option<bool>): Com
     command.Add(configOption)
     command.Add(strictOption)
     command.SetAction(fun (parseResult: ParseResult) ->
+        let configFile =
+            parseResult.GetValue configOption
+            |> Option.ofObj
+            |> Option.map AbsolutePath
         RunScan(
             AbsolutePath.CurrentWorkingDirectory,
-            parseResult.GetValue(configOption),
+            configFile,
             #nowarn 3265 // F# nullable value type limitation with System.CommandLine GetValue<bool>
             parseResult.GetValue(strictOption),
             #warnon 3265
