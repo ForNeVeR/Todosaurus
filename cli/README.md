@@ -5,7 +5,7 @@ SPDX-License-Identifier: MIT
 -->
 
 Todosaurus [![FVNever.Todosaurus.Cli on nuget.org][nuget.badge]][nuget]
-=============
+==========
 CLI for Todosaurus — a tool to process TODO issues in a repository.
 
 Installation
