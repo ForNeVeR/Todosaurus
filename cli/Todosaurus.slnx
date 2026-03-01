@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/scripts/">
+    <File Path="../scripts/github-actions.fsx" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="../.editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="README.md" />
+    <File Path="Todosaurus.slnx.license" />
+  </Folder>
+  <Project Path="Cli/Cli.fsproj" />
+  <Project Path="Tests/Tests.fsproj" />
+</Solution>

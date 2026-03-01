@@ -1,84 +1,95 @@
 <!--
-SPDX-FileCopyrightText: 2000-2021 JetBrains s.r.o.
-SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+SPDX-FileCopyrightText: 2024-2026 Friedrich von Never <friedrich@fornever.me>
 
-SPDX-License-Identifier: MIT AND Apache-2.0
+SPDX-License-Identifier: MIT
 -->
 
-Todosaurus [![Status Enfer][status-enfer]][andivionian-status-classifier] [![Download][badge.plugin]][marketplace.plugin]
+Todosaurus [![Status Enfer][status-enfer]][andivionian-status-classifier]
 ==========
+Todosaurus is a tool that helps to work with [TODO][wiki.todo] notes in software development projects.
 
-<!-- Plugin description -->
-**Todosaurus** is an IntelliJ plugin that helps you to manage the TODO comments. It allows quickly creating a new GitHub issue from a TODO comment, and update the comment with the issue number.
+It will help you to connect any TODO with an issue in the issue tracker, and make sure that no TODOs in the whole project's source code are left unattended.
 
-For example, if you have a comment `// TODO: Fix this code` in your sources, then the plugin will allow to create an issue linking the line of code including this comment, and update it to `// TODO[#123]: Fix this code`.
-<!-- Plugin description end -->
+The following programs, useable separately, are included into Todosaurus:
+1. [Todosaurus plugin for IntelliJ-based IDEs][docs.intellij] — allows to quickly create tracker issues from TODO notes.
+2. [Todosaurus CLI][docs.cli] — helps to verify the TODO notes from the command line.
 
-## Installation
+Quick Installation Links
+------------------------
+- **IntelliJ Plugin:** [![Download IntelliJ Plugin][badge.plugin]][marketplace.plugin] 
+- **CLI:** [![FVNever.Todosaurus.Cli on nuget.org][nuget.badge]][nuget]
 
-- Using the IDE built-in plugin system:
+Read the documentation of each Todosaurus component if you want to know more.
 
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "Todosaurus"</kbd> >
-  <kbd>Install</kbd>
+TODO Format Specification
+-------------------------
+Both Todosaurus components share a common TODO format.
 
-- Manually:
+### Unresolved TODOs
+A TODO is considered **unresolved** if it matches the regex pattern:
+```
+\b(?i)TODO(?-i)\b:?(?!\[.*?\])
+```
+That is, a case-insensitive word `TODO` (with an optional colon) that is **not** immediately followed by a bracketed issue reference like `[#123]`.
 
-  Download the [latest release](https://github.com/ForNeVeR/Todosaurus/releases/latest) and install it manually using
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
+### Resolved TODOs
+Appending `[#<number>]` **immediately** after `TODO` marks it as resolved:
+```
+// TODO[#123]: Fix this code
+```
+A space before the bracket does **not** resolve the TODO — `TODO [#123]` is still considered unresolved.
 
-How to Use
-----------
-Currently, plugin only supports one TODO pattern, namely `TODO:` (case-insensitive) that will be converted to `TODO[#<issue-number>]` by the plugin action.
+### Multiple TODOs on One Line
+Multiple TODOs on the same line are allowed. Each is matched independently — a `[#issue]` resolves only the TODO it immediately follows. The line is flagged if **any** unresolved TODO remains. For example:
+- `// TODO[#1]: done TODO fix` — flagged (second TODO is unresolved)
+- `// TODO[#1]: done TODO[#2]: also done` — not flagged
 
-### Editor
-![A screenshot of the editor window with a TODO comment in the file text. Context action list is open, and the entry "Create New Issue" is highlighted.][screenshot.editor]
+### IgnoreTODO Markers
+Regions of a file can be excluded from scanning using marker comments:
+```
+// IgnoreTODO-Start
+// TODO: this will not be reported
+// IgnoreTODO-End
+```
+Lines between `IgnoreTODO-Start` and `IgnoreTODO-End` are skipped. The marker lines themselves are not scanned for TODOs.
 
-When the plugin sees one of the recognized TODO patterns in the editor, it will show a gutter icon and will add a corresponding context action (triggered by `Alt+Enter` in common IntelliJ keymaps).
-
-### TODO Tool Window
-![A screenshot of the "TODO" tool window. A plugin-added item context menu item, "Create New Issue", is highlighted.][screenshot.todo]
-
-For this feature to work, make sure you have enabled the `\btodo\b.*` pattern in the **Settings | Editor | TODO** settings page. _(It is enabled by default, so if you didn't touch these settings, then it's enabled for you.)_
-
-Then, open the **TODO** tool window.
-
-Open context menu for any TODO item that isn't yet linked to GitHub (i.e., an item like `TODO: something`, with no issue number).
-
-### Configuration
-To report issues, the plugin will ask you to authenticate your account (it connects to the task tracker via the API).
-
-Currently, we automatically support GitHub accounts linked via the **Settings | Tools | Tasks | Servers** page. If no account has been added, the plugin will request you to add one.
-
-You can save the selected steps to avoid going through them again via the checkbox **Remember my choice**. If you want to readjust the saved steps in the future, use either the corresponding link in the dialog or the **Forget** button on the plugin's settings page.
-
-If you have some advanced usage scenarios, do not hesitate to leave your feedback at [the issue tracker][issues].
+The following are **errors** (non-zero exit code in the CLI):
+- Unclosed `IgnoreTODO-Start` (no matching `IgnoreTODO-End` before end of file)
+- Nested `IgnoreTODO-Start` (opening a new region while one is already open)
+- `IgnoreTODO-End` without a matching `IgnoreTODO-Start`
+- Multiple IgnoreTODO markers on the same line
+- An IgnoreTODO marker and a TODO on the same line
 
 Documentation
 -------------
 - [Changelog][docs.changelog]
-- [Contributor Guide][docs.contributing]
-- [Maintainer Guide][docs.maintainer-guide]
-- [Code of Conduct (adapted from the Contributor Covenant)][docs.code-of-conduct]
+- [IntelliJ Plugin][docs.intellij]
+- [CLI][docs.cli]
+- [Contributor Guide (General)][docs.contributing]
+- [Contributor Guide (IntelliJ Plugin)][docs.contributing.intellij]
+- [Contributor Guide (CLI)][docs.contributing.cli]
+- [Maintainer Guide][docs.maintaining]
 
 License
 -------
-The project is distributed under the terms of [the MIT license][docs.license]
-(unless a particular file states otherwise).
+The project is distributed under the terms of [the MIT license][docs.license] (unless a particular file states otherwise).
 
 The license indication in the project's sources is compliant with the [REUSE specification v3.3][reuse.spec].
 
 [andivionian-status-classifier]: https://andivionian.fornever.me/v1/#status-enfer-
 [badge.plugin]: https://img.shields.io/jetbrains/plugin/v/23838.svg
 [docs.changelog]: CHANGELOG.md
-[docs.code-of-conduct]: CODE_OF_CONDUCT.md
+[docs.cli]: cli/README.md
+[docs.contributing.cli]: cli/CONTRIBUTING.md
+[docs.contributing.intellij]: intellij/CONTRIBUTING.md
 [docs.contributing]: CONTRIBUTING.md
-[docs.license]: LICENSE.md
-[docs.maintainer-guide]: MAINTAINERSHIP.md
-[intellij-community]: https://github.com/JetBrains/intellij-community
-[intellij-platform-plugin-template]: https://github.com/JetBrains/intellij-platform-plugin-template
-[issues]: https://github.com/ForNeVeR/Todosaurus/issues
+[docs.intellij]: intellij/README.md
+[docs.license]: LICENSE.txt
+[docs.maintaining]: MAINTAINING.md
 [marketplace.plugin]: https://plugins.jetbrains.com/plugin/23838
+[nuget.badge]: https://img.shields.io/nuget/v/FVNever.Todosaurus.Cli
+[nuget]: https://www.nuget.org/packages/FVNever.Todosaurus.Cli
 [reuse.spec]: https://reuse.software/spec-3.3/
-[screenshot.editor]: docs/screenshot.editor.png
-[screenshot.todo]: docs/screenshot.todo.png
+[reuse]: https://reuse.software/
 [status-enfer]: https://img.shields.io/badge/status-enfer-orange.svg
+[wiki.todo]: https://en.wikipedia.org/wiki/TODO_(tag)

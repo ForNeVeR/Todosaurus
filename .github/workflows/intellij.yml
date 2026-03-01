@@ -1,0 +1,111 @@
+# SPDX-FileCopyrightText: 2000-2021 JetBrains s.r.o.
+# SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+#
+# SPDX-License-Identifier: MIT AND Apache-2.0
+
+# This file is auto-generated.
+name: IntelliJ
+on:
+  push:
+    branches:
+    - main
+    - renovate/**
+  pull_request: 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-24.04
+    steps:
+    - name: Fetch Sources
+      uses: actions/checkout@v6
+    - name: Cache downloaded JDK
+      uses: actions/cache@v5
+      with:
+        key: ${{ runner.os }}-${{ hashFiles('gradlew*') }}
+        path: |
+          ~/.local/share/gradle-jvm
+          ~/AppData/Local/gradle-jvm
+    - name: Maximize Build Space
+      uses: jlumbroso/free-disk-space@v1.3.1
+      with:
+        large-packages: false
+        tool-cache: false
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v5
+    - name: Build plugin
+      shell: pwsh
+      run: ./gradlew buildPlugin
+      working-directory: intellij
+    - id: artifact
+      name: Prepare Plugin Artifact
+      shell: bash
+      run: |-
+        cd ${{ github.workspace }}/intellij/build/distributions
+        FILENAME=`ls *.zip`
+        unzip "$FILENAME" -d content
+
+        echo "filename=${FILENAME:0:-4}" >> $GITHUB_OUTPUT
+    - name: Upload artifact
+      uses: actions/upload-artifact@v6
+      with:
+        name: ${{ steps.artifact.outputs.filename }}
+        path: intellij/build/distributions/content/*/*
+  test:
+    name: Test
+    needs:
+    - build
+    runs-on: ubuntu-24.04
+    steps:
+    - name: Fetch Sources
+      uses: actions/checkout@v6
+    - name: Maximize Build Space
+      uses: jlumbroso/free-disk-space@v1.3.1
+      with:
+        large-packages: false
+        tool-cache: false
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v5
+    - name: Run Tests
+      shell: pwsh
+      run: ./gradlew check
+      working-directory: intellij
+    - if: ${{ always() }}
+      name: Upload Test Results
+      uses: actions/upload-artifact@v6
+      with:
+        name: ${{ runner.os }}.test-results
+        path: intellij/*/build/reports/tests
+    - if: ${{ always() }}
+      name: Upload Test Logs
+      uses: actions/upload-artifact@v6
+      with:
+        name: ${{ runner.os }}.test-logs
+        path: intellij/*/build/idea-sandbox/*/log-test
+  verify:
+    name: Verify plugin
+    needs:
+    - build
+    runs-on: ubuntu-24.04
+    steps:
+    - name: Maximize Build Space
+      uses: jlumbroso/free-disk-space@v1.3.1
+      with:
+        large-packages: false
+        tool-cache: false
+    - name: Fetch Sources
+      uses: actions/checkout@v6
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v5
+    - name: Run Plugin Verification tasks
+      shell: pwsh
+      run: ./gradlew :verifyPlugin
+      working-directory: intellij
+    - if: ${{ always() }}
+      name: Collect Plugin Verifier Result
+      uses: actions/upload-artifact@v6
+      with:
+        name: pluginVerifier-result
+        path: ${{ github.workspace }}/intellij/build/reports/pluginVerifier
