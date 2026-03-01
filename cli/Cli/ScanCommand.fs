@@ -48,7 +48,6 @@ let private connectedTodoPattern = Regex(@"\b(?i)TODO(?-i)\b:?\[#(\d+)\]", Regex
 
 // IgnoreTODO-End
 
-
 let private CountOccurrences (text: string) (substring: string): int =
     let mutable count = 0
     let mutable index = text.IndexOf(substring, StringComparison.Ordinal)
