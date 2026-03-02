@@ -119,12 +119,12 @@ jobs:
         input: ./CHANGELOG.md
         output: ./changelog-section.md
     - name: Download the NuGet package
-      uses: actions/download-artifact@v7
+      uses: actions/download-artifact@v8
       with:
         name: _nuget
         path: nuget
     - name: Download the IntelliJ plugin
-      uses: actions/download-artifact@v7
+      uses: actions/download-artifact@v8
       with:
         name: _intellij
         path: intellij/
