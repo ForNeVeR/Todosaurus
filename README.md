@@ -10,15 +10,16 @@ Todosaurus is a tool that helps to work with [TODO][wiki.todo] notes in software
 
 It will help you to connect any TODO with an issue in the issue tracker, and make sure that no TODOs in the whole project's source code are left unattended.
 
-The following programs, useable separately, are included into Todosaurus:
+The following components, useable separately, are included into Todosaurus:
 1. [Todosaurus plugin for IntelliJ-based IDEs][docs.intellij] — allows to quickly create tracker issues from TODO notes.
 2. [Todosaurus CLI][docs.cli] — helps to verify the TODO notes from the command line.
+3. [Todosaurus GitHub action] — conveniently runs the CLI on GitHub.
 
 Quick Installation Links
 ------------------------
-- **GitHub Action:** see [the installation guide][action].
 - **IntelliJ Plugin:** [![Download IntelliJ Plugin][badge.plugin]][marketplace.plugin]
 - **CLI:** [![FVNever.Todosaurus.Cli on nuget.org][nuget.badge]][nuget]
+- **GitHub Action:** see [the installation guide][action].
 
 Read the documentation of each Todosaurus component if you want to know more.
 
