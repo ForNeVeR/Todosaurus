@@ -7,6 +7,10 @@ SPDX-License-Identifier: MIT
 Changelog
 =========
 
+## [1.10.1] - 2026-03-08
+### Fixed
+- Fix the CLI publication pipeline.
+
 ## [1.10.0] - 2026-03-08
 ### Added
 - **New component:** Todosaurus now provides a CLI in form of a .NET global tool.
