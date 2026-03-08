@@ -1,0 +1,35 @@
+# SPDX-FileCopyrightText: 2000-2021 JetBrains s.r.o.
+# SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+#
+# SPDX-License-Identifier: MIT AND Apache-2.0
+
+# This file is auto-generated.
+name: GitHub Action
+on:
+  push:
+    branches:
+    - main
+    - renovate/**
+  pull_request:
+    branches:
+    - main
+  schedule:
+  - cron: 0 0 * * 6
+  workflow_dispatch: 
+jobs:
+  integration-test:
+    strategy:
+      matrix:
+        image:
+        - macos-15
+        - ubuntu-24.04
+        - ubuntu-24.04-arm
+        - windows-11-arm
+        - windows-2025
+      fail-fast: false
+    runs-on: ${{ matrix.image }}
+    steps:
+    - name: Check out the sources
+      uses: actions/checkout@v6
+    - name: Run the action
+      uses: ./action/

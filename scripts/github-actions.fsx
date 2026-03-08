@@ -146,21 +146,44 @@ let workflows = [
         ]
     ]
 
+    let runOnAllImages = [
+        strategy(failFast = false, matrix = [
+            "image", [
+                "macos-15"
+                "ubuntu-24.04"
+                "ubuntu-24.04-arm"
+                "windows-11-arm"
+                "windows-2025"
+            ]
+        ])
+        runsOn "${{ matrix.image }}"
+    ]
+
+    workflow "action" [
+        name "GitHub Action"
+        yield! mainTriggers
+
+        job "integration-test" [
+            yield! runOnAllImages
+
+            step(
+                name = "Check out the sources",
+                usesSpec = Auto "actions/checkout"
+            )
+
+            step(
+                name = "Run the action",
+                uses = "./action/"
+            )
+        ]
+    ]
+
     workflow "cli" [
         name "CLI"
         yield! mainTriggers
 
         dotNetJob "check" [
-            strategy(failFast = false, matrix = [
-                "image", [
-                    "macos-15"
-                    "ubuntu-24.04"
-                    "ubuntu-24.04-arm"
-                    "windows-11-arm"
-                    "windows-2025"
-                ]
-            ])
-            runsOn "${{ matrix.image }}"
+            yield! runOnAllImages
 
             pwsh(
                 "Build",
@@ -188,7 +211,7 @@ let workflows = [
             jobName "Build"
             runsOn "ubuntu-24.04"
             step(
-                name = "Fetch Sources",
+                name = "Check out the sources",
                 usesSpec = Auto "actions/checkout"
             )
             step(
@@ -237,7 +260,7 @@ let workflows = [
             needs "build"
             runsOn "ubuntu-24.04"
             step(
-                name = "Fetch Sources",
+                name = "Check out the sources",
                 usesSpec = Auto "actions/checkout"
             )
             step(
@@ -291,7 +314,7 @@ let workflows = [
                 ]
             )
             step(
-                name = "Fetch Sources",
+                name = "Check out the sources",
                 usesSpec = Auto "actions/checkout"
             )
             step(
