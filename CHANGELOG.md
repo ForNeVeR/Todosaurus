@@ -7,13 +7,14 @@ SPDX-License-Identifier: MIT
 Changelog
 =========
 
-## [Unreleased]
+## [1.10.0] - 2026-03-08
 ### Added
-- **New component:** Todosaurus now also provides a CLI in form of a .NET global tool.
+- **New component:** Todosaurus now provides a CLI in form of a .NET global tool.
 
    The CLI includes the following features:
    - verify that there are no not-connected TODOs,
    - verify that the connected TODOs are existent and open.
+- **New component:** Todosaurus now also provides a GitHub action to run the CLI.
 
 ## [1.9.0] - 2026-02-10
 ### Changed
@@ -89,7 +90,8 @@ Changelog
 ## [1.0.0] - 2024-02-26
 This is the initial plugin release. At this point, it provides a context menu for the TODO items to create GitHub issues from them.
 
-[Unreleased]: https://github.com/ForNeVeR/Todosaurus/compare/v1.9.0...HEAD
+[Unreleased]: https://github.com/ForNeVeR/Todosaurus/compare/v1.10.0...HEAD
+[1.10.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.7.1...v1.8.0
 [1.7.1]: https://github.com/ForNeVeR/Todosaurus/compare/v1.7.0...v1.7.1

@@ -4,7 +4,7 @@ SPDX-FileCopyrightText: 2024-2026 Friedrich von Never <friedrich@fornever.me>
 SPDX-License-Identifier: MIT
 -->
 
-Todosaurus [![Status Enfer][status-enfer]][andivionian-status-classifier]
+Todosaurus [![Status Ventis][status-ventis]][andivionian-status-classifier]
 ==========
 Todosaurus is a tool that helps to work with [TODO][wiki.todo] notes in software development projects.
 
@@ -79,7 +79,7 @@ The project is distributed under the terms of [the MIT license][docs.license] (u
 The license indication in the project's sources is compliant with the [REUSE specification v3.3][reuse.spec].
 
 [action]: action/README.md
-[andivionian-status-classifier]: https://andivionian.fornever.me/v1/#status-enfer-
+[andivionian-status-classifier]: https://andivionian.fornever.me/v1/#status-ventis-
 [badge.plugin]: https://img.shields.io/jetbrains/plugin/v/23838.svg
 [docs.changelog]: CHANGELOG.md
 [docs.cli]: cli/README.md
@@ -94,5 +94,5 @@ The license indication in the project's sources is compliant with the [REUSE spe
 [nuget]: https://www.nuget.org/packages/FVNever.Todosaurus.Cli
 [reuse.spec]: https://reuse.software/spec-3.3/
 [reuse]: https://reuse.software/
-[status-enfer]: https://img.shields.io/badge/status-enfer-orange.svg
+[status-ventis]: https://img.shields.io/badge/status-ventis-yellow.svg
 [wiki.todo]: https://en.wikipedia.org/wiki/TODO_(tag)
