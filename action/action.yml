@@ -13,8 +13,7 @@ branding:
 inputs:
   config:
     description: Path to the configuration file.
-    required: true
-    default: ${{ github.workspace }}/todosaurus.toml
+    required: false
 
   strict:
     description: Enable strict mode for validation.
@@ -36,7 +35,7 @@ runs:
     - name: Run Todosaurus
       shell: pwsh
       working-directory: ${{ github.action_path }}
-      run: dotnet run --project ../cli/Cli/Cli.fsproj -- scan --config $env:CONFIG_PATH ${{ inputs.strict == 'true' && '--strict' || '' }}
+      run: dotnet run --project ../cli/Cli/Cli.fsproj -- scan ${{ inputs.config && '--config $env:CONFIG_PATH' || '' }} ${{ inputs.strict == 'true' && '--strict' || '' }}
       env:
         CONFIG_PATH: ${{ inputs.config }}
         GITHUB_TOKEN: ${{ inputs.github-token }}
