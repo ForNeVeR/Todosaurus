@@ -522,6 +522,16 @@ let workflows = [
             step(
                 condition = "startsWith(github.ref, 'refs/tags/v')",
                 name = "Create a release",
+                shell = "pwsh",
+                run = "scripts/Update-RollingRelease.ps1 -Version $env:VERSION",
+                env = Map.ofList [
+                    "GITHUB_TOKEN", "${{ secrets.GITHUB_TOKEN }}"
+                    "VERSION", "${{ steps.version.outputs.version }}"
+                ]
+            )
+            step(
+                condition = "startsWith(github.ref, 'refs/tags/v')",
+                name = "Create a release",
                 usesSpec = Auto "softprops/action-gh-release",
                 options = Map.ofList [
                     "body_path", "./release-notes.md"

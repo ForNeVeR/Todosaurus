@@ -148,6 +148,13 @@ jobs:
         path: ./changelog-section.md
     - if: startsWith(github.ref, 'refs/tags/v')
       name: Create a release
+      shell: pwsh
+      run: scripts/Update-RollingRelease.ps1 -Version $env:VERSION
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VERSION: ${{ steps.version.outputs.version }}
+    - if: startsWith(github.ref, 'refs/tags/v')
+      name: Create a release
       uses: softprops/action-gh-release@v2
       with:
         body_path: ./release-notes.md
