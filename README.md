@@ -16,7 +16,8 @@ The following programs, useable separately, are included into Todosaurus:
 
 Quick Installation Links
 ------------------------
-- **IntelliJ Plugin:** [![Download IntelliJ Plugin][badge.plugin]][marketplace.plugin] 
+- **GitHub Action:** see [the installation guide][action].
+- **IntelliJ Plugin:** [![Download IntelliJ Plugin][badge.plugin]][marketplace.plugin]
 - **CLI:** [![FVNever.Todosaurus.Cli on nuget.org][nuget.badge]][nuget]
 
 Read the documentation of each Todosaurus component if you want to know more.
@@ -76,6 +77,7 @@ The project is distributed under the terms of [the MIT license][docs.license] (u
 
 The license indication in the project's sources is compliant with the [REUSE specification v3.3][reuse.spec].
 
+[action]: action/README.md
 [andivionian-status-classifier]: https://andivionian.fornever.me/v1/#status-enfer-
 [badge.plugin]: https://img.shields.io/jetbrains/plugin/v/23838.svg
 [docs.changelog]: CHANGELOG.md
