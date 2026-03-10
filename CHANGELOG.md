@@ -7,6 +7,10 @@ SPDX-License-Identifier: MIT
 Changelog
 =========
 
+## [Unreleased] (1.11.0)
+### Changed
+- **(Requirement update!)** Update the compatible IntelliJ version range to \[2026.1 EAP 8; 2026.2\].
+
 ## [1.10.1] - 2026-03-08
 ### Fixed
 - Fix the CLI publication pipeline.

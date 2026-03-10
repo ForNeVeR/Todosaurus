@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: 2000-2024 JetBrains s.r.o. and contributors.
-// SPDX-FileCopyrightText: 2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2025-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT AND Apache-2.0 AND MIT
 
@@ -7,8 +7,9 @@ package me.fornever.todosaurus.core.ui.controls.tagList.chooserPopup
 
 import com.intellij.collaboration.ui.codereview.details.SelectableWrapper
 import com.intellij.collaboration.ui.codereview.list.search.PopupConfig
-import com.intellij.collaboration.ui.util.popup.showAndAwaitSubmissions
 import com.intellij.openapi.ui.popup.JBPopup
+import com.intellij.openapi.ui.popup.JBPopupListener
+import com.intellij.openapi.ui.popup.LightweightWindowEvent
 import com.intellij.openapi.ui.popup.PopupChooserBuilder
 import com.intellij.openapi.ui.popup.util.PopupUtil
 import com.intellij.ui.CollectionListModel
@@ -19,21 +20,27 @@ import com.intellij.ui.components.TextComponentEmptyText
 import com.intellij.ui.popup.AbstractPopup
 import com.intellij.util.ui.JBUI
 import com.intellij.util.ui.UIUtil
+import kotlinx.coroutines.*
 import me.fornever.todosaurus.core.ui.controls.tagList.TagPresentation
 import me.fornever.todosaurus.core.ui.controls.tagList.TagRendererBase
+import java.awt.Point
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.JList
 import javax.swing.ListCellRenderer
+import javax.swing.ListModel
 import javax.swing.ListSelectionModel
+import kotlin.coroutines.cancellation.CancellationException
+import kotlin.coroutines.resume
 
 /*
     This file contains functions to create multiple chooser popup.
     Copied from:
     1. https://github.com/JetBrains/intellij-community/blob/b8e56e1013054034fcd7d5d8aab96bba355b429a/platform/collaboration-tools/src/com/intellij/collaboration/ui/codereview/list/search/ChooserPopupUtil.kt#L35
     2. https://github.com/JetBrains/intellij-community/blob/ce3350428547b29fc91584a082389769540623fd/platform/collaboration-tools/src/com/intellij/collaboration/ui/util/popup/CollaborationToolsPopupUtil.kt#L23
+    3. https://github.com/JetBrains/intellij-community/blob/ce3350428547b29fc91584a082389769540623fd/platform/collaboration-tools/src/com/intellij/collaboration/ui/CollaborationToolsUIUtil.kt
  */
 
 @Suppress("UnstableApiUsage") // for the use of SelectableWrapper
@@ -68,7 +75,7 @@ object TagsChooserPopup {
         val searchTextField = popup.configureSearchField(popupOptions)
         PopupUtil.setPopupToggleComponent(popup, position.component)
 
-        val selectedTags = popup.showAndAwaitSubmissions(listModel, position, popupOptions.showDirection)
+        val selectedTags = popup.showAndAwaitSubmissions(listModel, position)
 
         if (searchTextField == null || searchTextField.text.isEmpty())
             return selectedTags
@@ -138,3 +145,70 @@ object TagsChooserPopup {
 
 }
 
+private suspend fun <T> JBPopup.showAndAwaitSubmissions(@Suppress("UnstableApiUsage") model: ListModel<SelectableWrapper<T>>, point: RelativePoint): List<T> {
+    showPopup(point)
+    return waitForMultipleChoiceAsync(model)
+}
+
+private fun JBPopup.showPopup(relativePoint: RelativePoint) {
+    val popup = this
+    popup.addListener(object : JBPopupListener {
+        override fun beforeShown(event: LightweightWindowEvent) {
+            val location = Point(popup.locationOnScreen)
+
+            popup.setLocation(location)
+            popup.removeListener(this)
+        }
+    })
+    popup.show(relativePoint)
+}
+
+private suspend fun <T> JBPopup.waitForMultipleChoiceAsync(@Suppress("UnstableApiUsage") model: ListModel<SelectableWrapper<T>>): List<T> {
+    checkDisposed()
+    return try {
+        suspendCancellableCoroutine<List<T>> { continuation ->
+            addChoicesPopupListener(continuation) {
+                @Suppress("UnstableApiUsage")
+                model.items
+                    .filter { item -> item.isSelected }
+                    .map { item -> item.value }
+            }
+        }
+    }
+    catch (e: CancellationException) {
+        cancel()
+        throw e
+    }
+}
+
+private fun <T> JBPopup.addChoicesPopupListener(cont: CancellableContinuation<List<T>>, chosenValues: () -> List<T>) {
+    val listener = object : JBPopupListener {
+        override fun onClosed(event: LightweightWindowEvent) {
+            cont.resume(chosenValues())
+        }
+    }
+    addListener(listener)
+}
+
+private val <E> ListModel<E>.items
+    get() = Iterable {
+        object : Iterator<E> {
+            private var idx = -1
+
+            override fun hasNext(): Boolean = idx < size - 1
+
+            override fun next(): E {
+                idx++
+                return getElementAt(idx)
+            }
+        }
+    }
+
+@Throws(CancellationException::class)
+private suspend fun JBPopup.checkDisposed() {
+    if (isDisposed) {
+        val ctx = currentCoroutineContext()
+        ctx.cancel()
+        ctx.ensureActive()
+    }
+}

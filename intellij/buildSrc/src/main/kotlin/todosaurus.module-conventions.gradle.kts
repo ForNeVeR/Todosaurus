@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2025-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -15,6 +15,9 @@ repositories {
 
 dependencies {
     intellijPlatform {
-        intellijIdea(versionCatalogs.named("libs").findVersion("ideaSdk").get().requiredVersion)
+        val intelliJVersion = versionCatalogs.named("libs").findVersion("ideaSdk").get().requiredVersion
+        intellijIdea(intelliJVersion) {
+            useInstaller = !intelliJVersion.endsWith("EAP")
+        }
     }
 }
