@@ -86,7 +86,7 @@ sealed class ToDoItem(val text: String, protected val todosaurusSettings: Todosa
         }
 
         fun fromRange(toDoRange: RangeMarker, todosaurusSettings: TodosaurusSettings.State): ToDoItem {
-            val text = ReadAction.compute<String, Nothing> { toDoRange.document.getText(toDoRange.textRange) }
+            val text = ReadAction.computeBlocking<String, Nothing> { toDoRange.document.getText(toDoRange.textRange) }
 
             return create(text, toDoRange.document, toDoRange.textRange.startOffset, toDoRange.textRange.endOffset, todosaurusSettings)
         }
