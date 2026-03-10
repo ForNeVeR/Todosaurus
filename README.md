@@ -13,7 +13,7 @@ It will help you to connect any TODO with an issue in the issue tracker, and mak
 The following components, useable separately, are included into Todosaurus:
 1. [Todosaurus plugin for IntelliJ-based IDEs][docs.intellij] — allows to quickly create tracker issues from TODO notes.
 2. [Todosaurus CLI][docs.cli] — helps to verify the TODO notes from the command line.
-3. [Todosaurus GitHub action] — conveniently runs the CLI on GitHub.
+3. [Todosaurus GitHub action][action] — conveniently runs the CLI on GitHub.
 
 Quick Installation Links
 ------------------------
