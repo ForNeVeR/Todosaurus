@@ -29,25 +29,28 @@ SPDX-License-Identifier: MIT
         <PackageReference Include="Tomlyn" Version="0.20.0" />
         <PackageReference Include="TruePath" Version="1.11.0" />
         <PackageReference Include="TruePath.SystemIo" Version="1.11.0" />
-    </ItemGroup>
+        
+        <!-- Not used explicitly, bump for security fix -->
+        <PackageReference Include="Microsoft.Bcl.Memory" Version="10.0.5" />
+   </ItemGroup>
 
-    <ItemGroup>
-        <Compile Include="AssemblyInfo.fs" />
-        <Compile Include="Env.fs" />
-        <Compile Include="Logger.fs" />
-        <Compile Include="TextFileFilter.fs" />
-        <Compile Include="Shell.fs" />
-        <Compile Include="GitDiscovery.fs" />
-        <Compile Include="GitFileProvider.fs" />
-        <Compile Include="FileSystemFileProvider.fs" />
-        <Compile Include="FilesCommand.fs" />
-        <Compile Include="GitRemote.fs" />
-        <Compile Include="GitHubClient.fs" />
-        <Compile Include="Configuration.fs" />
-        <Compile Include="Markers.fs" />
-        <Compile Include="ExitCodes.fs" />
-        <Compile Include="ScanCommand.fs" />
-        <Compile Include="Program.fs" />
-    </ItemGroup>
+   <ItemGroup>
+       <Compile Include="AssemblyInfo.fs" />
+       <Compile Include="Env.fs" />
+       <Compile Include="Logger.fs" />
+       <Compile Include="TextFileFilter.fs" />
+       <Compile Include="Shell.fs" />
+       <Compile Include="GitDiscovery.fs" />
+       <Compile Include="GitFileProvider.fs" />
+       <Compile Include="FileSystemFileProvider.fs" />
+       <Compile Include="FilesCommand.fs" />
+       <Compile Include="GitRemote.fs" />
+       <Compile Include="GitHubClient.fs" />
+       <Compile Include="Configuration.fs" />
+       <Compile Include="Markers.fs" />
+       <Compile Include="ExitCodes.fs" />
+       <Compile Include="ScanCommand.fs" />
+       <Compile Include="Program.fs" />
+   </ItemGroup>
 
 </Project>
