@@ -70,5 +70,6 @@ jobs:
     - name: Check for TODOs
       uses: ./action/
       with:
+        build-from-source: true
         github-token: ${{ secrets.GITHUB_TOKEN }}
         strict: true

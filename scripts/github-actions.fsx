@@ -102,6 +102,7 @@ let workflows = [
                 name = "Check for TODOs",
                 uses = "./action/",
                 options = Map.ofList [
+                    "build-from-source", "true"
                     "strict", "true"
                     "github-token", "${{ secrets.GITHUB_TOKEN }}"
                 ]
