@@ -14,7 +14,7 @@ Publish a New Version
 3. Update the project's status in the `README.md` file, if required.
 4. Make sure there's a properly formed version entry in the `CHANGELOG.md`.
 5. Choose the new version according to [Semantic Versioning][semver]. It should consist of three numbers (i.e. `1.0.0`).
-6. Update the version of all the packages via `scripts/Update-Version.ps1 -NewVersion <the new version>`. 
+6. Update the version of all the packages via `scripts/Update-Version.ps1 -NewVersion <the new version>`.
 7. Merge the aforementioned changes via a pull request.
 8. Check if the NuGet key is still valid (see the **Rotate NuGet Publishing Key** section if it isn't).
 9. Push a tag named `v<VERSION>` to GitHub.
@@ -42,7 +42,19 @@ To update the key:
    (If this is the first publication of a new package, upload a temporary short-living key with permission to add new packages, and rotate it afterward.)
 4. Paste the generated key to the `NUGET_TOKEN` variable on the [action secrets][github.secrets] section of GitHub settings.
 
+Rotate the Dependency Update Token
+----------------------------------
+This project uses a special GitHub application to manage the IntelliJ-based dependencies, as documented in [intellij-updater][].
+
+To update the token:
+1. Go to the [application settings][github.apps.intellij-updater].
+2. Generate a new private key.
+3. Copy the **App ID** to the `IJ_UPDATER_APP_ID` variable in [GitHub Actions secrets][github.secrets].
+4. Copy the new private key to the `IJ_UPDATER_PRIVATE_KEY` variable in [GitHub Actions secrets][github.secrets].
+
+[github.apps.intellij-updater]: https://github.com/settings/apps/intellij-updater
 [github.secrets]: https://github.com/ForNeVeR/Todosaurus/settings/secrets/actions
+[intellij-updater]: https://github.com/ForNeVeR/intellij-updater
 [marketplace.tokens]: https://plugins.jetbrains.com/author/me/tokens
 [nuget.api-keys]: https://www.nuget.org/account/apikeys
 [semver]: https://semver.org/spec/v2.0.0.html
