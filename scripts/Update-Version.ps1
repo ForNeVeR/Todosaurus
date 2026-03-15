@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 param (
-    $NewVersion = '1.10.1',
+    $NewVersion = '1.11.0',
     $RepoRoot = "$PSScriptRoot/.."
 )
 
@@ -43,7 +43,7 @@ function Update-PropsFile($relativePath, $propName) {
 function Update-ActionYaml($relativePath) {
     $file = Resolve-Path "$RepoRoot/$relativePath"
     $oldContent = [IO.File]::ReadAllText($file)
-    $newContent = $oldContent -replace '(default:\s*")\d+\.\d+\.\d+(")', "`$1$NewVersion`$2"
+    $newContent = $oldContent -replace '(default:\s*")\d+\.\d+\.\d+(")', "`${1}$NewVersion`${2}"
     [IO.File]::WriteAllText($file, $newContent)
     Write-Output "Updated file `"$file`"."
 }
