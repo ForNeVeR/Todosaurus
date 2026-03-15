@@ -32,7 +32,7 @@ Read more on the configuration file in [the CLI documentation][docs.cli].
 | `strict`           | Enable strict mode for validation.                       | No       | `false`   |
 | `github-token`     | Token to fetch issues. Helps avoid rate-limiting.        | No       |           |
 | `build-from-source`| Build from source instead of installing the NuGet tool.  | No       | `false`   |
-| `version`          | Version of the NuGet tool to install.                    | No       | `1.10.1`  |
+| `version`          | Version of the NuGet tool to install.                    | No       | `1.11.0`  |
 
 ### Notes
 Please note that this action installs a required version of .NET SDK during its execution. It's recommended to isolate it from other build steps in your CI.

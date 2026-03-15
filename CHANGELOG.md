@@ -7,9 +7,11 @@ SPDX-License-Identifier: MIT
 Changelog
 =========
 
-## [Unreleased] (1.11.0)
+## [1.11.0] - 2026-04-15
 ### Changed
-- **(Requirement update!)** Update the compatible IntelliJ version range to \[2026.1 EAP 8; 2026.2\].
+- **(Requirement update!)** Update the compatible IntelliJ version range to \[current 2026.1 EAP; 2026.2\].
+- Update the dependencies in CLI.
+- Action: we no longer build the action by default, and rely on a prebuilt version instead. This should fix the issues happening because of an attempt to build the tool in the action environments of the users.
 
 ## [1.10.1] - 2026-03-08
 ### Fixed
@@ -98,7 +100,9 @@ Changelog
 ## [1.0.0] - 2024-02-26
 This is the initial plugin release. At this point, it provides a context menu for the TODO items to create GitHub issues from them.
 
-[Unreleased]: https://github.com/ForNeVeR/Todosaurus/compare/v1.10.0...HEAD
+[Unreleased]: https://github.com/ForNeVeR/Todosaurus/compare/v1.11.0...HEAD
+[1.11.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.10.1...v1.11.0
+[1.10.1]: https://github.com/ForNeVeR/Todosaurus/compare/v1.10.0...v1.10.1
 [1.10.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.7.1...v1.8.0
