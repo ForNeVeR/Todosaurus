@@ -130,13 +130,27 @@ let workflows = [
                 usesSpec = Auto "ForNeVeR/intellij-updater",
                 name = "Update the dependency versions"
             )
+
+            let whenNeedsAPr = "steps.update.outputs.has-changes == 'true' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')"
+
             step(
-                condition = "steps.update.outputs.has-changes == 'true' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')",
+                condition = whenNeedsAPr,
+                usesSpec = Auto "actions/create-github-app-token",
+                name = "Generate a token to make a PR",
+                id = "generate-token",
+                options = Map.ofList [
+                    "app-id", "${{ secrets.IJ_UPDATER_APP_ID }}"
+                    "private-key", "${{ secrets.IJ_UPDATER_PRIVATE_KEY }}"
+                ]
+            )
+
+            step(
+                condition = whenNeedsAPr,
                 name = "Create a PR",
                 shell = "pwsh",
                 run = "./scripts/New-PR.ps1 -BranchName $env:BRANCH_NAME -CommitMessage $env:COMMIT_MESSAGE -PrTitle $env:PR_TITLE -PrBodyPath $env:PR_BODY_PATH",
                 env = Map.ofList [
-                    "GITHUB_TOKEN", "${{ secrets.GITHUB_TOKEN }}"
+                    "GITHUB_TOKEN", "${{ steps.generate-token.outputs.token }}"
                     "BRANCH_NAME", "${{ steps.update.outputs.branch-name }}"
                     "COMMIT_MESSAGE", "${{ steps.update.outputs.commit-message }}"
                     "PR_TITLE", "${{ steps.update.outputs.pr-title }}"
