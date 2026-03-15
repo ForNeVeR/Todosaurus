@@ -19,7 +19,12 @@ SPDX-License-Identifier: MIT
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <DisableImplicitFSharpCoreReference>true</DisableImplicitFSharpCoreReference>
     </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FSharp.Core" />
+    </ItemGroup>
 
     <PropertyGroup Condition="$(CI) != ''">
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
@@ -29,8 +34,8 @@ SPDX-License-Identifier: MIT
         <ChangelogFilePath>$(MSBuildThisFileDirectory)\..\CHANGELOG.md</ChangelogFilePath>
     </PropertyGroup>
     <ItemGroup Condition="$(IsPackable) == 'true'">
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.201" PrivateAssets="All" />
-        <PackageReference Include="ChangelogAutomation.MSBuild" Version="3.0.5" PrivateAssets="All" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+        <PackageReference Include="ChangelogAutomation.MSBuild" PrivateAssets="All" />
         <None Visible="false" Include="$(MSBuildThisFileDirectory)\..\LICENSES\**" Pack="true" PackagePath="\LICENSES" />
         <None Visible="false" Include="$(MSBuildThisFileDirectory)\..\CHANGELOG.md" Pack="true" PackagePath="\" />
         <None Visible="false" Include="$(MSBuildThisFileDirectory)\README.md" Pack="true" PackagePath="\" />
