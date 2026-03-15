@@ -49,7 +49,7 @@ let ReadConfig(configPath: AbsolutePath option, workingDirectory: AbsolutePath):
         else
             try
                 let! text = File.ReadAllTextAsync(resolvedPath.Value)
-                let table = Toml.ToModel(text, sourcePath = resolvedPath.Value)
+                let table = TomlSerializer.Deserialize<TomlTable>(text, TomlSerializerOptions(SourceName =  resolvedPath.Value)) |> nonNull
 
                 let trackerUrl =
                     tryGetValue<TomlTable> table "tracker"
