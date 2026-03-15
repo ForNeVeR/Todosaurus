@@ -100,10 +100,10 @@ let workflows = [
             runsOn "ubuntu-24.04"
             step(
                 name = "Check for TODOs",
-                shell = "pwsh",
-                run = "dotnet run --project cli/Cli -- --strict",
-                env = Map.ofList [
-                    "GITHUB_TOKEN", "${{ secrets.GITHUB_TOKEN }}"
+                uses = "./action/",
+                options = Map.ofList [
+                    "strict", "true"
+                    "github-token", "${{ secrets.GITHUB_TOKEN }}"
                 ]
             )
         ]
@@ -187,7 +187,10 @@ let workflows = [
 
             step(
                 name = "Run the action",
-                uses = "./action/"
+                uses = "./action/",
+                options = Map.ofList [
+                    "build-from-source", "true"
+                ]
             )
         ]
     ]

@@ -40,12 +40,21 @@ function Update-PropsFile($relativePath, $propName) {
     Write-Output "Updated file `"$file`"."
 }
 
+function Update-ActionYaml($relativePath) {
+    $file = Resolve-Path "$RepoRoot/$relativePath"
+    $oldContent = [IO.File]::ReadAllText($file)
+    $newContent = $oldContent -replace '(default:\s*")\d+\.\d+\.\d+(")', "`$1$NewVersion`$2"
+    [IO.File]::WriteAllText($file, $newContent)
+    Write-Output "Updated file `"$file`"."
+}
+
 function Update-MarkdownFile($relativePath, $actionName) {
     $file = Resolve-Path "$RepoRoot/$relativePath"
     $oldContent = [IO.File]::ReadAllText($file)
     $regex = [Regex]::Escape($actionName)
     $majorVersion = $NewVersion.Substring(0, $NewVersion.IndexOf('.'))
     $newContent = $oldContent -replace "$regex@v([^\s]+)", "$regex@v$majorVersion"
+    $newContent = $newContent -replace '`\d+\.\d+\.\d+`', "``$NewVersion``"
     [IO.File]::WriteAllText($file, $newContent)
     Write-Output "Updated file `"$file`"."
 }
@@ -54,3 +63,4 @@ Update-PowerShellFile 'scripts/Update-Version.ps1'
 Update-PropsFile 'cli/Directory.Build.props' 'Version'
 Update-PropertiesFile 'intellij/gradle.properties' 'pluginVersion'
 Update-MarkdownFile 'action/README.md' 'ForNeVeR/Todosaurus/action'
+Update-ActionYaml 'action/action.yml'

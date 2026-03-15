@@ -24,6 +24,16 @@ inputs:
     description: Token to fetch the issues from the current repository. Helps to avoid rate-limiting by GitHub.
     required: false
 
+  build-from-source:
+    description: Build from source instead of installing the NuGet tool.
+    required: false
+    default: "false"
+
+  version:
+    description: Version of the NuGet tool to install (when build-from-source is false).
+    required: false
+    default: "1.10.1"
+
 runs:
   using: composite
   steps:
@@ -32,7 +42,21 @@ runs:
       with:
         global-json-file: ${{ github.action_path }}/../global.json
 
-    - name: Run Todosaurus
+    - name: Install Todosaurus
+      if: inputs.build-from-source != 'true'
+      shell: pwsh
+      run: dotnet tool install --global FVNever.Todosaurus.Cli --version ${{ inputs.version }}
+
+    - name: Run Todosaurus (tool)
+      if: inputs.build-from-source != 'true'
+      shell: pwsh
+      run: todosaurus scan ${{ inputs.config && '--config $env:CONFIG_PATH' || '' }} ${{ inputs.strict == 'true' && '--strict' || '' }}
+      env:
+        CONFIG_PATH: ${{ inputs.config }}
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+
+    - name: Run Todosaurus (from source)
+      if: inputs.build-from-source == 'true'
       shell: pwsh
       working-directory: ${{ github.action_path }}
       run: dotnet run --project ../cli/Cli/Cli.fsproj -- scan ${{ inputs.config && '--config $env:CONFIG_PATH' || '' }} ${{ inputs.strict == 'true' && '--strict' || '' }}
