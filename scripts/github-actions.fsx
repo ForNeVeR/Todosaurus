@@ -482,7 +482,7 @@ let workflows = [
                 usesSpec = Auto "ForNeVeR/ChangelogAutomation.action",
                 options = Map.ofList [
                     "input", "./CHANGELOG.md"
-                    "output", "./changelog-section.md"
+                    "output", "./release-notes.md"
                 ]
             )
 
@@ -532,8 +532,8 @@ let workflows = [
                 name = "Upload the changelog",
                 usesSpec = Auto "actions/upload-artifact",
                 options = Map.ofList [
-                    "name", "changelog-section.md"
-                    "path", "./changelog-section.md"
+                    "name", "release-notes.md"
+                    "path", "./release-notes.md"
                 ]
             )
 
