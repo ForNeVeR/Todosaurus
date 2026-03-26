@@ -39,7 +39,7 @@ File Encoding Changes
 ---------------------
 If the automation asks you to update the file encoding (line endings or UTF-8 BOM) in certain files, run the following PowerShell script ([PowerShell Core][powershell] is recommended to run this script):
 ```console
-$ pwsh -c "Install-Module VerifyEncoding -Repository PSGallery -RequiredVersion 2.2.1 -Force && Test-Encoding -AutoFix -ExcludeExtensions '.bat', '.DotSettings'"
+$ pwsh -c "Install-Module VerifyEncoding -Repository PSGallery -RequiredVersion 2.3.0 -Force && Test-Encoding -AutoFix -ExcludeExtensions '.bat', '.DotSettings'"
 ```
 
 The `-AutoFix` switch will automatically fix the encoding issues, and you'll only need to commit and push the changes.

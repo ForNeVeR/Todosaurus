@@ -92,7 +92,7 @@ let workflows = [
             )
             pwsh(
                 "Verify encoding",
-                "Install-Module VerifyEncoding -Repository PSGallery -RequiredVersion 2.2.1 -Force && Test-Encoding -ExcludeExtensions '.bat', '.DotSettings'"
+                "Install-Module VerifyEncoding -Repository PSGallery -RequiredVersion 2.3.0 -Force && Test-Encoding -ExcludeExtensions '.bat', '.DotSettings'"
             )
         ]
 
