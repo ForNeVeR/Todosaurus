@@ -27,7 +27,8 @@ class TitleTests {
             Arguments.of("Todo:Text", "Text"),
             Arguments.of("TODO    Text", "Text"),
             Arguments.of("TODO\nText", ""),
-            Arguments.of("/* TODO: Text", "Text")
+            Arguments.of("/* TODO: Text", "Text"),
+            Arguments.of("// TODO: Restore after https://example.com is fixed.", "Restore after https://example.com is fixed.")
         )
         // IgnoreTODO-End
     }
