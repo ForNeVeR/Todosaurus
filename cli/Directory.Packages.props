@@ -13,11 +13,11 @@ SPDX-License-Identifier: MIT
         <PackageVersion Include="ChangelogAutomation.MSBuild" Version="3.0.5" />
         <PackageVersion Include="FSharp.Core" Version="11.0.100" />
         <PackageVersion Include="MedallionShell" Version="1.6.2" />
-        <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="10.0.5" />
+        <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="10.0.6" />
         <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.4.0" />
-        <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.201" />
+        <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.202" />
         <PackageVersion Include="Octokit" Version="14.0.0" />
-        <PackageVersion Include="System.CommandLine" Version="2.0.5" />
+        <PackageVersion Include="System.CommandLine" Version="2.0.6" />
         <PackageVersion Include="Tomlyn" Version="2.3.0" />
         <PackageVersion Include="TruePath" Version="1.12.0" />
         <PackageVersion Include="TruePath.SystemIo" Version="1.12.0" />
