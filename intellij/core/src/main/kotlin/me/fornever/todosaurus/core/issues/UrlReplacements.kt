@@ -4,6 +4,8 @@
 
 package me.fornever.todosaurus.core.issues
 
+import com.intellij.openapi.application.ReadAction
+
 data class UrlReplacement(
     val positionInDescription: IntRange,
     val linesBefore: Int,
@@ -49,41 +51,50 @@ class UrlReplacements(private val toDoItem: ToDoItem.New) {
         if (latestDescription.isEmpty())
             return
 
-        val document = toDoItem.toDoRange.document
-        val startTextOffset = toDoItem.toDoRange.startOffset
-        val endTextOffset = toDoItem.toDoRange.endOffset
+        // RangeMarkerImpl.getDocument() and the Document line accessors below
+        // assert read access on every call. setDescription() is invoked from
+        // the Swing DocumentAdapter on the EDT, where read access is not
+        // guaranteed, so a plain `toDoItem.toDoRange.document` throws
+        // RuntimeExceptionWithAttachments and crashes the wizard step
+        // (issue #305). Wrap the document-touching block in ReadAction.compute
+        // — the result is just data, so no follow-up write is needed.
+        offsets = ReadAction.compute<List<UrlReplacement>, RuntimeException> {
+            val document = toDoItem.toDoRange.document
+            val startTextOffset = toDoItem.toDoRange.startOffset
+            val endTextOffset = toDoItem.toDoRange.endOffset
 
-        offsets = urlReplacementPattern
-            .findAll(latestDescription)
-            .map { match ->
-                val firstToken = match.groups[1]?.value ?: match.groups[3]?.value ?: match.groups[5]?.value ?: match.groups[6]?.value
-                val secondToken = match.groups[2]?.value ?: match.groups[4]?.value
+            urlReplacementPattern
+                .findAll(latestDescription)
+                .map { match ->
+                    val firstToken = match.groups[1]?.value ?: match.groups[3]?.value ?: match.groups[5]?.value ?: match.groups[6]?.value
+                    val secondToken = match.groups[2]?.value ?: match.groups[4]?.value
 
-                var linesBefore = 0
-                var linesAfter = 0
+                    var linesBefore = 0
+                    var linesAfter = 0
 
-                fun parse(token: String) {
-                    val linesCount = token.toInt()
+                    fun parse(token: String) {
+                        val linesCount = token.toInt()
 
-                    when {
-                        linesCount < 0 -> linesBefore = linesCount
-                        else -> linesAfter = linesCount
+                        when {
+                            linesCount < 0 -> linesBefore = linesCount
+                            else -> linesAfter = linesCount
+                        }
                     }
+
+                    if (firstToken != null)
+                        parse(firstToken)
+
+                    if (secondToken != null)
+                        parse(secondToken)
+
+                    val startLineNumber = (document.getLineNumber(startTextOffset) + linesBefore + 1).coerceAtLeast(1)
+                    val startLineOffset = document.getLineStartOffset(startLineNumber - 1)
+                    val endLineNumber = (document.getLineNumber(endTextOffset) + linesAfter + 1).coerceAtMost(document.lineCount)
+                    val endLineOffset = document.getLineEndOffset(endLineNumber - 1)
+
+                    UrlReplacement(IntRange(match.range.first, match.range.last + 1), linesBefore, linesAfter, startLineOffset, endLineOffset, startLineNumber, endLineNumber)
                 }
-
-                if (firstToken != null)
-                    parse(firstToken)
-
-                if (secondToken != null)
-                    parse(secondToken)
-
-                val startLineNumber = (document.getLineNumber(startTextOffset) + linesBefore + 1).coerceAtLeast(1)
-                val startLineOffset = document.getLineStartOffset(startLineNumber - 1)
-                val endLineNumber = (document.getLineNumber(endTextOffset) + linesAfter + 1).coerceAtMost(document.lineCount)
-                val endLineOffset = document.getLineEndOffset(endLineNumber - 1)
-
-                UrlReplacement(IntRange(match.range.first, match.range.last + 1), linesBefore, linesAfter, startLineOffset, endLineOffset, startLineNumber, endLineNumber)
-            }
-            .toList()
+                .toList()
+        }
     }
 }
