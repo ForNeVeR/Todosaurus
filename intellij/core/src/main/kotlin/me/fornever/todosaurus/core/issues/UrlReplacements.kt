@@ -57,7 +57,7 @@ class UrlReplacements(private val toDoItem: ToDoItem.New) {
         // guaranteed, so a plain `toDoItem.toDoRange.document` throws
         // RuntimeExceptionWithAttachments and crashes the wizard step
         // (issue #305). Wrap the document-touching block in ReadAction.compute
-        // — the result is just data, so no follow-up write is needed.
+        //, the result is just data, so no follow-up write is needed.
         offsets = ReadAction.compute<List<UrlReplacement>, RuntimeException> {
             val document = toDoItem.toDoRange.document
             val startTextOffset = toDoItem.toDoRange.startOffset
