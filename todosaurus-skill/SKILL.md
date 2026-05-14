@@ -15,11 +15,7 @@ Use this skill when a repository has unresolved `TODO` markers and they must be 
 
 ## Installation prerequisites
 
-Ensure Todosaurus is installed before running this workflow:
-
-```console
-$ todosaurus --version
-```
+Ensure Todosaurus is installed before running this workflow.
 
 If it's not installed, you can install it globally:
 ```console
@@ -29,16 +25,29 @@ $ dotnet tool install --global FVNever.Todosaurus.Cli
 Or install it locally in the repository:
 ```console
 $ dotnet new tool-manifest
+```
+(only if `.config/dotnet-tools.json` is not present yet), then:
+```console
 $ dotnet tool install FVNever.Todosaurus.Cli
 ```
 
-If installed as a global tool, run it as `todosaurus`.
+Verify installation:
+```console
+$ todosaurus --version
+$ dotnet tool run todosaurus --version
+```
+
+If installed as a global tool, run it as `todosaurus`. If installed via a tool manifest, run it as `dotnet tool run todosaurus`.
 
 ## Workflow
 
-1. Run Todosaurus in the repository root:
+1. Run Todosaurus in the repository root (global install):
    ```console
    $ todosaurus
+   ```
+   For local tool-manifest install, use:
+   ```console
+   $ dotnet tool run todosaurus
    ```
 2. Parse unresolved TODO findings and classify each finding:
    - **Actionable TODO**: a real follow-up task that should be tracked with a GitHub issue.
@@ -63,8 +72,8 @@ If installed as a global tool, run it as `todosaurus`.
    $ gh issue create --title "<title>" --body "<body>"
    ```
 7. Replace each corresponding actionable TODO marker in code:
-   - From: `TODO` or `TODO:`
-   - To: `TODO[#<issue-number>]` (keep the rest of the text unchanged).
+   - From: `TODO` or `TODO:`.
+   - To: `TODO[#<issue-number>]:` (keep the rest of the text unchanged after `TODO`/`TODO:`).
 8. For false positives, add `IgnoreTODO` exclusion regions around the smallest safe code fragment:
    - Use `IgnoreTODO-Start` and `IgnoreTODO-End` on separate lines with the file's comment syntax.
    - Never place a TODO and an IgnoreTODO marker on the same line.
@@ -78,7 +87,7 @@ If installed as a global tool, run it as `todosaurus`.
      (#123, #456, #678) Connect TODOs with the issues
      ```
      Use only relevant issue numbers for that commit.
-10. Run Todosaurus again and ensure there are no warnings except the optional local warning about missing `GITHUB_TOKEN`.
+10. Run Todosaurus again and ensure there are no warnings except the optional local warning about no GitHub token found (`GITHUB_TOKEN`/`GH_TOKEN`).
 
 ## Code link format for issue body
 
