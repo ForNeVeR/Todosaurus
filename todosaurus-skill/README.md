@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 # Todosaurus skill
 
-This directory contains a reusable skill: [`SKILL.md`](SKILL.md), for connecting unresolved `TODO` markers with GitHub issues.
+This directory contains a reusable skill: [`SKILL.md`](SKILL.md), for connecting unresolved `TODO` markers with GitHub issues and using `IgnoreTODO` regions for intentional false positives.
 
 ## Install in GitHub Copilot
 
