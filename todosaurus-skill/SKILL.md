@@ -73,7 +73,7 @@ If installed as a global tool, run it as `todosaurus`. If installed via a tool m
    ```
 7. Replace each corresponding actionable TODO marker in code:
    - From: `TODO` or `TODO:`.
-   - To: `TODO[#<issue-number>]:` (keep the rest of the text unchanged after `TODO`/`TODO:`).
+   - To: `TODO[#<issue-number>]:` (the text that originally followed `TODO` or `TODO:` must stay unchanged, i.e. `TODO[#<issue-number>]: <original text>`).
 8. For false positives, add `IgnoreTODO` exclusion regions around the smallest safe code fragment:
    - Use `IgnoreTODO-Start` and `IgnoreTODO-End` on separate lines with the file's comment syntax.
    - Never place a TODO and an IgnoreTODO marker on the same line.
