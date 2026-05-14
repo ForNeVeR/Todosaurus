@@ -1,6 +1,6 @@
 ---
 name: todosaurus-skill
-description: Connect unresolved TODO markers to GitHub issues and update source TODOs with issue references.
+description: Connect unresolved TODO markers to GitHub issues and use IgnoreTODO regions for false positives.
 ---
 
 <!--
@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 
 # Todosaurus TODO-to-Issue Connector
 
-Use this skill when a repository has unresolved `TODO` markers and they must be connected to GitHub issues.
+Use this skill when a repository has unresolved `TODO` markers and they must be connected to GitHub issues, while allowing `IgnoreTODO` regions for intentional false positives.
 
 ## Installation prerequisites
 
@@ -40,8 +40,11 @@ If installed as a global tool, run it as `todosaurus`.
    ```console
    $ todosaurus
    ```
-2. Parse unresolved TODO findings and group TODOs that describe the same underlying problem into one group.
-3. Make sure GitHub CLI is authenticated for issue creation:
+2. Parse unresolved TODO findings and classify each finding:
+   - **Actionable TODO**: a real follow-up task that should be tracked with a GitHub issue.
+   - **False positive**: code/content where the word `TODO` is intentional functionality or data (for example, search patterns, parser tests, sample text, or literal matching logic).
+3. Group actionable TODOs that describe the same underlying problem into one group.
+4. Make sure GitHub CLI is authenticated for issue creation:
    ```console
    $ gh auth status
    ```
@@ -49,20 +52,25 @@ If installed as a global tool, run it as `todosaurus`.
    ```console
    $ gh auth login
    ```
-4. For each TODO group, create one GitHub issue with:
+5. For each actionable TODO group, create one GitHub issue with:
    - A concise, actionable title.
    - A body including:
      - Problem description.
      - Why it matters.
      - Affected code locations as commit-specific, line-specific links.
-5. Use `gh` to create each issue, for example:
+6. Use `gh` to create each issue, for example:
    ```console
    $ gh issue create --title "<title>" --body "<body>"
    ```
-6. Replace each corresponding TODO marker in code:
+7. Replace each corresponding actionable TODO marker in code:
    - From: `TODO` or `TODO:`
    - To: `TODO[#<issue-number>]` (keep the rest of the text unchanged).
-7. Commit changes, but **do not push**:
+8. For false positives, add `IgnoreTODO` exclusion regions around the smallest safe code fragment:
+   - Use `IgnoreTODO-Start` and `IgnoreTODO-End` on separate lines with the file's comment syntax.
+   - Never place a TODO and an IgnoreTODO marker on the same line.
+   - Do not nest ignore regions, and always close each `IgnoreTODO-Start`.
+   - Do not create a GitHub issue for TODOs intentionally excluded this way.
+9. Commit changes, but **do not push**:
    - If total created issues count is up to 5: make a single commit covering all updates.
    - If more than 5: make separate commits per issue group.
    - Commit message format:
@@ -70,7 +78,7 @@ If installed as a global tool, run it as `todosaurus`.
      (#123, #456, #678) Connect TODOs with the issues
      ```
      Use only relevant issue numbers for that commit.
-8. Run Todosaurus again and ensure there are no warnings except the optional local warning about missing `GITHUB_TOKEN`.
+10. Run Todosaurus again and ensure there are no warnings except the optional local warning about missing `GITHUB_TOKEN`.
 
 ## Code link format for issue body
 
