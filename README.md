@@ -14,12 +14,14 @@ The following components, useable separately, are included into Todosaurus:
 1. [Todosaurus plugin for IntelliJ-based IDEs][docs.intellij] — allows to quickly create tracker issues from TODO notes.
 2. [Todosaurus CLI][docs.cli] — helps to verify the TODO notes from the command line.
 3. [Todosaurus GitHub action][action] — conveniently runs the CLI on GitHub.
+4. [Todosaurus skill][docs.skill] — helps coding agents connect TODO notes to GitHub issues.
 
 Quick Installation Links
 ------------------------
 - **IntelliJ Plugin:** [![Download IntelliJ Plugin][badge.plugin]][marketplace.plugin]
 - **CLI:** [![FVNever.Todosaurus.Cli on nuget.org][nuget.badge]][nuget]
 - **GitHub Action:** see [the installation guide][action].
+- **Skill:** see [the installation guide][docs.skill].
 
 Read the documentation of each Todosaurus component if you want to know more.
 
@@ -67,6 +69,7 @@ Documentation
 - [Changelog][docs.changelog]
 - [IntelliJ Plugin][docs.intellij]
 - [CLI][docs.cli]
+- [Skill][docs.skill]
 - [Contributor Guide (General)][docs.contributing]
 - [Contributor Guide (IntelliJ Plugin)][docs.contributing.intellij]
 - [Contributor Guide (CLI)][docs.contributing.cli]
@@ -89,6 +92,7 @@ The license indication in the project's sources is compliant with the [REUSE spe
 [docs.intellij]: intellij/README.md
 [docs.license]: LICENSE.txt
 [docs.maintaining]: MAINTAINING.md
+[docs.skill]: todosaurus-skill/README.md
 [marketplace.plugin]: https://plugins.jetbrains.com/plugin/23838
 [nuget.badge]: https://img.shields.io/nuget/v/FVNever.Todosaurus.Cli
 [nuget]: https://www.nuget.org/packages/FVNever.Todosaurus.Cli
