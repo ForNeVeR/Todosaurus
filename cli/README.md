@@ -28,7 +28,7 @@ After installation, the tool will be available in shell as `dotnet todosaurus`.
 
 ### Command-Line Syntax
 ```
-dotnet todosaurus [global-switches…] [command] [command-switches…]
+todosaurus [global-switches…] [command] [command-switches…]
 ```
 
 Global switches:
