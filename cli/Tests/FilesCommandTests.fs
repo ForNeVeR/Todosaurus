@@ -17,6 +17,13 @@ let private runGit (workingDirectory: AbsolutePath) (args: string seq): Task =
         return ()
     }
 
+let private configureGitUser (workingDirectory: AbsolutePath): Task =
+    task {
+        do! runGit workingDirectory [ "config"; "user.email"; "test@test.com" ]
+        do! runGit workingDirectory [ "config"; "user.name"; "Test" ]
+        do! runGit workingDirectory [ "config"; "commit.gpgSign"; "false" ]
+    }
+
 let private assertNoGitDir(dir: AbsolutePath) =
     let gitPath = (dir / ".git")
 
@@ -61,8 +68,7 @@ let ``Git repo lists tracked and untracked-not-ignored text files, excludes bina
     WithTempDir(fun tempDir -> task {
         assertNoGitDir tempDir
         do! runGit tempDir [ "init" ]
-        do! runGit tempDir [ "config"; "user.email"; "test@test.com" ]
-        do! runGit tempDir [ "config"; "user.name"; "Test" ]
+        do! configureGitUser tempDir
 
         // Tracked files (should appear):
         do! (tempDir / "tracked.txt").WriteAllTextAsync "tracked"
@@ -98,8 +104,7 @@ let ``CI mode excludes untracked files from Git repo scan``(): Task =
     WithTempDir(fun tempDir -> task {
         assertNoGitDir tempDir
         do! runGit tempDir [ "init" ]
-        do! runGit tempDir [ "config"; "user.email"; "test@test.com" ]
-        do! runGit tempDir [ "config"; "user.name"; "Test" ]
+        do! configureGitUser tempDir
 
         // Tracked file:
         do! (tempDir / "tracked.txt").WriteAllTextAsync "tracked"
@@ -118,6 +123,34 @@ let ``CI mode excludes untracked files from Git repo scan``(): Task =
             Assert.DoesNotContain("untracked.txt", names)
         finally
             Env.SetIsCiOverride None
+    })
+
+[<Fact>]
+let ``Git repo ignores submodule gitlinks``(): Task =
+    WithTempDir(fun tempDir -> task {
+        assertNoGitDir tempDir
+        do! runGit tempDir [ "init" ]
+        do! configureGitUser tempDir
+
+        do! (tempDir / "tracked.txt").WriteAllTextAsync "tracked"
+        do! runGit tempDir [ "add"; "tracked.txt" ]
+
+        let submodulePath = "wwwroot/talks/demo"
+        do! runGit tempDir [
+            "update-index"
+            "--add"
+            "--cacheinfo"
+            $"160000,0123456789012345678901234567890123456789,%s{submodulePath}"
+        ]
+        do! runGit tempDir [ "commit"; "-m"; "initial" ]
+
+        let! result = RunWithLoggerCollector(fun ctx -> task {
+            let! files = FilesCommand.ListEligibleFiles(ctx, tempDir)
+            let names = files |> Seq.map _.Value
+            Assert.Contains("tracked.txt", names)
+            Assert.DoesNotContain(submodulePath, names)
+        })
+        Assert.Empty result.Warnings
     })
 
 [<Fact>]
