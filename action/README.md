@@ -12,14 +12,15 @@ Usage
 ```yaml
 jobs:
   todos:
-    - name: Check out the sources
-      uses: actions/checkout@v6
-    - name: Check TODOs
-      uses: ForNeVeR/Todosaurus/action@v1
-      with:
-        config: todosaurus.toml # optional
-        strict: 'true' # optional
-        github-token: ${{ secrets.GITHUB_TOKEN }} # optional, recommended
+    steps:
+      - name: Check out the sources
+        uses: actions/checkout@v6
+      - name: Check TODOs
+        uses: ForNeVeR/Todosaurus/action@v1
+        with:
+          config: todosaurus.toml # optional
+          strict: 'true' # optional
+          github-token: ${{ secrets.GITHUB_TOKEN }} # optional, recommended
 ```
 
 Read more on the configuration file in [the CLI documentation][docs.cli].
