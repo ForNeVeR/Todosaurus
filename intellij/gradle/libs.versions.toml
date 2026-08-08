@@ -5,9 +5,9 @@
 
 [versions]
 gradleIntelliJPlatform = "2.13.1"
-ideaSdk = "261.22158.182-EAP"
+ideaSdk = "262.9437.65-EAP"
 junit5 = "6.1.0"
-kotlin = "2.3.20"
+kotlin = "2.4.0"
 
 [libraries]
 intelliJPlatformModulePlugin = { group = "org.jetbrains.intellij.platform.module", name = "org.jetbrains.intellij.platform.module.gradle.plugin", version.ref = "gradleIntelliJPlatform" }
