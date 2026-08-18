@@ -1,6 +1,6 @@
 <!--
 SPDX-FileCopyrightText: 2000-2021 JetBrains s.r.o.
-SPDX-FileCopyrightText: 2024–2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+SPDX-FileCopyrightText: 2024–2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 
 SPDX-License-Identifier: MIT AND Apache-2.0
 -->

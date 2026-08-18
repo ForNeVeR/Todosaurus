@@ -32,6 +32,8 @@ version = properties("pluginVersion").get()
 
 dependencies {
     intellijPlatform {
+        compatiblePlugin("com.intellij.tasks")
+
         pluginComposedModule(implementation(project(":core")))
         pluginComposedModule(implementation(project(":gitHub")))
         pluginComposedModule(implementation(project(":gitLab")))
