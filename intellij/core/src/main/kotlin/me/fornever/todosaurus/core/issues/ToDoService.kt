@@ -6,10 +6,11 @@ package me.fornever.todosaurus.core.issues
 
 import com.intellij.ide.BrowserUtil
 import com.intellij.openapi.application.EDT
-import com.intellij.openapi.application.writeAction
+import com.intellij.openapi.application.edtWriteAction
 import com.intellij.openapi.command.executeCommand
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -50,6 +51,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
                 }
                 catch (exception: Throwable) {
                     val actionAfterFail = ChooseAnotherAccountAction.thenTryAgainToCreateNewIssue(toDoItem)
+                    logger.error(exception)
                     return@launch Notifications.Memoization.failed(exception, project, actionAfterFail)
                 }
 
@@ -93,8 +95,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
                 .createClient(project, credentials, placementDetails)
                 .createIssue(model.toDoItem, model.issueOptions)
 
-            @Suppress("UnstableApiUsage")
-            writeAction {
+            edtWriteAction {
                 // IgnoreTODO-Start
                 executeCommand(project, "Update TODO Item") {
                     model.toDoItem.toReported(newIssue.number)
@@ -115,7 +116,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         }
         catch (exception: Throwable) {
             Notifications.CreateNewIssue.failed(exception, project)
-
+            logger.error(exception)
             return WizardResult.Failed
         }
     }
@@ -135,6 +136,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
                 }
                 catch (exception: Throwable) {
                     val actionAfterFail = ChooseAnotherAccountAction.thenTryAgainToOpenIssueInBrowser(toDoItem)
+                    logger.error(exception)
                     return@launch Notifications.Memoization.failed(exception, project, actionAfterFail)
                 }
 
@@ -183,7 +185,7 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         }
         catch (exception: Throwable) {
             Notifications.OpenReportedIssueInBrowser.failed(exception, project)
-
+            logger.error(exception)
             return WizardResult.Failed
         }
     }
@@ -210,3 +212,5 @@ class ToDoService(private val project: Project, private val scope: CoroutineScop
         return TodosaurusWizardContext(toDoItem, connectionDetails, userChoice.placementDetails)
     }
 }
+
+private val logger = logger<ToDoService>()
