@@ -49,6 +49,8 @@ To report issues, the plugin will ask you to authenticate your account (it conne
 
 Currently, we automatically support GitHub accounts linked via the **Settings | Tools | Tasks | Servers** page. If no account has been added, the plugin will request you to add one.
 
+_This settings page comes from the **Task Management** plugin. Starting from IntelliJ 2026.2, it is not bundled with the IDE anymore, but Todosaurus declares it as a required dependency, so it gets installed automatically together with Todosaurus._
+
 You can save the selected steps to avoid going through them again via the checkbox **Remember my choice**. If you want to readjust the saved steps in the future, use either the corresponding link in the dialog or the **Forget** button on the plugin's settings page.
 
 If you have some advanced usage scenarios, do not hesitate to leave your feedback at [the issue tracker][issues].

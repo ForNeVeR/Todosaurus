@@ -7,6 +7,11 @@ SPDX-License-Identifier: MIT
 Changelog
 =========
 
+## [Unreleased]
+### Changed
+- **(Requirement update!)** Update the compatible IntelliJ version range to \[2026.2; 2026.3\].
+- **(Requirement update!)** Starting from IntelliJ 2026.2, the **Task Management** plugin is not bundled with the IDE anymore. Todosaurus now declares it as a required dependency, so it will be installed automatically together with Todosaurus.
+
 ## [1.11.0] - 2026-04-15
 ### Changed
 - **(Requirement update!)** Update the compatible IntelliJ version range to \[current 2026.1 EAP; 2026.2\].

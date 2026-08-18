@@ -20,11 +20,11 @@ plugins {
 }
 
 jvmWrapper {
-    linuxAarch64JvmUrl = "https://download.oracle.com/java/21/archive/jdk-21.0.3_linux-aarch64_bin.tar.gz"
-    linuxX64JvmUrl = "https://download.oracle.com/java/21/archive/jdk-21.0.3_linux-x64_bin.tar.gz"
-    macAarch64JvmUrl = "https://download.oracle.com/java/21/archive/jdk-21.0.3_macos-aarch64_bin.tar.gz"
-    macX64JvmUrl = "https://download.oracle.com/java/21/archive/jdk-21.0.3_macos-x64_bin.tar.gz"
-    windowsX64JvmUrl = "https://download.oracle.com/java/21/archive/jdk-21.0.3_windows-x64_bin.zip"
+    linuxAarch64JvmUrl = "https://download.oracle.com/java/25/archive/jdk-25.0.3_linux-aarch64_bin.tar.gz"
+    linuxX64JvmUrl = "https://download.oracle.com/java/25/archive/jdk-25.0.3_linux-x64_bin.tar.gz"
+    macAarch64JvmUrl = "https://download.oracle.com/java/25/archive/jdk-25.0.3_macos-aarch64_bin.tar.gz"
+    macX64JvmUrl = "https://download.oracle.com/java/25/archive/jdk-25.0.3_macos-x64_bin.tar.gz"
+    windowsX64JvmUrl = "https://download.oracle.com/java/25/archive/jdk-25.0.3_windows-x64_bin.zip"
 }
 
 group = properties("pluginGroup").get()
@@ -35,6 +35,7 @@ dependencies {
         pluginComposedModule(implementation(project(":core")))
         pluginComposedModule(implementation(project(":gitHub")))
         pluginComposedModule(implementation(project(":gitLab")))
+        plugin("com.intellij.tasks", libs.versions.tasksPlugin.get())
     }
 }
 

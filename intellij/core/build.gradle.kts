@@ -11,11 +11,14 @@ plugins {
 
 dependencies {
     intellijPlatform {
+        bundledModule("intellij.platform.collaborationTools")
+        bundledModule("intellij.platform.tasks")
         // IgnoreTODO-Start
         bundledModule("intellij.platform.todo")
         // IgnoreTODO-End
+        bundledModule("intellij.platform.vcs.dvcs")
         bundledPlugin("Git4Idea")
-        bundledPlugin("com.intellij.tasks")
+        plugin("com.intellij.tasks", libs.versions.tasksPlugin.get())
 
         testFramework(TestFrameworkType.JUnit5)
         testFramework(TestFrameworkType.Platform)

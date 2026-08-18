@@ -1,5 +1,5 @@
 <!--
-  ~ SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+  ~ SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
   ~
   ~ SPDX-License-Identifier: MIT
   -->
@@ -11,6 +11,7 @@
 
     <depends>com.intellij.modules.platform</depends>
     <depends>Git4Idea</depends>
+    <depends>com.intellij.tasks</depends>
 
     <content>
         <module name="me.fornever.todosaurus.core" loading="required" />

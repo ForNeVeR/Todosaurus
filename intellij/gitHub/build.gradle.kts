@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2025-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -10,7 +10,8 @@ plugins {
 dependencies {
     compileOnly(project(":core"))
     intellijPlatform {
-        bundledPlugin("com.intellij.tasks")
+        bundledModule("intellij.platform.tasks")
         bundledPlugin("org.jetbrains.plugins.github")
+        plugin("com.intellij.tasks", libs.versions.tasksPlugin.get())
     }
 }

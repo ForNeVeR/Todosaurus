@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2025-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -29,7 +29,7 @@ class GitLabCredentialsProvider(private val project: Project) : IssueTrackerCred
         return accountManager
             .accountsState
             .value
-            .map { GitLabCredentials(it.name, accountManager.findCredentials(it), it.server) }
+            .map { GitLabCredentials(it.name, accountManager.findCredentials(it)?.accessToken, it.server) }
     }
 
     private fun fromTasks(): List<IssueTrackerCredentials>
