@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: 2000-2024 JetBrains s.r.o. and contributors
-// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT AND Apache-2.0
 
@@ -8,7 +8,6 @@
 
 package me.fornever.todosaurus.core.ui.wizard
 
-import com.intellij.ide.IdeBundle
 import com.intellij.ide.wizard.AbstractWizard
 import com.intellij.ide.wizard.CommitStepCancelledException
 import com.intellij.ide.wizard.CommitStepException
@@ -25,7 +24,6 @@ import com.intellij.ui.components.ActionLink
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.mac.touchbar.Touchbar
 import com.intellij.util.containers.toArray
-import com.intellij.util.ui.UIUtil
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap
 import it.unimi.dsi.fastutil.objects.Object2IntMap
@@ -375,14 +373,14 @@ class TodosaurusWizard(
             }
             else if (mySteps.size > 1) {
                 nextButton.mnemonic = 67
-                nextButton.text = UIUtil.removeMnemonic(IdeBundle.message("button.create"))
+                nextButton.text = TodosaurusCoreBundle.message("wizard.buttons.create")
             }
             else {
-                nextButton.text = IdeBundle.message("button.ok")
+                nextButton.text = TodosaurusCoreBundle.message("wizard.buttons.ok")
             }
         }
         else {
-            nextButton.text = UIUtil.removeMnemonic(IdeBundle.message("button.wizard.next"))
+            nextButton.text = TodosaurusCoreBundle.message("wizard.buttons.next")
             nextButton.mnemonic = 78
         }
 
