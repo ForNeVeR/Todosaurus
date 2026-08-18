@@ -18,7 +18,7 @@ dependencies {
         // IgnoreTODO-End
         bundledModule("intellij.platform.vcs.dvcs")
         bundledPlugin("Git4Idea")
-        plugin("com.intellij.tasks", libs.versions.tasksPlugin.get())
+        compatiblePlugin("com.intellij.tasks")
 
         testFramework(TestFrameworkType.JUnit5)
         testFramework(TestFrameworkType.Platform)

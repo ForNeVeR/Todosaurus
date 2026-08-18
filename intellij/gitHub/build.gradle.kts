@@ -12,6 +12,6 @@ dependencies {
     intellijPlatform {
         bundledModule("intellij.platform.tasks")
         bundledPlugin("org.jetbrains.plugins.github")
-        plugin("com.intellij.tasks", libs.versions.tasksPlugin.get())
+        compatiblePlugin("com.intellij.tasks")
     }
 }

@@ -8,10 +8,6 @@ gradleIntelliJPlatform = "2.18.1"
 ideaSdk = "2026.2.1"
 junit5 = "6.1.0"
 kotlin = "2.4.0"
-# The Task Management plugin was unbundled from IntelliJ IDEA in 262, so it has to be consumed from the Marketplace
-# now. Bump this manually during the next IDE version migration:
-# https://plugins.jetbrains.com/plugin/11545-task-management/versions
-tasksPlugin = "262.8665.173"
 
 [libraries]
 intelliJPlatformModulePlugin = { group = "org.jetbrains.intellij.platform.module", name = "org.jetbrains.intellij.platform.module.gradle.plugin", version.ref = "gradleIntelliJPlatform" }

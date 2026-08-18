@@ -35,7 +35,6 @@ dependencies {
         pluginComposedModule(implementation(project(":core")))
         pluginComposedModule(implementation(project(":gitHub")))
         pluginComposedModule(implementation(project(":gitLab")))
-        plugin("com.intellij.tasks", libs.versions.tasksPlugin.get())
     }
 }
 
