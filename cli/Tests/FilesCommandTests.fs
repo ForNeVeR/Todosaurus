@@ -1,9 +1,10 @@
-// SPDX-FileCopyrightText: 2026 Friedrich von Never <friedrich@fornever.me>
+// SPDX-FileCopyrightText: 2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
 module Todosaurus.Tests.FilesCommandTests
 
+open System.Collections.Generic
 open System.Threading.Tasks
 open Todosaurus.Cli
 open Todosaurus.Tests.TestFramework
@@ -126,7 +127,7 @@ let ``CI mode excludes untracked files from Git repo scan``(): Task =
     })
 
 [<Fact>]
-let ``Git repo ignores submodule gitlinks``(): Task =
+let ``Git repo ignores submodule entries``(): Task =
     WithTempDir(fun tempDir -> task {
         assertNoGitDir tempDir
         do! runGit tempDir [ "init" ]
@@ -146,9 +147,9 @@ let ``Git repo ignores submodule gitlinks``(): Task =
 
         let! result = RunWithLoggerCollector(fun ctx -> task {
             let! files = FilesCommand.ListEligibleFiles(ctx, tempDir)
-            let names = files |> Seq.map _.Value
-            Assert.Contains("tracked.txt", names)
-            Assert.DoesNotContain(submodulePath, names)
+            let files = HashSet files
+            Assert.Contains(LocalPath "tracked.txt", files)
+            Assert.DoesNotContain(LocalPath submodulePath, files)
         })
         Assert.Empty result.Warnings
     })
