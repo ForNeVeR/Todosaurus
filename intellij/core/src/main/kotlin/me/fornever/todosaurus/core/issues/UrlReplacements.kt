@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2025-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -49,7 +49,7 @@ class UrlReplacements(private val toDoItem: ToDoItem.New) {
         if (latestDescription.isEmpty())
             return
 
-        val document = toDoItem.toDoRange.document
+        val document = toDoItem.document
         val startTextOffset = toDoItem.toDoRange.startOffset
         val endTextOffset = toDoItem.toDoRange.endOffset
 
