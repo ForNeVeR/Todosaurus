@@ -87,11 +87,13 @@ sealed class ToDoItem(val text: String, protected val todosaurusSettings: Todosa
             return toDoItems.toTypedArray()
         }
 
-        fun fromRange(toDoRange: RangeMarker, todosaurusSettings: TodosaurusSettings.State): ToDoItem {
-            val text = ReadAction.computeBlocking<String, Nothing> { toDoRange.document.getText(toDoRange.textRange) }
+        fun fromRange(toDoRange: RangeMarker, todosaurusSettings: TodosaurusSettings.State): ToDoItem
+            = ReadAction.computeBlocking<ToDoItem, Nothing> {
+                val textRange = toDoRange.textRange
+                val text = toDoRange.document.getText(textRange)
 
-            return create(text, toDoRange.document, toDoRange.textRange.startOffset, toDoRange.textRange.endOffset, todosaurusSettings)
-        }
+                create(text, toDoRange.document, textRange.startOffset, textRange.endOffset, todosaurusSettings)
+            }
 
         private fun create(text: String, document: Document, startIndex: Int, endIndex: Int, todosaurusSettings: TodosaurusSettings.State): ToDoItem {
             val isNew = newItemPattern.containsMatchIn(text)
