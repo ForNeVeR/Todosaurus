@@ -372,7 +372,6 @@ class TodosaurusWizard(
                 nextButton.text = nextButtonName
             }
             else if (mySteps.size > 1) {
-                nextButton.mnemonic = 67
                 nextButton.text = TodosaurusCoreBundle.message("wizard.buttons.create")
             }
             else {
@@ -381,7 +380,6 @@ class TodosaurusWizard(
         }
         else {
             nextButton.text = TodosaurusCoreBundle.message("wizard.buttons.next")
-            nextButton.mnemonic = 78
         }
 
         nextButton.isEnabled = canGoNext
