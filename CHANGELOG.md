@@ -7,12 +7,21 @@ SPDX-License-Identifier: MIT
 Changelog
 =========
 
-## [Unreleased]
+## [1.12.0] - 2026-08-21
 ### Changed
-- **(Requirement update!)** Update the compatible IntelliJ version range to \[2026.2; 2026.3\].
-- **(Requirement update!)** Starting from IntelliJ 2026.2, the **Task Management** plugin is not bundled with the IDE anymore. Todosaurus now declares it as a required dependency, so it will be installed automatically together with Todosaurus.
+- **(Requirement update!)** IntelliJ plugin: update the compatible IntelliJ version range to \[2026.2; 2026.3\].
+- **(Requirement update!)** IntelliJ plugin: Starting from IntelliJ 2026.2, the **Task Management** plugin is not bundled with the IDE anymore. Todosaurus now declares it as a required dependency, so it will be installed automatically together with Todosaurus.
+- CLI, IntelliJ plugin: update the dependencies.
 
-## [1.11.0] - 2026-04-15
+### Added
+- A **new component**: skill for the AI agents to work with the Todosaurus CLI.
+
+### Fixed
+- [#312: CLI tool should ignore submodules](https://github.com/ForNeVeR/Todosaurus/issues/312). Thanks to @nanookclaw!
+- [#305](https://github.com/ForNeVeR/Todosaurus/issues/305): Read access is not allowed during `ToDoItem.setDescription`.
+- [#261: Issue title regex should not be greedy](https://github.com/ForNeVeR/Todosaurus/issues/261). Thanks to @evanofficial!
+
+## [1.11.0] - 2026-03-15
 ### Changed
 - **(Requirement update!)** Update the compatible IntelliJ version range to \[current 2026.1 EAP; 2026.2\].
 - Update the dependencies in CLI.
@@ -105,7 +114,8 @@ Changelog
 ## [1.0.0] - 2024-02-26
 This is the initial plugin release. At this point, it provides a context menu for the TODO items to create GitHub issues from them.
 
-[Unreleased]: https://github.com/ForNeVeR/Todosaurus/compare/v1.11.0...HEAD
+[Unreleased]: https://github.com/ForNeVeR/Todosaurus/compare/v1.12.0...HEAD
+[1.12.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.10.1...v1.11.0
 [1.10.1]: https://github.com/ForNeVeR/Todosaurus/compare/v1.10.0...v1.10.1
 [1.10.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.9.0...v1.10.0
