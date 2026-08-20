@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - name: Check out the sources
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
     - name: Cache downloaded JDK
       uses: actions/cache@v6
       with:
@@ -60,7 +60,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - name: Check out the sources
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
     - name: Maximize Build Space
       uses: jlumbroso/free-disk-space@v1.3.1
       with:
@@ -96,7 +96,7 @@ jobs:
         large-packages: false
         tool-cache: false
     - name: Check out the sources
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v6
     - name: Run Plugin Verification tasks
