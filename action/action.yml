@@ -45,6 +45,7 @@ runs:
     - name: Install Todosaurus
       if: inputs.build-from-source != 'true'
       shell: pwsh
+      working-directory: ${{ github.action_path }}
       run: dotnet tool install --global FVNever.Todosaurus.Cli --version ${{ inputs.version }}
 
     - name: Run Todosaurus (tool)
