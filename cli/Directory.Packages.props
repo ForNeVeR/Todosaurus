@@ -22,6 +22,6 @@ SPDX-License-Identifier: MIT
         <PackageVersion Include="TruePath" Version="1.12.0" />
         <PackageVersion Include="TruePath.SystemIo" Version="1.12.0" />
         <PackageVersion Include="xunit.runner.visualstudio" Version="4.0.0" />
-        <PackageVersion Include="xunit.v3" Version="3.2.2" />
+        <PackageVersion Include="xunit.v3" Version="4.0.0" />
     </ItemGroup>
 </Project>
