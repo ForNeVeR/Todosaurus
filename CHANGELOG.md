@@ -121,7 +121,8 @@ Changelog
 ## [1.0.0] - 2024-02-26
 This is the initial plugin release. At this point, it provides a context menu for the TODO items to create GitHub issues from them.
 
-[Unreleased]: https://github.com/ForNeVeR/Todosaurus/compare/v1.12.0...HEAD
+[Unreleased]: https://github.com/ForNeVeR/Todosaurus/compare/v1.13.0...HEAD
+[1.13.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.12.0...v1.13.0
 [1.12.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.10.1...v1.11.0
 [1.10.1]: https://github.com/ForNeVeR/Todosaurus/compare/v1.10.0...v1.10.1
