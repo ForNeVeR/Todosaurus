@@ -40,8 +40,10 @@ jobs:
     steps:
     - name: Check out the sources
       uses: actions/checkout@v7
-    - name: Simulate a consumer repository with a different global.json
+      with:
+        path: todosaurus-src
+    - name: Simulate a consumer repository with an unrelated global.json
       shell: pwsh
-      run: "'{ \"sdk\": { \"version\": \"9.0.100\" } }' | Out-File -Encoding utf8 global.json"
+      run: "'{ \"sdk\": { \"version\": \"99.0.100\" } }' | Out-File -Encoding utf8 global.json"
     - name: Run the action (installed tool, not build-from-source)
-      uses: ./action/
+      uses: ./todosaurus-src/action/

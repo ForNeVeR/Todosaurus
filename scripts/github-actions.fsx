@@ -200,17 +200,20 @@ let workflows = [
 
             step(
                 name = "Check out the sources",
-                usesSpec = Auto "actions/checkout"
+                usesSpec = Auto "actions/checkout",
+                options = Map.ofList [
+                    "path", "todosaurus-src"
+                ]
             )
 
             pwsh(
-                "Simulate a consumer repository with a different global.json",
-                "'{ \"sdk\": { \"version\": \"9.0.100\" } }' | Out-File -Encoding utf8 global.json"
+                "Simulate a consumer repository with an unrelated global.json",
+                "'{ \"sdk\": { \"version\": \"99.0.100\" } }' | Out-File -Encoding utf8 global.json"
             )
 
             step(
                 name = "Run the action (installed tool, not build-from-source)",
-                uses = "./action/"
+                uses = "./todosaurus-src/action/"
             )
         ]
     ]
