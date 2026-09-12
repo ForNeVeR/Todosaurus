@@ -7,9 +7,12 @@ SPDX-License-Identifier: MIT
 Changelog
 =========
 
-## [Unreleased]
+## [1.13.0] - 2026-09-12
 ### Fixed
 - [#330: GitHub Action fails when the consumer repository has its own `global.json` pinning a different .NET SDK version](https://github.com/ForNeVeR/Todosaurus/issues/330).
+
+### Changed
+- Update the dependencies.
 
 ## [1.12.0] - 2026-08-21
 ### Changed
