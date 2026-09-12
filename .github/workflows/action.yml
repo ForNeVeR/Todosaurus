@@ -35,3 +35,13 @@ jobs:
       uses: ./action/
       with:
         build-from-source: true
+  integration-test-consumer-global-json:
+    runs-on: ubuntu-24.04
+    steps:
+    - name: Check out the sources
+      uses: actions/checkout@v7
+    - name: Simulate a consumer repository with a different global.json
+      shell: pwsh
+      run: "'{ \"sdk\": { \"version\": \"9.0.100\" } }' | Out-File -Encoding utf8 global.json"
+    - name: Run the action (installed tool, not build-from-source)
+      uses: ./action/
