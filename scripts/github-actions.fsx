@@ -194,6 +194,25 @@ let workflows = [
                 ]
             )
         ]
+
+        job "integration-test-consumer-global-json" [
+            runsOn "ubuntu-24.04"
+
+            step(
+                name = "Check out the sources",
+                usesSpec = Auto "actions/checkout"
+            )
+
+            pwsh(
+                "Simulate a consumer repository with a different global.json",
+                "'{ \"sdk\": { \"version\": \"9.0.100\" } }' | Out-File -Encoding utf8 global.json"
+            )
+
+            step(
+                name = "Run the action (installed tool, not build-from-source)",
+                uses = "./action/"
+            )
+        ]
     ]
 
     workflow "cli" [
