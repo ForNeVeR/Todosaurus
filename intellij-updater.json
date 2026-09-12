@@ -8,7 +8,7 @@
         "file": "intellij/gradle.properties",
         "field": "pluginUntilBuild",
         "kind": "intellij-idea",
-        "versionFlavor": "eap",
+        "versionFlavor": "release",
         "augmentation": "nextMajor"
     }, {
         "file": "intellij/gradle/libs.versions.toml",
