@@ -7,6 +7,10 @@ SPDX-License-Identifier: MIT
 Changelog
 =========
 
+## [Unreleased]
+### Fixed
+- [#330: GitHub Action fails when the consumer repository has its own `global.json` pinning a different .NET SDK version](https://github.com/ForNeVeR/Todosaurus/issues/330).
+
 ## [1.12.0] - 2026-08-21
 ### Changed
 - **(Requirement update!)** IntelliJ plugin: update the compatible IntelliJ version range to \[2026.2; 2026.3\].
