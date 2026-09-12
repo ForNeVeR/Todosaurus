@@ -49,3 +49,5 @@ jobs:
         'exclusions = ["todosaurus-src/**"]' | Out-File -Encoding utf8 todosaurus.toml
     - name: Run the action (installed tool, not build-from-source)
       uses: ./todosaurus-src/action/
+      with:
+        version: 1.12.0
