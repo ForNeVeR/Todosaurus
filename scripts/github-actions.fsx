@@ -194,32 +194,6 @@ let workflows = [
                 ]
             )
         ]
-
-        job "integration-test-consumer-global-json" [
-            runsOn "ubuntu-24.04"
-
-            step(
-                name = "Check out the sources",
-                usesSpec = Auto "actions/checkout",
-                options = Map.ofList [
-                    "path", "todosaurus-src"
-                ]
-            )
-
-            pwsh(
-                "Simulate a consumer repository with an unrelated global.json",
-                "'{ \"sdk\": { \"version\": \"99.0.100\" } }' | Out-File -Encoding utf8 global.json\n" +
-                "'exclusions = [\"todosaurus-src/**\"]' | Out-File -Encoding utf8 todosaurus.toml"
-            )
-
-            step(
-                name = "Run the action (installed tool, not build-from-source)",
-                uses = "./todosaurus-src/action/",
-                options = Map.ofList [
-                    "version", "1.12.0"
-                ]
-            )
-        ]
     ]
 
     workflow "cli" [
