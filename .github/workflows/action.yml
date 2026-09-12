@@ -44,6 +44,8 @@ jobs:
         path: todosaurus-src
     - name: Simulate a consumer repository with an unrelated global.json
       shell: pwsh
-      run: "'{ \"sdk\": { \"version\": \"99.0.100\" } }' | Out-File -Encoding utf8 global.json"
+      run: |-
+        '{ "sdk": { "version": "99.0.100" } }' | Out-File -Encoding utf8 global.json
+        'exclusions = ["todosaurus-src/**"]' | Out-File -Encoding utf8 todosaurus.toml
     - name: Run the action (installed tool, not build-from-source)
       uses: ./todosaurus-src/action/

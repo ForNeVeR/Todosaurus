@@ -208,7 +208,8 @@ let workflows = [
 
             pwsh(
                 "Simulate a consumer repository with an unrelated global.json",
-                "'{ \"sdk\": { \"version\": \"99.0.100\" } }' | Out-File -Encoding utf8 global.json"
+                "'{ \"sdk\": { \"version\": \"99.0.100\" } }' | Out-File -Encoding utf8 global.json\n" +
+                "'exclusions = [\"todosaurus-src/**\"]' | Out-File -Encoding utf8 todosaurus.toml"
             )
 
             step(
