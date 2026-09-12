@@ -214,7 +214,10 @@ let workflows = [
 
             step(
                 name = "Run the action (installed tool, not build-from-source)",
-                uses = "./todosaurus-src/action/"
+                uses = "./todosaurus-src/action/",
+                options = Map.ofList [
+                    "version", "1.12.0"
+                ]
             )
         ]
     ]
