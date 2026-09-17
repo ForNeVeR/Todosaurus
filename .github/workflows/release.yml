@@ -76,7 +76,7 @@ jobs:
           ~/.local/share/gradle-jvm
           ~/AppData/Local/gradle-jvm
     - name: Maximize Build Space
-      uses: jlumbroso/free-disk-space@v1.3.1
+      uses: jlumbroso/free-disk-space@v1.3.2
       with:
         large-packages: false
         tool-cache: false
