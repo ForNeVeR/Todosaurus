@@ -29,7 +29,7 @@ jobs:
           ~/.local/share/gradle-jvm
           ~/AppData/Local/gradle-jvm
     - name: Maximize Build Space
-      uses: jlumbroso/free-disk-space@v1.3.2
+      uses: jlumbroso/free-disk-space@v2.0.0
       with:
         large-packages: false
         tool-cache: false
@@ -62,7 +62,7 @@ jobs:
     - name: Check out the sources
       uses: actions/checkout@v7
     - name: Maximize Build Space
-      uses: jlumbroso/free-disk-space@v1.3.2
+      uses: jlumbroso/free-disk-space@v2.0.0
       with:
         large-packages: false
         tool-cache: false
@@ -91,7 +91,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - name: Maximize Build Space
-      uses: jlumbroso/free-disk-space@v1.3.2
+      uses: jlumbroso/free-disk-space@v2.0.0
       with:
         large-packages: false
         tool-cache: false
