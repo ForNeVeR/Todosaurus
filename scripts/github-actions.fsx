@@ -65,7 +65,7 @@ let workflows = [
         yield! mainTriggers
 
         dotNetJob "verify-workflows" [
-            runsOn "ubuntu-24.04"
+            runsOn "ubuntu-26.04"
             pwsh(
                 "Verify via Generaptor",
                 "dotnet fsi ./scripts/github-actions.fsx verify"
@@ -73,7 +73,7 @@ let workflows = [
         ]
 
         job "licenses" [
-            runsOn "ubuntu-24.04"
+            runsOn "ubuntu-26.04"
             step(
                 name = "Check out the sources",
                 usesSpec = Auto "actions/checkout"
@@ -85,7 +85,7 @@ let workflows = [
         ]
 
         job "encoding" [
-            runsOn "ubuntu-24.04"
+            runsOn "ubuntu-26.04"
             step(
                 name = "Check out the sources",
                 usesSpec = Auto "actions/checkout"
@@ -97,7 +97,7 @@ let workflows = [
         ]
 
         dotNetJob "todos" [
-            runsOn "ubuntu-24.04"
+            runsOn "ubuntu-26.04"
             step(
                 name = "Check for TODOs",
                 uses = "./action/",
@@ -117,7 +117,7 @@ let workflows = [
         job "main" [
             jobPermission(PermissionKind.Contents, AccessKind.Write)
             jobPermission(PermissionKind.PullRequests, AccessKind.Write)
-            runsOn "ubuntu-24.04"
+            runsOn "ubuntu-26.04"
             jobTimeout 15
             step(
                 name = "Check out the sources",
@@ -165,8 +165,8 @@ let workflows = [
         strategy(failFast = false, matrix = [
             "image", [
                 "macos-26"
-                "ubuntu-24.04"
-                "ubuntu-24.04-arm"
+                "ubuntu-26.04"
+                "ubuntu-26.04-arm"
                 "windows-11-arm"
                 "windows-2025"
             ]
@@ -227,7 +227,7 @@ let workflows = [
         )
         job "build" [
             jobName "Build"
-            runsOn "ubuntu-24.04"
+            runsOn "ubuntu-26.04"
             step(
                 name = "Check out the sources",
                 usesSpec = Auto "actions/checkout"
@@ -276,7 +276,7 @@ let workflows = [
         job "test" [
             jobName "Test"
             needs "build"
-            runsOn "ubuntu-24.04"
+            runsOn "ubuntu-26.04"
             step(
                 name = "Check out the sources",
                 usesSpec = Auto "actions/checkout"
@@ -322,7 +322,7 @@ let workflows = [
         job "verify" [
             jobName "Verify plugin"
             needs "build"
-            runsOn "ubuntu-24.04"
+            runsOn "ubuntu-26.04"
             step(
                 name = "Maximize Build Space",
                 usesSpec = Auto "jlumbroso/free-disk-space",
@@ -371,7 +371,7 @@ let workflows = [
         dotNetJob nuGetJob [
             jobName "NuGet Package"
             jobPermission(PermissionKind.Contents, AccessKind.Write)
-            runsOn "ubuntu-24.04"
+            runsOn "ubuntu-26.04"
             step(
                 id = "version",
                 name = "Get version",
@@ -402,7 +402,7 @@ let workflows = [
         ]
         job intelliJJob [
             jobName "IntelliJ Plugin"
-            runsOn "ubuntu-24.04"
+            runsOn "ubuntu-26.04"
             jobPermission(PermissionKind.Contents, AccessKind.Write)
             step(
                 name = "Check out the sources",
@@ -462,7 +462,7 @@ let workflows = [
         job "github" [
             jobName "Create a Release"
             jobPermission(PermissionKind.Contents, AccessKind.Write)
-            runsOn "ubuntu-24.04"
+            runsOn "ubuntu-26.04"
 
             needs nuGetJob
             needs intelliJJob

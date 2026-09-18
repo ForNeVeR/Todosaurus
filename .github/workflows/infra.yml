@@ -18,7 +18,7 @@ on:
   workflow_dispatch: 
 jobs:
   verify-workflows:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
       DOTNET_NOLOGO: 1
@@ -37,14 +37,14 @@ jobs:
       shell: pwsh
       run: dotnet fsi ./scripts/github-actions.fsx verify
   licenses:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
     - name: Check out the sources
       uses: actions/checkout@v7
     - name: REUSE license check
       uses: fsfe/reuse-action@v6
   encoding:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
     - name: Check out the sources
       uses: actions/checkout@v7
@@ -52,7 +52,7 @@ jobs:
       shell: pwsh
       run: Install-Module VerifyEncoding -Repository PSGallery -RequiredVersion 2.3.0 -Force && Test-Encoding -ExcludeExtensions '.bat', '.DotSettings'
   todos:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     env:
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
       DOTNET_NOLOGO: 1
