@@ -115,7 +115,7 @@ url = "owner/repo"
 
 [<Fact>]
 let ``ApplyExclusions with empty list returns all files``() =
-    let config = { Configuration.Empty(AbsolutePath "/tmp") with Exclusions = System.Collections.Immutable.ImmutableArray.Empty }
+    let config = { Configuration.Empty(Temporary.SystemTempDirectory()) with Exclusions = System.Collections.Immutable.ImmutableArray.Empty }
     let files = [ LocalPath "a.fs"; LocalPath "b.fs" ]
     let result = Configuration.ApplyExclusions(files, config)
     Assert.Equal(files, result)
@@ -123,7 +123,7 @@ let ``ApplyExclusions with empty list returns all files``() =
 [<Fact>]
 let ``ApplyExclusions filters matching glob patterns``() =
     let config = {
-        Configuration.Empty(AbsolutePath "/tmp") with
+        Configuration.Empty(Temporary.SystemTempDirectory()) with
             Exclusions = ImmutableArray.Create(LocalPathPattern "*.generated.cs")
     }
     let files = [ LocalPath "a.fs"; LocalPath "b.generated.cs"; LocalPath "c.fs" ]
@@ -133,7 +133,7 @@ let ``ApplyExclusions filters matching glob patterns``() =
 [<Fact>]
 let ``ApplyExclusions with directory glob filters nested files``() =
     let config = {
-        Configuration.Empty(AbsolutePath "/tmp") with
+        Configuration.Empty(Temporary.SystemTempDirectory()) with
             Exclusions = ImmutableArray.Create(LocalPathPattern "build/**")
     }
     let files = [ LocalPath "src/a.fs"; LocalPath "build/output.dll"; LocalPath "build/sub/file.txt" ]
