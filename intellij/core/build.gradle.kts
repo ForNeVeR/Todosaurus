@@ -17,6 +17,7 @@ dependencies {
         bundledModule("intellij.platform.todo")
         // IgnoreTODO-End
         bundledModule("intellij.platform.vcs.dvcs")
+        bundledModule("intellij.platform.vcs.dvcs.impl")
         bundledPlugin("Git4Idea")
         compatiblePlugin("com.intellij.tasks")
 

@@ -1,5 +1,5 @@
 <!--
-  ~ SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+  ~ SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
   ~
   ~ SPDX-License-Identifier: MIT
   -->
@@ -9,6 +9,7 @@
         <module name="me.fornever.todosaurus.core"/>
         <plugin id="com.intellij.tasks"/>
         <plugin id="org.jetbrains.plugins.gitlab"/>
+        <module name="intellij.vcs.gitlab.backend"/>
     </dependencies>
 
     <extensions defaultExtensionNs="me.fornever.todosaurus">

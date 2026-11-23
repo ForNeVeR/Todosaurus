@@ -12,6 +12,13 @@ dependencies {
     intellijPlatform {
         bundledModule("intellij.platform.tasks")
         bundledPlugin("org.jetbrains.plugins.gitlab")
+        bundledPlugin("Git4Idea")
+        bundledModule("intellij.vcs.gitlab.backend")
+        bundledModule("intellij.platform.collaborationTools")
+        bundledModule("intellij.platform.collaborationTools.auth")
+        bundledModule("intellij.platform.collaborationTools.auth.base")
+        bundledModule("intellij.platform.vcs.dvcs")
+        bundledModule("intellij.platform.vcs.dvcs.impl")
         compatiblePlugin("com.intellij.tasks")
     }
 }

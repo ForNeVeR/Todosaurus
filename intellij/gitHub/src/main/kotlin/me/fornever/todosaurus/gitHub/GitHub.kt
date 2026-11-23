@@ -1,4 +1,4 @@
-// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
@@ -19,7 +19,6 @@ import me.fornever.todosaurus.core.ui.wizard.TodosaurusWizardContext
 import org.jetbrains.plugins.github.api.GithubApiRequestExecutor
 import org.jetbrains.plugins.github.api.GithubApiRequests
 import org.jetbrains.plugins.github.api.GithubServerPath
-import org.jetbrains.plugins.github.api.executeSuspend
 import java.util.concurrent.CancellationException
 import javax.swing.Icon
 
@@ -32,7 +31,7 @@ class GitHub(override val icon: Icon, override val title: String) : IssueTracker
     override suspend fun checkConnection(credentials: IssueTrackerCredentials): TestConnectionResult {
         return try {
             val request = GithubApiRequests.CurrentUser.get(getGitHubPath(credentials))
-            createRequestExecutor(credentials).executeSuspend(request)
+            createRequestExecutor(credentials).execute(request)
 
             TestConnectionResult.Success
         }

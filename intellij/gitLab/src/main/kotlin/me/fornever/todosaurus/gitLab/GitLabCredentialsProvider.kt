@@ -4,6 +4,7 @@
 
 package me.fornever.todosaurus.gitLab
 
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.tasks.TaskManager
 import com.intellij.tasks.TaskRepository
@@ -12,7 +13,7 @@ import com.intellij.util.containers.toArray
 import me.fornever.todosaurus.core.issueTrackers.IssueTrackerCredentials
 import me.fornever.todosaurus.core.issueTrackers.IssueTrackerCredentialsProvider
 import org.jetbrains.plugins.gitlab.api.GitLabServerPath
-import org.jetbrains.plugins.gitlab.authentication.accounts.PersistentGitLabAccountManager
+import org.jetbrains.plugins.gitlab.authentication.accounts.GitLabAccountManager
 
 class GitLabCredentialsProvider(private val project: Project) : IssueTrackerCredentialsProvider {
     override suspend fun provide(credentialsId: String): IssueTrackerCredentials?
@@ -24,7 +25,7 @@ class GitLabCredentialsProvider(private val project: Project) : IssueTrackerCred
             .toArray(emptyArray())
 
     private suspend fun fromPlugin(): List<IssueTrackerCredentials> {
-        val accountManager = PersistentGitLabAccountManager()
+        val accountManager = service<GitLabAccountManager>()
 
         return accountManager
             .accountsState
