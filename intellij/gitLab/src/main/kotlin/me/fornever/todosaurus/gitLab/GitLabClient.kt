@@ -1,15 +1,13 @@
-// SPDX-FileCopyrightText: 2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2025-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 package me.fornever.todosaurus.gitLab
 
-import com.intellij.collaboration.api.httpclient.HttpClientUtil.inflateAndReadWithErrorHandlingAndLogging
-import com.intellij.collaboration.api.httpclient.InflatedStreamReadingBodyHandler
+import com.intellij.collaboration.api.HttpStatusErrorException
 import com.intellij.collaboration.util.resolveRelative
 import com.intellij.collaboration.util.withQuery
 import com.intellij.dvcs.repo.VcsRepositoryManager
 import com.intellij.openapi.application.readAction
-import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.io.FileUtil
@@ -28,7 +26,7 @@ import me.fornever.todosaurus.gitLab.api.GitLabLabel
 import org.jetbrains.plugins.gitlab.api.GitLabApi
 import org.jetbrains.plugins.gitlab.api.GitLabRestJsonDataDeSerializer
 import org.jetbrains.plugins.gitlab.api.GitLabServerPath
-import java.io.InputStreamReader
+import java.io.StringReader
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -39,8 +37,6 @@ class GitLabClient(
     private val remote: GitHostingRemote,
     private val fileDocumentManager: FileDocumentManager
 ) : IssueTrackerClient {
-    private val logger = logger<GitLabClient>()
-
     override suspend fun createIssue(toDoItem: ToDoItem, issueOptions: List<IssueOptions>): IssueModel {
         val issueBody = readAction {
             replacePatterns(restClient.server, toDoItem)
@@ -59,21 +55,14 @@ class GitLabClient(
             ?.joinToString(",") { it.name }
 
         val request = restClient
-            .request(endpointPath)
-            .POST(restClient.jsonBodyPublisher(endpointPath, object {
+            .postJson(endpointPath, object {
                 @Suppress("UNUSED") val title = toDoItem.title
                 @Suppress("UNUSED") val description = issueBody
                 @Suppress("UNUSED") val labels = labels
-            }))
-            .header("Content-Type", "application/json")
+            })
             .build()
 
-        val responseHandler = inflateAndReadWithErrorHandlingAndLogging(logger, request) { reader, _ ->
-            GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabIssue::class.java)
-        }
-
-        val response = restClient.sendAndAwaitCancellable(request, responseHandler).body()
-            ?: error("Unable to create new issue")
+        val response = restClient.loadJsonValueByClass(request, GitLabIssue::class.java).body()
 
         return IssueModel(response.issueNumber.toString(), response.url)
     }
@@ -93,25 +82,14 @@ class GitLabClient(
             .GET()
             .build()
 
-        val responseHandler = InflatedStreamReadingBodyHandler { responseInfo, bodyStream ->
-            InputStreamReader(bodyStream, Charsets.UTF_8).use { reader ->
-                when (val code = responseInfo.statusCode()) {
-                    200 -> GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabIssue::class.java)
-                    404 -> null
+        val gitLabIssue = try {
+            restClient.loadJsonValueByClass(request, GitLabIssue::class.java).body()
+        } catch (e: HttpStatusErrorException) {
+            if (e.statusCode == 404)
+                return null
 
-                    else -> {
-                        val errorResponse = GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabError::class.java)
-                        val errorMessage = errorResponse?.message
-                            ?: errorResponse?.error
-                                ?: "Unknown error occurred with $code HTTP status code."
-
-                        error(errorMessage)
-                    }
-                }
-            }
+            throw gitLabError(e)
         }
-
-        val gitLabIssue = restClient.sendAndAwaitCancellable(request, responseHandler).body() ?: return null
 
         return IssueModel(gitLabIssue.issueNumber.toString(), gitLabIssue.url)
     }
@@ -135,42 +113,36 @@ class GitLabClient(
                 .GET()
                 .build()
 
-            var nextPage: Int? = null
-
-            val responseHandler = InflatedStreamReadingBodyHandler { response, bodyStream ->
-                InputStreamReader(bodyStream, Charsets.UTF_8).use { reader ->
-                    when (val code = response.statusCode()) {
-                        200 -> {
-                            nextPage = response
-                                .headers()
-                                .firstValue("X-Next-Page")
-                                .orElse(null)
-                                ?.toIntOrNull()
-
-                            GitLabRestJsonDataDeSerializer.fromJson(reader, Collection::class.java, GitLabLabel::class.java)
-                        }
-
-                        else -> {
-                            val errorResponse = GitLabRestJsonDataDeSerializer.fromJson(reader, GitLabError::class.java)
-                            val errorMessage = errorResponse?.message
-                                ?: errorResponse?.error
-                                    ?: "Unknown error occurred with $code HTTP status code."
-
-                            error(errorMessage)
-                        }
-                    }
-                }
+            val response = try {
+                restClient.loadJsonListByClass(request, GitLabLabel::class.java)
+            } catch (e: HttpStatusErrorException) {
+                throw gitLabError(e)
             }
 
-            @Suppress("UNCHECKED_CAST")
-            labels.addAll(
-                restClient.sendAndAwaitCancellable(request, responseHandler).body() as Collection<GitLabLabel>?
-                    ?: error("Failed to fetch labels from GitLab"))
+            labels.addAll(response.body())
 
-            currentPage = nextPage
+            currentPage = response
+                .headers()
+                .firstValue("X-Next-Page")
+                .orElse(null)
+                ?.toIntOrNull()
         }
 
         return labels
+    }
+
+    private fun gitLabError(exception: HttpStatusErrorException): IllegalStateException {
+        val errorResponse = exception.body?.let { body ->
+            runCatching {
+                StringReader(body).use { GitLabRestJsonDataDeSerializer.fromJson(it, GitLabError::class.java) }
+            }.getOrNull()
+        }
+
+        val errorMessage = errorResponse?.message
+            ?: errorResponse?.error
+                ?: "Unknown error occurred with ${exception.statusCode} HTTP status code."
+
+        return IllegalStateException(errorMessage, exception)
     }
 
     @RequiresReadLock
