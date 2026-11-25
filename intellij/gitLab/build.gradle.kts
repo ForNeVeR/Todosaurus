@@ -10,13 +10,13 @@ plugins {
 dependencies {
     compileOnly(project(":core"))
     intellijPlatform {
-        bundledModule("intellij.platform.tasks")
-        bundledPlugin("org.jetbrains.plugins.gitlab")
-        bundledPlugin("Git4Idea")
-        bundledModule("intellij.vcs.gitlab.backend")
         bundledModule("intellij.platform.collaborationTools")
+        bundledModule("intellij.platform.tasks")
         bundledModule("intellij.platform.vcs.dvcs")
         bundledModule("intellij.platform.vcs.dvcs.impl")
+        bundledModule("intellij.vcs.gitlab.backend")
+        bundledPlugin("Git4Idea")
+        bundledPlugin("org.jetbrains.plugins.gitlab")
         compatiblePlugin("com.intellij.tasks")
     }
 }
