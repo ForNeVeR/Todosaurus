@@ -4,12 +4,13 @@
   ~ SPDX-License-Identifier: MIT
   -->
 
+<!--suppress PluginXmlValidity: false inspection -->
 <idea-plugin package="me.fornever.todosaurus.gitLab">
     <dependencies>
+        <module name="intellij.vcs.gitlab.backend"/>
         <module name="me.fornever.todosaurus.core"/>
         <plugin id="com.intellij.tasks"/>
         <plugin id="org.jetbrains.plugins.gitlab"/>
-        <module name="intellij.vcs.gitlab.backend"/>
     </dependencies>
 
     <extensions defaultExtensionNs="me.fornever.todosaurus">
