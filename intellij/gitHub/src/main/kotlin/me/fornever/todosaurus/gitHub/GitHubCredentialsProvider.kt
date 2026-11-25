@@ -1,10 +1,9 @@
-// SPDX-FileCopyrightText: 2024-2025 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
+// SPDX-FileCopyrightText: 2024-2026 Todosaurus contributors <https://github.com/ForNeVeR/Todosaurus>
 //
 // SPDX-License-Identifier: MIT
 
 package me.fornever.todosaurus.gitHub
 
-import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.tasks.TaskManager
 import com.intellij.tasks.TaskRepository
@@ -14,7 +13,6 @@ import me.fornever.todosaurus.core.issueTrackers.IssueTrackerCredentials
 import me.fornever.todosaurus.core.issueTrackers.IssueTrackerCredentialsProvider
 import org.jetbrains.plugins.github.api.GithubServerPath
 import org.jetbrains.plugins.github.authentication.GHAccountsUtil
-import org.jetbrains.plugins.github.authentication.accounts.GHAccountManager
 
 class GitHubCredentialsProvider(private val project: Project) : IssueTrackerCredentialsProvider {
     override suspend fun provideAll(): Array<IssueTrackerCredentials>
@@ -25,13 +23,10 @@ class GitHubCredentialsProvider(private val project: Project) : IssueTrackerCred
     override suspend fun provide(credentialsId: String): IssueTrackerCredentials?
         = provideAll().firstOrNull { credentialsId == it.id }
 
-    private suspend fun fromPlugin(): List<IssueTrackerCredentials> {
-        val pluginManager = service<GHAccountManager>()
-
-        return GHAccountsUtil
+    private fun fromPlugin(): List<IssueTrackerCredentials>
+        = GHAccountsUtil
             .accounts
-            .map { GitHubCredentials(it.name, pluginManager.findCredentials(it), it.server) }
-    }
+            .map { GitHubCredentials(it.name, apiToken = null, it.server, account = it) }
 
     private fun fromTasks(): List<IssueTrackerCredentials>
         = TaskManager

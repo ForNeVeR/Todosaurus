@@ -62,8 +62,11 @@ class GitHub(override val icon: Icon, override val title: String) : IssueTracker
             return GithubApiRequestExecutor.Factory.getInstance().create()
 
         if (credentials is GitHubCredentials) {
+            val factory = GithubApiRequestExecutor.Factory.getInstance()
+            credentials.account?.let { return factory.create(it) }
+
             val token = credentials.apiToken ?: error("Bad credentials")
-            return GithubApiRequestExecutor.Factory.getInstance().create(credentials.serverPath, token)
+            return factory.create(credentials.serverPath, token)
         }
 
         error("Only ${GitHubCredentials::class.simpleName} supported")

@@ -7,6 +7,10 @@ SPDX-License-Identifier: MIT
 Changelog
 =========
 
+## [Unreleased]
+### Changed
+- IntelliJ plugin: GitLab accounts configured in the IDE's GitLab plugin are no longer offered for issue creation, since IntelliJ 2026.3 removed public access to them. Use a GitLab server configured in **Task Management** instead. Upvote [IJPL-263023](https://youtrack.jetbrains.com/issue/IJPL-263023/Restore-access-to-GitLab-accounts-from-IntelliJ-plugins) for this feature to be restored back.
+
 ## [1.13.0] - 2026-09-12
 ### Fixed
 - [#330: GitHub Action fails when the consumer repository has its own `global.json` pinning a different .NET SDK version](https://github.com/ForNeVeR/Todosaurus/issues/330).
