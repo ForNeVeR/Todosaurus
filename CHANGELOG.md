@@ -7,9 +7,11 @@ SPDX-License-Identifier: MIT
 Changelog
 =========
 
-## [Unreleased]
+## [1.14.0] - 2026-11-26
 ### Changed
+- **(Requirement update!)** IntelliJ plugin: the minimal supported IDE version is now 2026.3.
 - IntelliJ plugin: GitLab accounts configured in the IDE's GitLab plugin are no longer offered for issue creation, since IntelliJ 2026.3 removed public access to them. Use a GitLab server configured in **Task Management** instead. Upvote [IJPL-263023](https://youtrack.jetbrains.com/issue/IJPL-263023/Restore-access-to-GitLab-accounts-from-IntelliJ-plugins) for this feature to be restored back.
+- GitHub action: updated to .NET 11.
 
 ## [1.13.0] - 2026-09-12
 ### Fixed
@@ -125,7 +127,8 @@ Changelog
 ## [1.0.0] - 2024-02-26
 This is the initial plugin release. At this point, it provides a context menu for the TODO items to create GitHub issues from them.
 
-[Unreleased]: https://github.com/ForNeVeR/Todosaurus/compare/v1.13.0...HEAD
+[Unreleased]: https://github.com/ForNeVeR/Todosaurus/compare/v1.14.0...HEAD
+[1.14.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.13.0...v1.14.0
 [1.13.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.12.0...v1.13.0
 [1.12.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/ForNeVeR/Todosaurus/compare/v1.10.1...v1.11.0
