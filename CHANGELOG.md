@@ -12,6 +12,7 @@ Changelog
 - **(Requirement update!)** IntelliJ plugin: the minimal supported IDE version is now 2026.3.
 - IntelliJ plugin: GitLab accounts configured in the IDE's GitLab plugin are no longer offered for issue creation, since IntelliJ 2026.3 removed public access to them. Use a GitLab server configured in **Task Management** instead. Upvote [IJPL-263023](https://youtrack.jetbrains.com/issue/IJPL-263023/Restore-access-to-GitLab-accounts-from-IntelliJ-plugins) for this feature to be restored back.
 - GitHub action: updated to .NET 11.
+- CLI: update the dependencies.
 
 ## [1.13.0] - 2026-09-12
 ### Fixed
