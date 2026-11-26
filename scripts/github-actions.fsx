@@ -371,6 +371,7 @@ let workflows = [
         dotNetJob nuGetJob [
             jobName "NuGet Package"
             jobPermission(PermissionKind.Contents, AccessKind.Write)
+            jobPermission(PermissionKind.IdToken, AccessKind.Write)
             runsOn "ubuntu-26.04"
             step(
                 id = "version",
@@ -395,9 +396,18 @@ let workflows = [
             )
             step(
                 condition = "startsWith(github.ref, 'refs/tags/v')",
+                id = "nuget-login",
+                name = "Log in to NuGet",
+                usesSpec = Auto "NuGet/login",
+                options = Map.ofList [
+                    "user", "${{ secrets.NUGET_USER }}"
+                ]
+            )
+            step(
+                condition = "startsWith(github.ref, 'refs/tags/v')",
                 name = "Push artifact to NuGet",
                 shell = "pwsh",
-                run = "dotnet nuget push ./cli/Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}"
+                run = "dotnet nuget push ./cli/Cli/bin/Release/FVNever.Todosaurus.Cli.${{ steps.version.outputs.version }}.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ steps.nuget-login.outputs.NUGET_API_KEY }}"
             )
         ]
         job intelliJJob [

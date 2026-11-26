@@ -16,8 +16,7 @@ Publish a New Version
 5. Choose the new version according to [Semantic Versioning][semver]. It should consist of three numbers (i.e. `1.0.0`).
 6. Update the version of all the packages via `scripts/Update-Version.ps1 -NewVersion <the new version>`.
 7. Merge the aforementioned changes via a pull request.
-8. Check if the NuGet key is still valid (see the **Rotate NuGet Publishing Key** section if it isn't).
-9. Push a tag named `v<VERSION>` to GitHub.
+8. Push a tag named `v<VERSION>` to GitHub.
 
 The new release will be published automatically.
 
@@ -29,18 +28,23 @@ To rotate the key used for publication to the Marketplace, follow these steps:
 3. Go to [the Action Secrets page][github.secrets].
 4. Update the `PUBLISH_TOKEN` secret with the new token value.
 
-Rotate NuGet Publishing Key
----------------------------
-CI relies on a NuGet API key being added to the secrets. From time to time, this key requires maintenance: it will become obsolete and will have to be updated.
+NuGet Publishing Policy
+-----------------------
+This repository relies on [NuGet Trusted Publishing][docs.nuget-trusted-publishing] policy. In case you need to create it again, follow these steps:
 
-To update the key:
+1. Sign in to nuget.org.
+2. Go to the [Trusted Publishing][nuget.trusted-publishing] section.
+3. Create a new policy:
+   - **Policy Name:** `github.todosaurus`.
+   - **Repository Owner:** `ForNeVeR`.
+   - **Repository**: `Todosaurus`.
+   - **Workflow File**: `release.yml`.
+   - **Environment:** _leave empty_.
+   - **Scope:** **push only new packages versions**.
+   - **Glob Patterns and Packages**: `FVNever.Todosaurus.Cli`.
+4. Put your nuget.org username into the `NUGET_USER` secret on the [action secrets][github.secrets] section of GitHub settings.
 
-1. Sign in onto nuget.org.
-2. Go to the [API keys][nuget.api-keys] section.
-3. Update the existing or create a new key named `github.todosaurus` with a permission to **Push only new package versions** and only allowed to publish the package **FVNever.Todosaurus.Cli**.
-
-   (If this is the first publication of a new package, upload a temporary short-living key with permission to add new packages, and rotate it afterward.)
-4. Paste the generated key to the `NUGET_TOKEN` variable on the [action secrets][github.secrets] section of GitHub settings.
+When introducing a new package, you can adjust the policy temporarily to allow it to **push new packages and package versions**.
 
 Rotate the Dependency Update Token
 ----------------------------------
@@ -52,9 +56,10 @@ To update the token:
 3. Copy the **App ID** to the `IJ_UPDATER_APP_ID` variable in [GitHub Actions secrets][github.secrets].
 4. Copy the new private key to the `IJ_UPDATER_PRIVATE_KEY` variable in [GitHub Actions secrets][github.secrets].
 
+[docs.nuget-trusted-publishing]: https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing
 [github.apps.intellij-updater]: https://github.com/settings/apps/intellij-updater
 [github.secrets]: https://github.com/ForNeVeR/Todosaurus/settings/secrets/actions
 [intellij-updater]: https://github.com/ForNeVeR/intellij-updater
 [marketplace.tokens]: https://plugins.jetbrains.com/author/me/tokens
-[nuget.api-keys]: https://www.nuget.org/account/apikeys
+[nuget.trusted-publishing]: https://www.nuget.org/account/trustedpublishing
 [semver]: https://semver.org/spec/v2.0.0.html
